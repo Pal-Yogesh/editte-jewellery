@@ -1,0 +1,136 @@
+"use client";
+
+import Link from "next/link";
+
+const COLLECTIONS = [
+  "New Arrivals",
+  "Bridal Edit",
+  "Festive Picks",
+  "Everyday Luxe",
+  "Silver Essentials",
+  "Kundan & Jadau",
+];
+const QUICK_LINKS = [
+  "About Us",
+  "Our Designers",
+  "Custom Orders",
+  "Gift Cards",
+  "Size Guide",
+  "Care Instruction",
+];
+
+export default function Footer() {
+  return (
+    <footer className="relative overflow-hidden">
+      <img
+        src="/images/footer.jpg"
+        alt=""
+        aria-hidden
+        className="absolute inset-0 w-full h-[100vh] "
+      />
+
+      {/* Gradient tint: light/white at top → dark at bottom */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(249,245,241,0.75) 0%, rgba(249,245,241,0.5) 30%, rgba(54,21,21,0.55) 70%, rgba(54,21,21,0.8) 100%)",
+        }}
+      />
+
+      <div className="relative z-10">
+        {/* Logo centered */}
+        <div className="text-center pt-12 pb-8">
+          <img
+            src="/logo/logo.png"
+            alt="editta logo"
+            className="mx-auto h-16 md:h-60 object-contain"
+          />
+        </div>
+
+        {/* Columns */}
+        <div className=" px-12 pb-8 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10">
+          {/* Brand blurb */}
+          <div>
+            <p className="text-white text-xl leading-relaxed max-w-[280px] italic mt-12">
+              India&apos;s first jewellery makers collective connecting 40+
+              independent designers with those who appreciate the art of
+              adornment. Handcrafted with love since 2018.
+            </p>
+          </div>
+
+          {/* Collections */}
+          <div>
+            <p className="font-heading text-cacao text-3xl mb-3">Collections</p>
+            <ul className="flex flex-col gap-1.5">
+              {COLLECTIONS.map((l) => (
+                <li key={l}>
+                  <a
+                    href="#"
+                    className="text-white text-2xl underline underline-offset-2 hover:text-cacao transition-colors"
+                  >
+                    {l}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <p className="font-heading text-cacao text-3xl mb-3">Quick Links</p>
+            <ul className="flex flex-col gap-1.5">
+              {QUICK_LINKS.map((l) => (
+                <li key={l}>
+                  <a
+                    href="#"
+                    className="text-white text-2xl underline underline-offset-2 hover:text-cacao transition-colors"
+                  >
+                    {l}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <p className="font-heading text-cacao text-3xl mb-3">Contact</p>
+            <ul className="flex flex-col gap-1.5 text-white text-2xl">
+              <li>Brand Studio India</li>
+              <li>+91 22 2600 0000</li>
+              <li>hello@Brand.in</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className=" px-12 py-5 border-t border-cacao/20 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div>
+            <p className="text-salt/80 text-xl">@ Copyright 2026 . Editta</p>
+            <Link href="https://approot.in" target="_blank">
+              {" "}
+              <p className="text-salt/80 text-xl hover:text-salt">
+                Developed By <span className="">Approot</span>
+              </p>
+            </Link>
+          </div>
+          <div className="flex items-center gap-5">
+            <a
+              href="#"
+              className="text-salt/80 text-xl hover:text-salt transition-colors"
+            >
+              Privacy Policy
+            </a>
+            <a
+              href="#"
+              className="text-salt/80 text-xl hover:text-salt transition-colors"
+            >
+              Terms Condition
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}

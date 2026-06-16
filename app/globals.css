@@ -1,26 +1,78 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ── editta brand colours ── */
+  --salt: #f9f5f1;
+  --cacao: #361515;
+  --rose: #c87a79;
+  --sage: #b3ad6e;
+  --sand: #ede2c3;
+  --ink: #0c0e0e;
+  --gold: linear-gradient(135deg, #c9a24b 0%, #e8ce8f 50%, #b8862f 100%);
+
+  --background: var(--salt);
+  --foreground: var(--ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --color-salt: var(--salt);
+  --color-cacao: var(--cacao);
+  --color-rose: var(--rose);
+  --color-sage: var(--sage);
+  --color-sand: var(--sand);
+  --color-ink: var(--ink);
+
+  --font-heading: "Goudy Old Style", var(--font-heading-serif), Goudy, "Times New Roman", serif;
+  --font-logo: var(--font-goudy), "Goudy Old Style", Goudy, serif;
+  --font-body: var(--font-open-sans), system-ui, -apple-system, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Heading font helper — bold high-contrast serif */
+.font-heading {
+  font-family: var(--font-heading);
+  font-weight: 700;
+
+}
+
+/* Logo / wordmark font helper (elegant thin Goudy revival) */
+.font-logo {
+  font-family: var(--font-logo);
+  font-weight: 400;
+}
+
+/* Thin scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(54, 21, 21, 0.3);
+  border-radius: 3px;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
