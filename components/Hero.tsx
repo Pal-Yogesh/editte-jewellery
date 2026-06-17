@@ -7,6 +7,7 @@ const BANNERS = [
   "/images/main-banner/1.png",
   "/images/main-banner/2.jpg",
   "/images/main-banner/3.jpg",
+  "/images/main-banner/4.jpeg"
 ];
 
 const INTERVAL = 4500; // ms per slide
