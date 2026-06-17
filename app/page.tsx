@@ -8,6 +8,7 @@ import StorySection from "@/components/StorySection";
 import TrustBadges from "@/components/TrustBadges";
 import Designers from "@/components/Designers";
 import Footer from "@/components/Footer";
+import CuratedCollection from "@/components/CuratedCollection";
 
 export default function Home() {
   return (
@@ -23,6 +24,7 @@ export default function Home() {
         <NewArrivals />
         <StorySection />
         <TrustBadges />
+        <CuratedCollection />
         <Designers />
       </main>
       <Footer />
