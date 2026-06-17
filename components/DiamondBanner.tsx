@@ -41,7 +41,7 @@ export default function DiamondBanner() {
         className="relative w-full overflow-hidden"
       >
         <div className="">
-          <div className="relative">
+          {/* <div className="relative">
             <Image
               src="/images/mid-banner/mid-banner3.jpg"
               width={1000}
@@ -49,11 +49,10 @@ export default function DiamondBanner() {
               alt="mid-banner"
               className="w-screen h-[510px] "
             />
-            {/* Light pink tint overlay */}
             <div className="absolute inset-0 bg-rose/70 mix-blend-multiply" />
-          </div>
+          </div> */}
           <Image
-            src="/images/mid-banner/mid-banner.jpg"
+            src="/tree.jpeg"
             width={1000}
             height={1000}
             alt="mid-banner"
