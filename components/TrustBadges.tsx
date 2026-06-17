@@ -6,7 +6,7 @@ const STROKE = "#b3ad6e"; // sage
 
 function ShieldCheck() {
   return (
-    <svg viewBox="0 0 48 48" fill="none" stroke={STROKE} strokeWidth="1.6" className="w-20 h-20">
+    <svg viewBox="0 0 48 48" fill="none" stroke={STROKE} strokeWidth="1.6" className="w-14 h-14">
       <path d="M24 4 L40 10 V24 C40 34 33 41 24 44 C15 41 8 34 8 24 V10 Z" />
       <path d="M17 24 l5 5 l9 -11" />
     </svg>
@@ -14,7 +14,7 @@ function ShieldCheck() {
 }
 function Truck() {
   return (
-    <svg viewBox="0 0 48 48" fill="none" stroke={STROKE} strokeWidth="1.6" className="w-24 h-24">
+    <svg viewBox="0 0 48 48" fill="none" stroke={STROKE} strokeWidth="1.6" className="w-14 h-14">
       <rect x="4" y="14" width="22" height="16" rx="1" />
       <path d="M26 19 h8 l6 6 v5 h-14 z" />
       <circle cx="14" cy="34" r="3.5" />
@@ -24,7 +24,7 @@ function Truck() {
 }
 function Return() {
   return (
-    <svg viewBox="0 0 48 48" fill="none" stroke={STROKE} strokeWidth="1.6" className="w-24 h-24">
+    <svg viewBox="0 0 48 48" fill="none" stroke={STROKE} strokeWidth="1.6" className="w-14 h-14">
       <path d="M12 18 a14 14 0 1 1 -2 12" />
       <polyline points="12 8 12 18 22 18" />
     </svg>
@@ -32,7 +32,7 @@ function Return() {
 }
 function Card() {
   return (
-    <svg viewBox="0 0 48 48" fill="none" stroke={STROKE} strokeWidth="1.6" className="w-24 h-24">
+    <svg viewBox="0 0 48 48" fill="none" stroke={STROKE} strokeWidth="1.6" className="w-14 h-14">
       <rect x="5" y="12" width="32" height="22" rx="2" />
       <line x1="5" y1="19" x2="37" y2="19" />
       <path d="M33 28 a6 6 0 1 0 6 6" />
