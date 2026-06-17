@@ -8,7 +8,7 @@ const openSans = Open_Sans({
   display: "swap",
 });
 
-// Sorts Mill Goudy — Goudy Old Style revival, used for the "editta" wordmark
+// Sorts Mill Goudy — Goudy Old Style revival, used for the "editte" wordmark
 const goudy = Sorts_Mill_Goudy({
   variable: "--font-goudy",
   weight: ["400"],
@@ -25,9 +25,9 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "editta — Fine Jewellery",
+  title: "editte — Fine Jewellery",
   description:
-    "editta — India's first jewellery makers collective. Handcrafted rings, earrings, neckpieces and more.",
+    "editte — India's first jewellery makers collective. Handcrafted rings, earrings, neckpieces and more.",
 };
 
 export default function RootLayout({

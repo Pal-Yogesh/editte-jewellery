@@ -1,6 +1,6 @@
-# editta — Web Design System
+# editte — Web Design System
 
-> Brand design reference for the **editta** jewellery UI. These tokens and rules are taken directly from the official Web Colour Guide and must be used **as-is** across all interfaces.
+> Brand design reference for the **editte** jewellery UI. These tokens and rules are taken directly from the official Web Colour Guide and must be used **as-is** across all interfaces.
 
 ---
 

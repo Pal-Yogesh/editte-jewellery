@@ -43,7 +43,7 @@ export default function Footer() {
         <div className="text-center pt-12 pb-8">
           <img
             src="/logo/logo.png"
-            alt="editta logo"
+            alt="editte logo"
             className="mx-auto h-16 md:h-60 object-contain"
           />
         </div>
@@ -107,7 +107,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className=" px-12 py-5 border-t border-cacao/20 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div>
-            <p className="text-salt/80 text-xl">@ Copyright 2026 . Editta</p>
+            <p className="text-salt/80 text-xl">@ Copyright 2026 . editte</p>
             <Link href="https://approot.in" target="_blank">
               {" "}
               <p className="text-salt/80 text-xl hover:text-salt">

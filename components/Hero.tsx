@@ -28,7 +28,7 @@ export default function Hero() {
         <motion.img
           key={index}
           src={BANNERS[index]}
-          alt="editta jewellery campaign"
+          alt="editte jewellery campaign"
           initial={{ opacity: 0, scale: 1.05 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
