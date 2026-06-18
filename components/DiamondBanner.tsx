@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function DiamondBanner() {
   return (
-    <section className="bg-salt">
+    <section className="bg-white">
       {/* Heading + CTA */}
       <div className="text-center px-6 pt-12 pb-10">
         <motion.h2

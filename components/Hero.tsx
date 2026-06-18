@@ -24,16 +24,16 @@ export default function Hero() {
 
   return (
     <section className="relative w-full h-screen min-h-[480px] overflow-hidden bg-cacao">
-      {/* Crossfading banner images */}
+      {/* Sliding banner images — left to right */}
       <AnimatePresence>
         <motion.img
           key={index}
           src={BANNERS[index]}
           alt="editte jewellery campaign"
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ opacity: { duration: 1.2 }, scale: { duration: 5 } }}
+          initial={{ x: '100%', opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: '-100%', opacity: 0 }}
+          transition={{ duration: 0.8, ease: 'easeInOut' }}
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
       </AnimatePresence>

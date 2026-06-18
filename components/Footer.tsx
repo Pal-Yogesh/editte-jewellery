@@ -29,12 +29,12 @@ export default function Footer() {
         className="absolute inset-0 w-full h-[100vh] "
       />
 
-      {/* Gradient tint: light/white at top → dark at bottom */}
+      {/* Gradient tint: white at top → dark at bottom */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(249,245,241,0.75) 0%, rgba(249,245,241,0.5) 30%, rgba(54,21,21,0.55) 70%, rgba(54,21,21,0.8) 100%)",
+            "linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 20%, rgba(255,255,255,0.5) 40%, rgba(30,15,10,0.6) 60%, rgba(20,10,5,0.85) 80%, rgba(10,5,2,0.95) 100%)",
         }}
       />
 
@@ -52,7 +52,7 @@ export default function Footer() {
         <div className=" px-12 pb-8 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10">
           {/* Brand blurb */}
           <div>
-            <p className="text-white text-xl leading-relaxed max-w-[280px] italic mt-12">
+            <p className="text-white text-lg leading-relaxed max-w-[280px] italic mt-12">
               India&apos;s first jewellery makers collective connecting 40+
               independent designers with those who appreciate the art of
               adornment. Handcrafted with love since 2018.
@@ -61,13 +61,13 @@ export default function Footer() {
 
           {/* Collections */}
           <div>
-            <p className="font-heading text-cacao text-3xl mb-3">Collections</p>
+            <p className="font-heading text-cacao text-2xl mb-3">Collections</p>
             <ul className="flex flex-col gap-1.5">
               {COLLECTIONS.map((l) => (
                 <li key={l}>
                   <a
                     href="#"
-                    className="text-white text-2xl underline underline-offset-2 hover:text-cacao transition-colors"
+                    className="text-white text-lg hover:text-cacao transition-colors"
                   >
                     {l}
                   </a>
@@ -78,13 +78,13 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <p className="font-heading text-cacao text-3xl mb-3">Quick Links</p>
+            <p className="font-heading text-cacao text-2xl mb-3">Quick Links</p>
             <ul className="flex flex-col gap-1.5">
               {QUICK_LINKS.map((l) => (
                 <li key={l}>
                   <a
                     href="#"
-                    className="text-white text-2xl underline underline-offset-2 hover:text-cacao transition-colors"
+                    className="text-white text-lg hover:text-cacao transition-colors"
                   >
                     {l}
                   </a>
@@ -95,8 +95,8 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <p className="font-heading text-cacao text-3xl mb-3">Contact</p>
-            <ul className="flex flex-col gap-1.5 text-white text-2xl">
+            <p className="font-heading text-cacao text-2xl mb-3">Contact</p>
+            <ul className="flex flex-col gap-1.5 text-white text-lg">
               <li>Brand Studio India</li>
               <li>+91 22 2600 0000</li>
               <li>hello@Brand.in</li>
@@ -106,17 +106,17 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className=" px-12 py-5 border-t border-cacao/20 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-salt/80 text-xl">@ Copyright 2026 . editte</p>
+            <p className="text-salt/80 text-lg">@ Copyright 2026 . editte</p>
           <div className="flex items-center gap-5">
             <a
               href="#"
-              className="text-salt/80 text-xl hover:text-salt transition-colors"
+              className="text-salt/80 text-lg hover:text-salt transition-colors"
             >
               Privacy Policy
             </a>
             <a
               href="#"
-              className="text-salt/80 text-xl hover:text-salt transition-colors"
+              className="text-salt/80 text-lg hover:text-salt transition-colors"
             >
               Terms Condition
             </a>

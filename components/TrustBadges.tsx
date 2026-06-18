@@ -50,7 +50,7 @@ const BADGES = [
 
 export default function TrustBadges() {
   return (
-    <section className="bg-white py-12 px-6">
+    <section className="bg-white py-5 px-6">
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10">
         {BADGES.map(({ Icon, title, sub }, i) => (
           <motion.div
@@ -62,8 +62,8 @@ export default function TrustBadges() {
             className="flex flex-col items-center text-center gap-3"
           >
             <Icon />
-            <p className="text-cacao text-xl font-bold ">{title}</p>
-            <p className="text-ink/50 text-[16px]">
+            <p className="text-cacao text-sm font-bold ">{title}</p>
+            <p className="text-ink/50 text-[12px]">
               {sub}
             </p>
           </motion.div>
