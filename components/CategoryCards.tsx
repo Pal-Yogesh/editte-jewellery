@@ -52,7 +52,7 @@ export default function CategoryCards() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6, delay: i * 0.1, ease: "easeOut" }}
-            className="group flex flex-col items-center justify-center gap-3 aspect-square max-w-[180px] mx-auto w-full border border-neutral-300 rounded-md hover:border-neutral-800 hover:shadow-md transition-all duration-300 text-neutral-700 hover:text-neutral-900"
+            className="group flex flex-col items-center justify-center gap-3 aspect-square max-w-[180px] mx-auto w-full  hover:shadow-md transition-all duration-300 text-neutral-700 hover:text-neutral-900"
           >
             <card.icon />
             <span className="text-sm md:text-base font-medium tracking-widest uppercase">

@@ -49,35 +49,47 @@ export default function Designers() {
         })}
       </div>
 
-      {/* Promise */}
+      {/* Promise — with image on right */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.7 }}
-        className="text-center mt-12 px-4"
+        className="mt-12 px-6 md:px-12 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center"
       >
-        <p className="text-cacao/50 text-[20px] tracking-[0.3em] uppercase mb-3">
-          Our Promise
-        </p>
-        <h3
-          className="font-heading text-cacao leading-[1.1]"
-          style={{ fontSize: "clamp(1.8rem, 4.5vw, 3rem)", fontWeight: 700 }}
-        >
-          Made by Hand, Felt by Heart
-        </h3>
-        <p className="text-ink/80 text-xl leading-relaxed mt-5 max-w-3xl mx-auto">
-          India&apos;s first jewellery makers collective — connecting 40+
-          independent designers with those who appreciate the art of adornment.
-        </p>
+        {/* Left — Text content */}
+        <div>
+          <p className="text-cacao/50 text-sm tracking-[0.3em] uppercase mb-3">
+            Our Promise
+          </p>
+          <h3
+            className="font-heading text-cacao leading-[1.1]"
+            style={{ fontSize: "clamp(1.8rem, 4.5vw, 3rem)", fontWeight: 700 }}
+          >
+            Made by Hand, Felt by Heart
+          </h3>
+          <p className="text-ink/80 text-base leading-relaxed mt-5 max-w-lg">
+            India&apos;s first jewellery makers collective — connecting 40+
+            independent designers with those who appreciate the art of adornment.
+          </p>
 
-        <div className="flex items-center justify-center gap-4 mt-8 flex-wrap">
-          <button className="bg-sage text-white text-[24px] rounded-2xl px-9 py-3 hover:bg-cacao transition-colors duration-300">
-            Our Story
-          </button>
-          <button className="border border-sage text-sage text-[24px] rounded-2xl px-9 py-3 hover:bg-sage hover:text-white transition-colors duration-300">
-            Meet Designer
-          </button>
+          <div className="flex items-center gap-4 mt-8 flex-wrap">
+            <button className="bg-sage text-white text-base rounded-2xl px-8 py-3 hover:bg-cacao transition-colors duration-300">
+              Our Story
+            </button>
+            <button className="border border-sage text-sage text-base rounded-2xl px-8 py-3 hover:bg-sage hover:text-white transition-colors duration-300">
+              Meet Designer
+            </button>
+          </div>
+        </div>
+
+        {/* Right — Image */}
+        <div className="relative overflow-hidden rounded-lg">
+          <img
+            src="/footer2.png "
+            alt="Handcrafted jewellery"
+            className="w-full h-[350px] md:h-[450px] object-contain"
+          />
         </div>
       </motion.div>
     </section>

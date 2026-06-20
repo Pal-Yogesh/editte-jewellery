@@ -164,7 +164,7 @@ export default function Navbar() {
   return (
     <>
       {/* ── Fixed Header Bar (over hero) ── */}
-      <header className={`${isOpen ? "fixed" : "absolute"} top-0 left-0 right-0 z-[500]`}>
+      <header className="fixed top-0 left-0 right-0 z-[500]">
         <div className="flex items-start justify-between px-5 sm:px-7 pt-5">
           {/* Left — Hamburger */}
           <Hamburger open={isOpen} onClick={() => setIsOpen((v) => !v)} />
@@ -172,7 +172,7 @@ export default function Navbar() {
           {/* Right — actions */}
           <div className="flex flex-col items-end gap-2 text-cacao text-sm sm:text-base font-normal tracking-wide uppercase">
             <button className="hover:opacity-60 transition-opacity">Search</button>
-            <button className="hover:opacity-60 transition-opacity">Shoping Bag</button>
+            <button className="hover:opacity-60 transition-opacity">Shopping Bag</button>
             <button className="hover:opacity-60 transition-opacity">Login</button>
             <button className="hover:opacity-60 transition-opacity">Help</button>
           </div>

@@ -7,13 +7,14 @@ const CATEGORIES = [
   { label: "Rings", image: "/after-banner/rings (2).png" },
   { label: "Earrings", image: "/after-banner/earrings.png" },
   { label: "Neck Piece", image: "/after-banner/neck pieces.png" },
+  { label: "Men's Chain", image: "/after-banner/men-chain.png" },
 ];
 
 export default function CategoryIcons() {
   return (
     <section className=" py-12 px-6 bg-white">
       <div className="max-w-7xl mx-auto flex items-start gap-2">
-        <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-8 md:gap-4">
+        <div className="flex-1 grid grid-cols-2 sm:grid-cols-5 gap-8 md:gap-4">
           {CATEGORIES.map(({ label, image }, i) => (
             <motion.button
               key={label}

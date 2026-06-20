@@ -44,7 +44,7 @@ export default function Footer() {
           <img
             src="/logo/logo.png"
             alt="editte logo"
-            className="mx-auto h-16 md:h-60 object-contain"
+            className="mx-auto h-16 md:h-40 object-contain"
           />
         </div>
 
@@ -52,7 +52,7 @@ export default function Footer() {
         <div className=" px-12 pb-8 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10">
           {/* Brand blurb */}
           <div>
-            <p className="text-white text-lg leading-relaxed max-w-[280px] italic mt-12">
+            <p className="text-white text-sm leading-relaxed max-w-[280px] italic mt-12">
               India&apos;s first jewellery makers collective connecting 40+
               independent designers with those who appreciate the art of
               adornment. Handcrafted with love since 2018.
@@ -61,13 +61,13 @@ export default function Footer() {
 
           {/* Collections */}
           <div>
-            <p className="font-heading text-cacao text-2xl mb-3">Collections</p>
+            <p className="font-heading text-cacao text-xl mb-3">Collections</p>
             <ul className="flex flex-col gap-1.5">
               {COLLECTIONS.map((l) => (
                 <li key={l}>
                   <a
                     href="#"
-                    className="text-white text-lg hover:text-cacao transition-colors"
+                    className="text-white text-sm hover:text-cacao transition-colors"
                   >
                     {l}
                   </a>
@@ -78,13 +78,13 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <p className="font-heading text-cacao text-2xl mb-3">Quick Links</p>
+            <p className="font-heading text-cacao text-xl mb-3">Quick Links</p>
             <ul className="flex flex-col gap-1.5">
               {QUICK_LINKS.map((l) => (
                 <li key={l}>
                   <a
                     href="#"
-                    className="text-white text-lg hover:text-cacao transition-colors"
+                    className="text-white text-sm hover:text-cacao transition-colors"
                   >
                     {l}
                   </a>
@@ -95,8 +95,8 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <p className="font-heading text-cacao text-2xl mb-3">Contact</p>
-            <ul className="flex flex-col gap-1.5 text-white text-lg">
+            <p className="font-heading text-cacao text-xl mb-3">Contact</p>
+            <ul className="flex flex-col gap-1.5 text-white text-sm">
               <li>Brand Studio India</li>
               <li>+91 22 2600 0000</li>
               <li>hello@Brand.in</li>
@@ -106,17 +106,17 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className=" px-12 py-5 border-t border-cacao/20 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-salt/80 text-lg">@ Copyright 2026 . editte</p>
+            <p className="text-salt/80 text-sm">@ Copyright 2026 . editte</p>
           <div className="flex items-center gap-5">
             <a
               href="#"
-              className="text-salt/80 text-lg hover:text-salt transition-colors"
+              className="text-salt/80 text-sm hover:text-salt transition-colors"
             >
               Privacy Policy
             </a>
             <a
               href="#"
-              className="text-salt/80 text-lg hover:text-salt transition-colors"
+              className="text-salt/80 text-sm hover:text-salt transition-colors"
             >
               Terms Condition
             </a>
