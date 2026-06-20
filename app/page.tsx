@@ -8,6 +8,7 @@ import StorySection from "@/components/StorySection";
 import TrustBadges from "@/components/TrustBadges";
 import Designers from "@/components/Designers";
 import Footer from "@/components/Footer";
+import BrandBanner from "@/components/BrandBanner";
 import CuratedCollection from "@/components/CuratedCollection";
 
 export default function Home() {
@@ -22,6 +23,7 @@ export default function Home() {
         <CategoryCards />
         <DiamondBanner />
         <NewArrivals />
+        <BrandBanner />
         <StorySection />
         <TrustBadges />
         <CuratedCollection />
