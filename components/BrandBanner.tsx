@@ -4,15 +4,15 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const BANNERS = [
-  "/brand-image/Daily.jpeg",
-  "/brand-image/Festive.jpeg",
-  "/brand-image/Men.jpeg",
-  "/brand-image/Thebridal.jpeg",
-  "/brand-image/gift.jpeg",
-  "/brand-image/Vacation.jpeg",
-  "/brand-image/Workday.jpeg",
-  "/brand-image/Untitled.jpeg",
-];
+  { src: "/brand-image/Daily.jpeg", textSide: "left" },
+  { src: "/brand-image/Festive.jpeg", textSide: "right" },
+  { src: "/brand-image/Men.jpeg", textSide: "right" },
+  { src: "/brand-image/Thebridal.jpeg", textSide: "left" },
+  { src: "/brand-image/gift.jpeg", textSide: "left" },
+  { src: "/brand-image/Vacation.jpeg", textSide: "right" },
+  { src: "/brand-image/Workday.jpeg", textSide: "left" },
+  { src: "/brand-image/Untitled.jpeg", textSide: "right" },
+] as const;
 
 const INTERVAL = 4500;
 
@@ -32,7 +32,7 @@ export default function BrandBanner() {
       <AnimatePresence>
         <motion.img
           key={index}
-          src={BANNERS[index]}
+          src={BANNERS[index].src}
           alt="brand collection showcase"
           initial={{ x: "100%", opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
@@ -50,6 +50,17 @@ export default function BrandBanner() {
             "linear-gradient(to bottom, rgba(54,21,21,0.25) 0%, rgba(54,21,21,0.05) 40%, rgba(54,21,21,0.2) 100%)",
         }}
       />
+
+      {/* Shop Now button — positioned on the text side (left or right per image) */}
+      <div
+        className={`absolute bottom-16 z-10 ${
+          BANNERS[index].textSide === "left" ? "left-12 md:left-20" : "right-12 md:right-20"
+        }`}
+      >
+        <button className="bg-cacao text-white text-sm tracking-[0.15em] uppercase px-8 py-3 rounded-sm font-medium hover:bg-sage transition-colors duration-300">
+          Shop Now
+        </button>
+      </div>
 
       {/* Slide dots */}
       <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2">

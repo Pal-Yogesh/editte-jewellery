@@ -59,11 +59,11 @@ export default function TrustBadges() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.5, delay: i * 0.1 }}
-            className="flex flex-col items-center text-center gap-3"
+            className="flex flex-col items-center text-center gap-1"
           >
             <Icon />
-            <p className="text-cacao text-xs font-bold ">{title}</p>
-            <p className="text-ink/50 text-[10px]">
+            <p className="text-cacao text-[10px] font-bold ">{title}</p>
+            <p className="text-ink/50 text-[9px]">
               {sub}
             </p>
           </motion.div>
