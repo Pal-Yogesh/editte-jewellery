@@ -26,8 +26,8 @@ export default function Home() {
         <BrandBanner />
         <StorySection />
         <TrustBadges />
-        <CuratedCollection />
         <Designers />
+        <CuratedCollection />
       </main>
       <Footer />
     </>

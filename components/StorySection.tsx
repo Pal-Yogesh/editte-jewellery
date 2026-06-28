@@ -82,7 +82,7 @@ export default function StorySection() {
           rotate: leftRotate,
           opacity: leftOpacity,
         }}
-        className="absolute left-0 top-0 bottom-0 w-[32%] md:w-[20%] z-[1] origin-left"
+        className="absolute left-0 top-0 bottom-0 w-[32%] md:w-[15%] z-[1] origin-left"
       >
         <img
           src="/images/girls/model-1.png"
