@@ -34,7 +34,7 @@ export default function Footer() {
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 20%, rgba(255,255,255,0.5) 40%, rgba(30,15,10,0.6) 60%, rgba(20,10,5,0.85) 80%, rgba(10,5,2,0.95) 100%)",
+            "linear-gradient(to bottom, rgba(255,255,255,0.95) 10%, rgba(255,255,255,0.85) 25%, rgba(255,255,255,0.5) 50%, rgba(30,15,10,0.6) 74%, rgba(20,10,5,0.85) 80%, rgba(10,5,2,0.95) 100%)",
         }}
       />
 
