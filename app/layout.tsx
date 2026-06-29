@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Open_Sans, Sorts_Mill_Goudy, Playfair_Display } from "next/font/google";
+import { Open_Sans, Sorts_Mill_Goudy, Playfair_Display, Tangerine } from "next/font/google";
 import "./globals.css";
 
 const openSans = Open_Sans({
@@ -24,6 +24,14 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
+// Tangerine — elegant calligraphic script for decorative headings
+const tangerine = Tangerine({
+  variable: "--font-script",
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "editte — Fine Jewellery",
   description:
@@ -38,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${openSans.variable} ${goudy.variable} ${playfair.variable} h-full antialiased`}
+      className={`${openSans.variable} ${goudy.variable} ${playfair.variable} ${tangerine.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

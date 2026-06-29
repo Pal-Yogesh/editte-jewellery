@@ -36,7 +36,7 @@ export default function NewArrivals() {
         className="font-heading text-cacao text-center mb-9"
         style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}
       >
-        New Arrivals
+        <span className="font-script text-[1.8em]">New</span> Arrivals
       </motion.h2>
 
       {/* Scroll arrows */}

@@ -43,10 +43,10 @@ export default function DiamondBanner() {
         />
       </motion.div>
 
-      {/* Text content — parallax with scale and fade */}
+      {/* Text content — parallax with scale and fade, above building */}
       <motion.div
         style={{ y: textY, scale: textScale, opacity: textOpacity }}
-        className="absolute inset-0 z-[3] flex items-center justify-center"
+        className="absolute inset-0 -top-[50%] z-[5] flex items-center justify-center"
       >
         <div className="text-center px-6">
           <motion.h2
@@ -54,7 +54,7 @@ export default function DiamondBanner() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="font-heading text-cacao font-bold leading-[1.1]"
+            className="font-heading text-cacao font-bold leading-[1.1] "
             style={{ fontSize: "clamp(2rem, 6vw, 4rem)" }}
           >
             Crafting Memories <br /> That Last Forever

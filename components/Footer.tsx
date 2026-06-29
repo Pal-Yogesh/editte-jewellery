@@ -26,7 +26,7 @@ export default function Footer() {
         src="/images/footer.jpg"
         alt=""
         aria-hidden
-        className="absolute inset-0 w-full h-[100vh] "
+        className="absolute inset-0 w-full h-full object-cover "
       />
 
       {/* Gradient tint: white at top → dark at bottom */}
@@ -40,18 +40,18 @@ export default function Footer() {
 
       <div className="relative z-10">
         {/* Logo centered */}
-        <div className="text-center  pb-8">
+        <div className="text-center ">
           <img
             src="/logo/logo.png"
             alt="editte logo"
-            className="mx-auto h-16 md:h-52 object-contain"
+            className="mx-auto h-16 md:h-44 object-contain"
           />
         </div>
 
        
 
         {/* Bottom bar */}
-        <div className=" px-12 py-5 border-t border-cacao/20 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className=" px-12 py-7 border-t border-white flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-salt/80 text-sm">@ Copyright 2026 . editte</p>
           <div className="flex items-center gap-5">
             <a
@@ -59,6 +59,12 @@ export default function Footer() {
               className="text-salt/80 text-sm hover:text-salt transition-colors"
             >
               Contact Us
+            </a>
+            <a
+              href="#"
+              className="text-salt/80 text-sm hover:text-salt transition-colors"
+            >
+              Return Policy
             </a>
             <a
               href="#"

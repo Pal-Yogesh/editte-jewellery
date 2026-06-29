@@ -56,6 +56,12 @@ body {
   font-weight: 400;
 }
 
+/* Calligraphic script font for decorative words */
+.font-script {
+  font-family: var(--font-script), "Tangerine", cursive;
+  font-weight: 700;
+}
+
 /* Thin scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
