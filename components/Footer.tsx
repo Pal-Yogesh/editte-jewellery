@@ -51,7 +51,7 @@ export default function Footer() {
        
 
         {/* Bottom bar */}
-        <div className=" px-12 py-7 border-t border-black flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className=" px-12 py-7 border-t font-bold border-black flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-black text-sm">@ Copyright 2026 . editte</p>
           <div className="flex items-center gap-5">
             <a
