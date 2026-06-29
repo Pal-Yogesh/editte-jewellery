@@ -34,7 +34,7 @@ export default function Footer() {
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(255,255,255,0.95) 10%, rgba(255,255,255,0.85) 25%, rgba(255,255,255,0.5) 50%, rgba(30,15,10,0.6) 74%, rgba(20,10,5,0.85) 80%, rgba(10,5,2,0.95) 100%)",
+            "linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 70%, rgba(255,255,255,0.5) 100%, rgba(30,15,10,0.6) 100%, rgba(20,10,5,0.85) 100%, rgba(10,5,2,0.95) 100%)",
         }}
       />
 
@@ -51,30 +51,30 @@ export default function Footer() {
        
 
         {/* Bottom bar */}
-        <div className=" px-12 py-7 border-t border-white flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-salt/80 text-sm">@ Copyright 2026 . editte</p>
+        <div className=" px-12 py-7 border-t border-black flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-black text-sm">@ Copyright 2026 . editte</p>
           <div className="flex items-center gap-5">
             <a
               href="#"
-              className="text-salt/80 text-sm hover:text-salt transition-colors"
+              className="text-black text-sm hover:text-salt transition-colors"
             >
               Contact Us
             </a>
             <a
               href="#"
-              className="text-salt/80 text-sm hover:text-salt transition-colors"
+              className="text-black text-sm hover:text-salt transition-colors"
             >
               Return Policy
             </a>
             <a
               href="#"
-              className="text-salt/80 text-sm hover:text-salt transition-colors"
+              className="text-black text-sm hover:text-salt transition-colors"
             >
               Privacy Policy
             </a>
             <a
               href="#"
-              className="text-salt/80 text-sm hover:text-salt transition-colors"
+              className="text-black text-sm hover:text-salt transition-colors"
             >
               Terms Condition
             </a>

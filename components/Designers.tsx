@@ -82,7 +82,7 @@ export default function Designers() {
           className="font-heading text-cacao text-center mb-9 px-4"
           style={{ fontSize: "clamp(1.9rem, 4vw, 2.8rem)", fontWeight: 700 }}
         >
-          Our Designers
+        <span className="font-script text-[1.7em]">Our</span> Designers
         </motion.h2>
 
         {/* Designer photos — full-bleed staggered row */}
