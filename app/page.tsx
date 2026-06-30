@@ -15,7 +15,7 @@ import DiscoverSection from "@/components/DiscoverSection";
 export default function Home() {
   return (
     <>
-      <div className="relative pb-[20vh] bg-salt">
+      <div className="relative  ">
         <Navbar />
         <Hero />
       </div>
@@ -30,8 +30,8 @@ export default function Home() {
             -mt pulls its pinned slot up behind Group 1's bottom, so Group 1
             slides UP over it (revealing it), it stays fixed, then Group 2
             slides up over it from below. Content crosses it from both sides. */}
-        <div className="relative h-[300vh] z-0 -mt-[100vh]">
-          <div className="sticky -top-20 h-screen overflow-hidden">
+        <div className="relative h-[300vh] -z-10 -mt-[100vh]">
+          <div className="sticky top-0 h-screen overflow-hidden">
             <DiamondBanner />
           </div>
         </div>

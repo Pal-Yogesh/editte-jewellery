@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function DiamondBanner() {
   return (
-    <div className="relative w-full h-full overflow-hidden bg-salt">
+    <div className="relative w-full h-screen overflow-hidden bg-salt">
       {/* Heading — sits above the building (z-[5]) */}
       <div className="absolute inset-0 z-[5] top-[20%] flex items-center justify-start">
         <motion.h2
@@ -25,10 +25,10 @@ export default function DiamondBanner() {
       <div className="absolute inset-x-[-5%] bottom-0 z-[4] pointer-events-none">
         <Image
           src="/animation-image/image-camel.png"
-          width={1920}
-          height={900}
+          width={1000}
+          height={1000}
           alt="Tree and building foreground"
-          className="w-full h-auto object-contain object-bottom"
+          className="w-full h-[100vh] "
           priority
         />
       </div>

@@ -42,7 +42,7 @@ const CARDS = [
 
 export default function CategoryCards() {
   return (
-    <section className="pb-10 px-3 bg-white">
+    <section className=" px-3 bg-salt">
       <div className="max-w-4xl mx-auto grid grid-cols-3 gap-4 md:gap-6">
         {CARDS.map((card, i) => (
           <motion.a

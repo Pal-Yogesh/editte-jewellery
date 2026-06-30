@@ -65,9 +65,9 @@ export default function BrandBanner() {
 
   return (
     <section className="w-full bg-salt py-8 overflow-hidden">
-      <div className=" mx-auto px-6 md:px-10">
+      <div className=" mx-auto px-6 md:px-10 ">
         <div
-          className={`flex flex-col items-center gap-8 md:gap-16 ${
+          className={`flex flex-col border-cacao border-4 rounded-2xl items-center gap-8 md:gap-16 ${
             isLeft ? "md:flex-row-reverse" : "md:flex-row"
           }`}
         >
@@ -82,7 +82,7 @@ export default function BrandBanner() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.8, ease: "easeInOut" }}
-                className="absolute inset-0 w-full h-full border-cacao border-8 object-cover rounded-2xl md:rounded-3xl shadow-sm"
+                className="absolute inset-0 w-full h-full  object-cover rounded-2xl md:rounded-3xl shadow-sm"
               />
             </AnimatePresence>
           </div>
