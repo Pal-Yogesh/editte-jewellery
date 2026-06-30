@@ -112,8 +112,7 @@ export default function Designers() {
             );
           })}
         </div>
-        <div className="max-w-7xl mx-auto px-6 pt-16 md:px-12 grid grid-cols-1 md:grid-cols-2 lg:gap-40 items-center">
-          {/* Left — Image */}
+        {/* <div className="max-w-7xl mx-auto px-6 pt-16 md:px-12 grid grid-cols-1 md:grid-cols-2 lg:gap-40 items-center">
 
           <motion.div
             initial={{ opacity: 0, x: 30 }}
@@ -146,7 +145,6 @@ export default function Designers() {
             </div>
           </motion.div>
         
-          {/* Right — Content */}
            <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -162,7 +160,7 @@ export default function Designers() {
               className="w-full h-auto object-cover rounded-sm"
             />
           </motion.div>
-        </div>
+        </div> */}
       </section>
     </>
   );

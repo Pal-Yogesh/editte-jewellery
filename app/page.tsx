@@ -23,12 +23,12 @@ export default function Home() {
         <CategoryIcons />
         <CategoryCards />
         <DiamondBanner />
-        <DiscoverSection />
         <NewArrivals />
         <BrandBanner />
         <StorySection />
         <TrustBadges />
         <Designers />
+        <DiscoverSection />
         <CuratedCollection />
       </main>
       <Footer />

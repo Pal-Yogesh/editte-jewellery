@@ -6,37 +6,49 @@ import { motion, AnimatePresence } from "framer-motion";
 const BANNERS = [
   {
     src: "/images-2/Daily.jpg",
-    textSide: "left",
-    lines: ["Timeless Elegance,", "Everyday"],
+    textSide: "right",
+    lines: ["A Statement,", "Without Words"],
+    subtitle:
+      "Minimal in design, powerful in presence. Pieces crafted to complement your individuality while elevating every look.",
   },
   {
     src: "/images-2/gift.jpg",
-    textSide: "right",
-    lines: ["A Sparkle For", "Every Story"],
+    textSide: "left",
+    lines: ["Built to", "Be Remembered"],
+    subtitle:
+      "Thoughtfully designed treasures that turn every occasion into a memory worth keeping forever.",
   },
   {
     src: "/images-2/Men.jpg",
-    textSide: "left",
-    lines: ["Your", "Everyday Luxury"],
+    textSide: "right",
+    lines: ["Crafted Beyond", "Trends"],
+    subtitle:
+      "Bold, refined and effortless. Statement pieces made to move with you through every moment.",
   },
   {
     src: "/images-2/Thebridal.jpg",
-    textSide: "right",
-    lines: ["Jewelry For", "Every Moment"],
+    textSide: "left",
+    lines: ["Made for", "Every Moment"],
+    subtitle:
+      "From the first glance to forever after. Heirloom craftsmanship for the moments that matter most.",
   },
   {
     src: "/images-2/Vacation.jpg",
-    textSide: "left",
-    lines: ["Celebrate", "In Style"],
+    textSide: "right",
+    lines: ["Beyond", "Ordianry"],
+    subtitle:
+      "Light, radiant and made to travel. Pieces that capture the glow of every getaway.",
   },
   {
     src: "/images-2/Workday.jpg",
-    textSide: "right",
-    lines: ["Made To", "Shine With You"],
+    textSide: "left",
+    lines: ["Wear What", "Defines You"],
+    subtitle:
+      "Understated elegance for the everyday. Designed to elevate your look from desk to dinner.",
   },
 ] as const;
 
-const INTERVAL = 4500;
+const INTERVAL = 5000;
 
 export default function BrandBanner() {
   const [index, setIndex] = useState(0);
@@ -52,74 +64,64 @@ export default function BrandBanner() {
   const isLeft = banner.textSide === "left";
 
   return (
-    <section className="relative w-full h-[420px] md:h-[480px] overflow-hidden bg-salt">
-      {/* Sliding banner images */}
-      <AnimatePresence>
-        <motion.img
-          key={index}
-          src={banner.src}
-          alt="brand collection showcase"
-          initial={{ x: "100%", opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: "-100%", opacity: 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-      </AnimatePresence>
+    <section className="w-full bg-salt py-8 overflow-hidden">
+      <div className=" mx-auto px-6 md:px-10">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -24 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className={`flex flex-col items-center gap-8 md:gap-16 ${
+              isLeft ? "md:flex-row-reverse" : "md:flex-row"
+            }`}
+          >
+            {/* Image side */}
+            <div className="w-full md:w-[58%]">
+              <img
+                src={banner.src}
+                alt="brand collection showcase"
+                className="w-full h-[260px] md:h-[330px] object-cover rounded-2xl md:rounded-3xl shadow-sm"
+              />
+            </div>
 
-      {/* White shade overlay on the text side — half of image */}
-      <div
-        className={`absolute inset-y-0 w-[55%] z-[5] ${
-          isLeft ? "left-0" : "right-0"
-        }`}
-        style={{
-          background: isLeft
-            ? "linear-gradient(to right, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.6) 60%, transparent 100%)"
-            : "linear-gradient(to left, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.6) 60%, transparent 100%)",
-        }}
-      />
+            {/* Text side */}
+            <div className="w-full md:w-[42%] flex flex-col items-center text-center">
+              <h2
+                className="font-heading text-cacao uppercase font-bold leading-[1.05]"
+                style={{ fontSize: "clamp(1.9rem, 4vw, 3.2rem)" }}
+              >
+                <span className="block">{banner.lines[0]}</span>
+                <span className="block">{banner.lines[1]}</span>
+              </h2>
 
-      {/* Text content — positioned left or right */}
-      <div
-        className={`absolute inset-y-0 z-10 flex flex-col justify-center px-10 md:px-20 ${
-          isLeft ? "left-0 items-start text-left" : "right-0 items-end text-right"
-        }`}
-      >
-        {/* First line — smaller */}
-        <span
-          className="font-heading text-cacao uppercase tracking-wide leading-tight"
-          style={{ fontSize: "clamp(1.2rem, 3vw, 2rem)" }}
-        >
-          {banner.lines[0]}
-        </span>
-        {/* Second line — bigger and bolder */}
-        <span
-          className="font-heading text-cacao uppercase font-bold leading-[1] mt-1"
-          style={{ fontSize: "clamp(2.2rem, 6vw, 4.5rem)" }}
-        >
-          {banner.lines[1]}
-        </span>
+              <p className="mt-5 text-ink/60 uppercase text-[11px] md:text-xs tracking-[0.08em] leading-relaxed max-w-sm">
+                {banner.subtitle}
+              </p>
 
-        {/* Shop Now button */}
-        <button className="mt-6 bg-cacao text-white text-sm tracking-[0.2em] uppercase px-8 py-3 font-medium hover:bg-sage transition-colors duration-300">
-          Shop Now
-        </button>
-      </div>
+              <button className="mt-7 bg-cacao text-white text-sm tracking-[0.2em] uppercase px-8 py-3 font-medium hover:bg-sage transition-colors duration-300">
+                View Collection
+              </button>
+            </div>
+          </motion.div>
+        </AnimatePresence>
 
-      {/* Slide dots */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2">
-        {BANNERS.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setIndex(i)}
-            aria-label={`Go to slide ${i + 1}`}
-            className="h-1.5 rounded-full transition-all duration-300"
-            style={{
-              width: i === index ? "24px" : "8px",
-              background: i === index ? "#361515" : "rgba(54,21,21,0.3)",
-            }}
-          />
-        ))}
+        {/* Slide dots */}
+        <div className="flex justify-center items-center gap-2 mt-10">
+          {BANNERS.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIndex(i)}
+              aria-label={`Go to slide ${i + 1}`}
+              className="h-1.5 rounded-full transition-all duration-300"
+              style={{
+                width: i === index ? "24px" : "8px",
+                background: i === index ? "#361515" : "rgba(54,21,21,0.3)",
+              }}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
