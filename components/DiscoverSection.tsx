@@ -59,6 +59,7 @@ export default function DiscoverSection() {
             <Image
               src="/images-3/image-2.png"
               fill
+              sizes="(max-width: 768px) 80vw, 40vw"
               alt="Gold rings and chains on satin"
               className="object-cover"
             />
@@ -68,6 +69,7 @@ export default function DiscoverSection() {
             <Image
               src="/images-3/image-1.png"
               fill
+              sizes="(max-width: 768px) 60vw, 30vw"
               alt="Gold chain necklace"
               className="object-cover"
             />
