@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function DiamondBanner() {
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-salt">
+    <div className="relative w-full h-full overflow-hidden bg-salt">
       {/* Heading — sits above the building (z-[5]) */}
       <div className="absolute inset-0 z-[5] top-[20%] flex items-center justify-start">
         <motion.h2
@@ -28,7 +28,7 @@ export default function DiamondBanner() {
           width={1000}
           height={1000}
           alt="Tree and building foreground"
-          className="w-full h-[100vh] "
+          className="w-full h-[80vh] "
           priority
         />
       </div>
