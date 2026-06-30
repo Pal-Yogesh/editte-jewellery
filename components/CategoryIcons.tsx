@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 
 const CATEGORIES = [
-  { label: "Bangles", image: "/images-3/bangles.png" },
+  { label: "Bangles", image: "/after-banner/bangles.png" },
   { label: "Rings", image: "/after-banner/rings (2).png" },
   { label: "Earrings", image: "/after-banner/earrings.png" },
   { label: "Neck Piece", image: "/after-banner/neck pieces.png" },

@@ -10,6 +10,7 @@ import Designers from "@/components/Designers";
 import Footer from "@/components/Footer";
 import BrandBanner from "@/components/BrandBanner";
 import CuratedCollection from "@/components/CuratedCollection";
+import DiscoverSection from "@/components/DiscoverSection";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
         <CategoryIcons />
         <CategoryCards />
         <DiamondBanner />
+        <DiscoverSection />
         <NewArrivals />
         <BrandBanner />
         <StorySection />

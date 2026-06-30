@@ -62,7 +62,7 @@ export default function StorySection() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full bg-salt overflow-hidden min-h-[650px] md:min-h-[800px]"
+      className="relative w-full bg-salt overflow-hidden min-h-[650px] md:min-h-[500px]"
     >
       {/* Animated background gradient */}
       <motion.div
@@ -82,7 +82,7 @@ export default function StorySection() {
           rotate: leftRotate,
           opacity: leftOpacity,
         }}
-        className="absolute left-0 top-[30%] bottom-0 w-[32%] h-[60%] md:w-[15%] z-[1] origin-left"
+        className="absolute left-0 top-[30%] bottom-0 w-[32%] h-[80%] md:w-[15%] z-[1] origin-left"
       >
         <img
           src="/images/girls/model-1.png"
@@ -101,7 +101,7 @@ export default function StorySection() {
           rotate: rightRotate,
           opacity: rightOpacity,
         }}
-        className="absolute right-0 top-0 bottom-0 w-[24%] md:w-[22%] z-[1] origin-right"
+        className="absolute right-0 top-[10%] bottom-0 w-[24%] md:w-[22%]  z-[1] origin-right"
       >
         <img
           src="/images/girls/model-2.png"
@@ -114,7 +114,7 @@ export default function StorySection() {
       {/* Center content — parallax + staggered reveal */}
       <motion.div
         style={{ y: contentY, scale: contentScale }}
-        className="relative z-10 flex items-center justify-center min-h-[650px] md:min-h-[800px] px-8 md:px-20"
+        className="relative z-10 flex items-center justify-center min-h-[650px] md:min-h-[500px] px-8 md:px-20"
       >
         <motion.div
           variants={containerVariants}

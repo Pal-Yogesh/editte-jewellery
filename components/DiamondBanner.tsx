@@ -34,7 +34,7 @@ export default function DiamondBanner() {
       {/* Text content — parallax with scale and fade, above building */}
       <motion.div
         style={{ y: textY, scale: textScale, opacity: textOpacity }}
-        className="absolute inset-0 -top-[10%] z-[5] flex items-center justify-center"
+        className="absolute inset-0 -top-[10%] z-[5] flex items-center justify-start pl-10"
       >
         <div className="text-center px-6">
           <motion.h2
@@ -45,7 +45,7 @@ export default function DiamondBanner() {
             className="font-heading text-cacao font-bold leading-[1.1] "
             style={{ fontSize: "clamp(2rem, 6vw, 4rem)" }}
           >
-            Crafting Memories <br /> That Last Forever
+           <span className="font-script">Crafting Memories</span>  <br /> That Last Forever
           </motion.h2>
 
           <motion.button
@@ -77,14 +77,7 @@ export default function DiamondBanner() {
         />
       </motion.div>
     </section>
-    <Image
-          src="/animation-image/mid-banner.png"
-          width={1920}
-          height={900}
-          alt="Tree and building foreground"
-          className="w-full h-full object-contain object-bottom"
-          priority
-        />
+  
     </>
   );
 }
