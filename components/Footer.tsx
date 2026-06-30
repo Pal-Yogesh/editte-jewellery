@@ -38,7 +38,7 @@ export default function Footer() {
 
       <div className="relative z-10">
         {/* Logo centered */}
-        <div className="text-center pt-12 pb-8">
+        <div className="text-center pt-1 pb-8">
           <img
             src="/logo/logo.png"
             alt="editte logo"

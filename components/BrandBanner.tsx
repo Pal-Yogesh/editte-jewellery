@@ -66,46 +66,57 @@ export default function BrandBanner() {
   return (
     <section className="w-full bg-salt py-8 overflow-hidden">
       <div className=" mx-auto px-6 md:px-10">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -24 }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
-            className={`flex flex-col items-center gap-8 md:gap-16 ${
-              isLeft ? "md:flex-row-reverse" : "md:flex-row"
-            }`}
-          >
-            {/* Image side */}
-            <div className="w-full md:w-[58%]">
-              <img
+        <div
+          className={`flex flex-col items-center gap-8 md:gap-16 ${
+            isLeft ? "md:flex-row-reverse" : "md:flex-row"
+          }`}
+        >
+          {/* Image side — crossfades in place only */}
+          <div className="w-full md:w-[58%] relative h-[260px] md:h-[330px]">
+            <AnimatePresence initial={false}>
+              <motion.img
+                key={banner.src}
                 src={banner.src}
                 alt="brand collection showcase"
-                className="w-full border-cacao border-8 h-[260px] md:h-[330px] object-cover rounded-2xl md:rounded-3xl shadow-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8, ease: "easeInOut" }}
+                className="absolute inset-0 w-full h-full border-cacao border-8 object-cover rounded-2xl md:rounded-3xl shadow-sm"
               />
-            </div>
+            </AnimatePresence>
+          </div>
 
-            {/* Text side */}
-            <div className="w-full md:w-[42%] flex flex-col items-center text-center">
-              <h2
-                className="font-heading text-cacao uppercase font-bold leading-[1.05]"
-                style={{ fontSize: "clamp(1.9rem, 4vw, 3.2rem)" }}
+          {/* Text side — text content changes independently */}
+          <div className="w-full md:w-[42%] flex flex-col items-center text-center">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.45, ease: "easeOut" }}
+                className="flex flex-col items-center text-center"
               >
-                <span className="block">{banner.lines[0]}</span>
-                <span className="block">{banner.lines[1]}</span>
-              </h2>
+                <h2
+                  className="font-heading text-cacao uppercase font-bold leading-[1.05]"
+                  style={{ fontSize: "clamp(1.9rem, 4vw, 3.2rem)" }}
+                >
+                  <span className="block">{banner.lines[0]}</span>
+                  <span className="block">{banner.lines[1]}</span>
+                </h2>
 
-              <p className="mt-5 text-ink/60 uppercase text-[11px] md:text-xs tracking-[0.08em] leading-relaxed max-w-sm">
-                {banner.subtitle}
-              </p>
+                <p className="mt-5 text-ink/60 uppercase text-[11px] md:text-xs tracking-[0.08em] leading-relaxed max-w-sm">
+                  {banner.subtitle}
+                </p>
+              </motion.div>
+            </AnimatePresence>
 
-              <button className="mt-7 bg-cacao text-white text-sm tracking-[0.2em] uppercase px-8 py-3 font-medium hover:bg-sage transition-colors duration-300">
-                View Collection
-              </button>
-            </div>
-          </motion.div>
-        </AnimatePresence>
+            <button className="mt-7 bg-cacao text-white text-sm tracking-[0.2em] uppercase px-8 py-3 font-medium hover:bg-sage transition-colors duration-300">
+              View Collection
+            </button>
+          </div>
+        </div>
 
         {/* Slide dots */}
         <div className="flex justify-center items-center gap-2 mt-10">
