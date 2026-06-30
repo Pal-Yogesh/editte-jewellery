@@ -24,29 +24,17 @@ export default function DiamondBanner() {
   const buildingScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.1, 1.05, 1]);
 
   return (
+
+    <>
     <section
       ref={sectionRef}
-      className="relative w-full overflow-hidden h-[600px] md:h-[700px]"
+      className="relative w-full overflow-hidden h-[500px]"
     >
-      {/* Background layer — sky/cloud image, oversized to prevent edge bleeding */}
-      <motion.div
-        style={{ y: bgY }}
-        className="absolute inset-[-15%] z-[1]"
-      >
-        <Image
-          src="/animation-image/backgound-image.svg"
-          width={1920}
-          height={1080}
-          alt="Background scenery"
-          className="w-full h-full object-cover"
-          priority
-        />
-      </motion.div>
 
       {/* Text content — parallax with scale and fade, above building */}
       <motion.div
         style={{ y: textY, scale: textScale, opacity: textOpacity }}
-        className="absolute inset-0 -top-[50%] z-[5] flex items-center justify-center"
+        className="absolute inset-0 -top-[10%] z-[5] flex items-center justify-center"
       >
         <div className="text-center px-6">
           <motion.h2
@@ -80,14 +68,23 @@ export default function DiamondBanner() {
         className="absolute inset-x-[-5%] bottom-0 z-[4] pointer-events-none"
       >
         <Image
-          src="/animation-image/Building-Image.svg"
+          src="/animation-image/image-camel.png"
           width={1920}
-          height={700}
+          height={900}
           alt="Tree and building foreground"
-          className="w-full h-auto object-contain object-bottom"
+          className="w-full h-full object-contain object-bottom"
           priority
         />
       </motion.div>
     </section>
+    <Image
+          src="/animation-image/mid-banner.png"
+          width={1920}
+          height={900}
+          alt="Tree and building foreground"
+          className="w-full h-full object-contain object-bottom"
+          priority
+        />
+    </>
   );
 }

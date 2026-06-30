@@ -114,23 +114,7 @@ export default function Designers() {
         </div>
         <div className="max-w-7xl mx-auto px-6 pt-16 md:px-12 grid grid-cols-1 md:grid-cols-2 lg:gap-40 items-center">
           {/* Left — Image */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            className="relative"
-          >
-            <Image
-              src="/footer.jpeg"
-              alt="Styling advice - jewellery models"
-              width={800}
-              height={600}
-              className="w-full h-auto object-cover rounded-sm"
-            />
-          </motion.div>
 
-          {/* Right — Content */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -160,6 +144,23 @@ export default function Designers() {
                 Book an Appointment
               </button>
             </div>
+          </motion.div>
+        
+          {/* Right — Content */}
+           <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="relative"
+          >
+            <Image
+              src="/footer.jpeg"
+              alt="Styling advice - jewellery models"
+              width={900}
+              height={700}
+              className="w-full h-auto object-cover rounded-sm"
+            />
           </motion.div>
         </div>
       </section>
