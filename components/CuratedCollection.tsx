@@ -108,7 +108,7 @@ const CuratedCollection = () => {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[100px]   overflow-hidden"
+      className="relative w-full h-[80px]   overflow-hidden"
       style={{
         backgroundImage: `url('/curated-collection-bg.jpeg')`,
         backgroundSize: 'cover',

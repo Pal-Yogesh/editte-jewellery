@@ -23,7 +23,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative w-full h-screen min-h-[480px] overflow-hidden bg-cacao">
+    <section className="relative w-full h-[100svh] min-h-[600px] overflow-hidden bg-cacao">
       {/* Sliding banner images — left to right */}
       <AnimatePresence>
         <motion.img

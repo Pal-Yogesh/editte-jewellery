@@ -12,7 +12,7 @@ const CATEGORIES = [
 
 export default function CategoryIcons() {
   return (
-    <section className=" py-12 px-6 bg-white">
+    <section className=" py-12  px-6 ">
       <div className="max-w-7xl mx-auto flex items-start gap-2">
         <div className="flex-1 grid grid-cols-2 sm:grid-cols-5 gap-8 md:gap-4">
           {CATEGORIES.map(({ label, image }, i) => (

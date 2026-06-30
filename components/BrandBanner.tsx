@@ -82,7 +82,7 @@ export default function BrandBanner() {
               <img
                 src={banner.src}
                 alt="brand collection showcase"
-                className="w-full h-[260px] md:h-[330px] object-cover rounded-2xl md:rounded-3xl shadow-sm"
+                className="w-full border-cacao border-8 h-[260px] md:h-[330px] object-cover rounded-2xl md:rounded-3xl shadow-sm"
               />
             </div>
 

@@ -15,21 +15,37 @@ import DiscoverSection from "@/components/DiscoverSection";
 export default function Home() {
   return (
     <>
-      <div className="relative">
+      <div className="relative pb-[20vh] bg-salt">
         <Navbar />
         <Hero />
       </div>
-      <main>
-        <CategoryIcons />
-        <CategoryCards />
-        <DiamondBanner />
-        <NewArrivals />
-        <BrandBanner />
-        <StorySection />
-        <TrustBadges />
-        <Designers />
-        <DiscoverSection />
-        <CuratedCollection />
+      <main className="relative">
+        {/* Group 1 — scrolls up to reveal the pinned banner */}
+        <div className="relative z-10 bg-salt">
+          <CategoryIcons />
+          <CategoryCards />
+        </div>
+
+        {/* Pinned reveal banner — stays fixed behind everything.
+            -mt pulls its pinned slot up behind Group 1's bottom, so Group 1
+            slides UP over it (revealing it), it stays fixed, then Group 2
+            slides up over it from below. Content crosses it from both sides. */}
+        <div className="relative h-[300vh] z-0 -mt-[100vh]">
+          <div className="sticky -top-20 h-screen overflow-hidden">
+            <DiamondBanner />
+          </div>
+        </div>
+
+        {/* Group 2 — pulled up to slide over the pinned banner from below */}
+        <div className="relative z-10 bg-salt -mt-[100vh]">
+          <NewArrivals />
+          <BrandBanner />
+          <StorySection />
+          <TrustBadges />
+          <Designers />
+          <DiscoverSection />
+          <CuratedCollection />
+        </div>
       </main>
       <Footer />
     </>
