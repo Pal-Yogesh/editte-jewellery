@@ -5,43 +5,43 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const BANNERS = [
   {
-    src: "/images-2/Daily.jpg",
-    textSide: "right",
-    lines: ["A Statement,", "Without Words"],
-    subtitle:
-      "Minimal in design, powerful in presence. Pieces crafted to complement your individuality while elevating every look.",
-  },
-  {
-    src: "/images-2/gift.jpg",
+    src: "/banner3/Gift.png",
     textSide: "left",
     lines: ["Built to", "Be Remembered"],
     subtitle:
       "Thoughtfully designed treasures that turn every occasion into a memory worth keeping forever.",
   },
   {
-    src: "/images-2/Men.jpg",
+    src: "/banner3/Gift-guide.png",
     textSide: "right",
-    lines: ["Crafted Beyond", "Trends"],
+    lines: ["Gift ,", "Guide"],
     subtitle:
-      "Bold, refined and effortless. Statement pieces made to move with you through every moment.",
+      "Thoughtful gifts that create lasting memories.",
   },
   {
-    src: "/images-2/Thebridal.jpg",
+    src: "/banner3/Festive-Finds.png",
     textSide: "left",
+    lines: ["Festive", "Finds"],
+    subtitle:
+      "Shine brighter during every celebration and festival.",
+  },
+  {
+    src: "/banner3/TheBridal.png",
+    textSide: "right",
     lines: ["Made for", "Every Moment"],
     subtitle:
       "From the first glance to forever after. Heirloom craftsmanship for the moments that matter most.",
   },
   {
-    src: "/images-2/Vacation.jpg",
-    textSide: "right",
+    src: "/banner3/Vacation.png",
+    textSide: "left",
     lines: ["Beyond", "Ordianry"],
     subtitle:
       "Light, radiant and made to travel. Pieces that capture the glow of every getaway.",
   },
   {
-    src: "/images-2/Workday.jpg",
-    textSide: "left",
+    src: "/banner3/Workday.png",
+    textSide: "right",
     lines: ["Wear What", "Defines You"],
     subtitle:
       "Understated elegance for the everyday. Designed to elevate your look from desk to dinner.",

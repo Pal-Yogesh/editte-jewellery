@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const BANNERS = [
-  "/images/main-banner/1.png",
+  "/images/main-banner/1.jpg",
   "/images/main-banner/2.jpg",
-  "/images/main-banner/3.jpg",
-  "/images/main-banner/4.jpeg"
+  "/images/main-banner/main-banner.jpeg",
+  "/images/main-banner/4.png"
 ];
 
 const INTERVAL = 4500; // ms per slide
