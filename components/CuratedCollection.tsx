@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef, useEffect, useState } from "react";
 
 const texts = ["Festive", "Wedding", "Bride & Groom", "Traditional", "Haldi"];
@@ -88,7 +89,7 @@ const CuratedCollection = () => {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[80px] bg-cacao  overflow-hidden"
+      className="relative w-full h-[50px] bg-sage  overflow-hidden"
     >
       <div className="absolute inset-0 flex items-center">
         <div
@@ -106,22 +107,31 @@ const CuratedCollection = () => {
           onTouchEnd={handleMouseUp}
         >
           {allTexts.map((text, index) => (
-            <span
-              key={index}
-              className="whitespace-nowrap select-none transition-all duration-300"
-              style={{
-                fontFamily:
-                  'var(--font-heading-serif), "Playfair Display", serif',
-                fontSize: "clamp(2rem, 4vw, 3.5rem)",
-                color: "transparent",
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-                WebkitTextStroke: "1.5px #ffffff",
-                fontWeight: 400,
-              }}
-            >
-              {text}
-            </span>
+            <div className="flex items-center gap-4" key={index}>
+              <Image
+                src="/logo/start-letter-logo-transparent.png"
+                className="w-10 h-8 mt-1"
+                alt="logo"
+                width={1000}
+                height={1000}
+              />
+
+              <div
+                className="whitespace-nowrap select-none transition-all duration-300"
+                style={{
+                  fontFamily:
+                    'var(--font-heading-serif), "Playfair Display", serif',
+                  fontSize: "clamp(1.5rem, 3vw, 1rem)",
+                  color: "transparent",
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
+                  WebkitTextStroke: "1.5px #ffffff",
+                  fontWeight: 400,
+                }}
+              >
+                {text}
+              </div>
+            </div>
           ))}
         </div>
       </div>

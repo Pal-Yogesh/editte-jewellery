@@ -17,7 +17,7 @@ export default function DiscoverSection() {
         >
           <h2 className="font-heading text-cacao leading-[1.15]">
             <span
-              className="font-script block"
+              className="font-accent block"
               style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}
             >
               Discover
@@ -34,13 +34,12 @@ export default function DiscoverSection() {
             Let our style consultants help you find accessories that reflect
             confidence, elegance, and timeless craftsmanship.
           </p>
-
           <motion.button
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="mt-7 inline-block bg-cacao text-white text-xs md:text-sm tracking-[0.2em] uppercase px-7 py-3.5 font-medium hover:bg-sage transition-colors duration-300"
+            className="mt-7 inline-block bg-sage text-white text-xs md:text-sm  px-5  py-3.5 font-medium hover:bg-cacao transition-colors duration-300"
           >
             Book a Personal Appointment
           </motion.button>

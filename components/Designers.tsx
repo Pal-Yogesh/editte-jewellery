@@ -82,7 +82,7 @@ export default function Designers() {
           className="font-heading text-cacao text-center mb-9 px-4"
           style={{ fontSize: "clamp(1.9rem, 4vw, 2.8rem)", fontWeight: 700 }}
         >
-        <span className="font-script text-[1.7em]">Our</span> Designers
+        <span className="font-accent">Our</span> Designers
         </motion.h2>
 
         {/* Designer photos — full-bleed staggered row */}
@@ -139,7 +139,7 @@ export default function Designers() {
             </p>
 
             <div className="mt-8">
-              <button className="bg-cacao text-white text-sm tracking-[0.15em] uppercase rounded-sm px-8 py-4 hover:bg-cacao/90 transition-colors duration-300 font-medium">
+              <button className="bg-sage text-white text-sm tracking-[0.15em] uppercase rounded-sm px-8 py-4 hover:bg-cacao transition-colors duration-300 font-medium">
                 Book an Appointment
               </button>
             </div>

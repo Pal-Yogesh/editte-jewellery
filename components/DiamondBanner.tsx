@@ -16,7 +16,7 @@ export default function DiamondBanner() {
           className="font-heading text-cacao font-bold leading-[1.1] text-center px-6"
           style={{ fontSize: "clamp(2rem, 6vw, 4rem)" }}
         >
-          <span className="font-script">Crafting Memories</span>
+          <span className="font-accent">Crafting Memories</span>
           <br /> That Last Forever
         </motion.h2>
       </div>

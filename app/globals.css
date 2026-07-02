@@ -56,10 +56,11 @@ body {
   font-weight: 400;
 }
 
-/* Calligraphic script font for decorative words */
-.font-script {
-  font-family: var(--font-script), "Tangerine", cursive;
-  font-weight: 700;
+/* High-contrast serif italic for decorative accent words */
+.font-accent {
+  font-family: var(--font-heading-serif), "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
 }
 
 /* Thin scrollbar */

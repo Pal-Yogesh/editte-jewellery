@@ -61,11 +61,16 @@ export default function BrandBanner() {
   }, []);
 
   const banner = BANNERS[index];
+  const textOnLeft = banner.textSide === "left";
 
   return (
     <section className="w-full bg-salt py-8 overflow-hidden">
       <div className=" mx-auto px-6 md:px-10  pt-10 bg-cacao">
-        <div className="flex flex-col rounded-2xl items-center gap-8 md:gap-16 md:flex-row">
+        <div
+          className={`flex flex-col rounded-2xl items-center gap-8 md:gap-16 ${
+            textOnLeft ? "md:flex-row-reverse" : "md:flex-row"
+          }`}
+        >
           {/* Image side — crossfades in place only */}
           <div className="w-full md:w-[58%] relative h-[260px] md:h-[330px]">
             <AnimatePresence initial={false}>
@@ -107,7 +112,7 @@ export default function BrandBanner() {
               </motion.div>
             </AnimatePresence>
 
-            <button className="mt-7 bg-cacao border-white border-2 text-white text-sm tracking-[0.2em] uppercase px-8 py-3 font-medium hover:bg-sage transition-colors duration-300">
+            <button className="mt-7 bg-sage border-white border-2 text-white text-sm tracking-[0.2em] uppercase px-8 py-3 font-medium hover:bg-cacao transition-colors duration-300">
               View Collection
             </button>
           </div>
