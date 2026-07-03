@@ -25,10 +25,10 @@ const CuratedCollection = () => {
   return (
     <div className="relative w-full bg-sage overflow-hidden py-1"
       style={{
-        backgroundImage: "url('/line.png')",
-        backgroundSize: "cover",
+        backgroundImage: "url('/line2.png')",
+        backgroundSize: "contain",
         backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
+        // backgroundRepeat: "no-repeat",
       }}
     >
       <div className="flex w-max animate-marquee">

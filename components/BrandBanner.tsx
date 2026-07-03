@@ -5,46 +5,40 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const BANNERS = [
   {
-    src: "/banner3/Gift.png",
-    textSide: "left",
-    lines: ["Built to", "Be Remembered"],
-    subtitle:
-      "Thoughtfully designed treasures that turn every occasion into a memory worth keeping forever.",
-  },
-  {
-    src: "/banner3/Gift-guide.png",
-    textSide: "right",
-    lines: ["Gift ,", "Guide"],
-    subtitle:
-      "Thoughtful gifts that create lasting memories.",
-  },
-  {
-    src: "/banner3/Festive-Finds.png",
-    textSide: "left",
-    lines: ["Festive", "Finds"],
-    subtitle:
-      "Shine brighter during every celebration and festival.",
-  },
-  {
     src: "/banner3/TheBridal.png",
     textSide: "right",
-    lines: ["Made for", "Every Moment"],
-    subtitle:
-      "From the first glance to forever after. Heirloom craftsmanship for the moments that matter most.",
+    lines: ["The Bridal &", "Ceremony"],
+    subtitle: "Celebrate every special moment with timeless elegance.",
   },
   {
-    src: "/banner3/Vacation.png",
+    src: "/banner3/Gift.png",
     textSide: "left",
-    lines: ["Beyond", "Ordianry"],
-    subtitle:
-      "Light, radiant and made to travel. Pieces that capture the glow of every getaway.",
+    lines: ["Gift Guide", "Icons"],
+    subtitle: "Effortless essentials designed for everyday sophistication.",
   },
   {
     src: "/banner3/Workday.png",
     textSide: "right",
-    lines: ["Wear What", "Defines You"],
-    subtitle:
-      "Understated elegance for the everyday. Designed to elevate your look from desk to dinner.",
+    lines: ["Workday", "Luxe"],
+    subtitle: "Refined pieces that elevate your professional style.",
+  },
+  {
+    src: "/banner3/Vacation.png",
+    textSide: "left",
+    lines: ["Vacation", "Escape"],
+    subtitle: "Lightweight luxury for every journey and getaway.",
+  },
+  {
+    src: "/banner3/Festive-Finds.png",
+    textSide: "right",
+    lines: ["Festive", "Finds"],
+    subtitle: "Shine brighter during every celebration and festival.",
+  },
+  {
+    src: "/banner3/Gift-guide.png",
+    textSide: "left",
+    lines: ["The Gift", "Guide"],
+    subtitle: "Thoughtful gifts that create lasting memories.",
   },
 ] as const;
 
