@@ -44,7 +44,7 @@ export default function Home() {
           <TrustBadges />
           <Designers />
           <DiscoverSection />
-          {/* <CuratedCollection /> */}
+          <CuratedCollection />
         </div>
       </main>
       <Footer />
