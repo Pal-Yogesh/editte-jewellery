@@ -7,6 +7,14 @@ export default function DiamondBanner() {
   return (
     <div className="relative w-full h-full overflow-hidden bg-salt">
       {/* Heading — sits above the building (z-[5]) */}
+        <Image
+          src="/dummy.jpeg"
+          width={1000}
+          height={1000}
+          alt="Tree and building foreground"
+          className="w-full h-[22%] "
+          priority
+        />
       <div className="absolute inset-0 z-[5] top-[20%] flex items-center justify-start">
         <motion.h2
           initial={{ opacity: 0, y: 40 }}
