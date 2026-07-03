@@ -112,7 +112,7 @@ export default function BrandBanner() {
               </motion.div>
             </AnimatePresence>
 
-            <button className="mt-7 bg-sage border-white border-2 text-white text-sm tracking-[0.2em] uppercase px-8 py-3 font-medium hover:bg-cacao transition-colors duration-300">
+            <button className="mt-7 bg-sage hover:border-2 hover:border-sage cursor-pointer text-white text-sm tracking-[0.2em] uppercase px-8 py-3 font-medium hover:bg-cacao transition-colors duration-300">
               View Collection
             </button>
           </div>

@@ -154,7 +154,7 @@ export default function StorySection() {
               whileHover={{ scale: 1.08, boxShadow: "0 12px 35px rgba(0,0,0,0.15)" }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 15 }}
-              className="mt-8 inline-block bg-sage text-white text-lg rounded-[20px] px-9 py-3.5 hover:bg-cacao transition-colors duration-300"
+              className="mt-8 inline-block bg-sage text-white text-lg  px-9 py-3.5 hover:bg-cacao transition-colors duration-300"
             >
               Create Your Story
             </motion.button>

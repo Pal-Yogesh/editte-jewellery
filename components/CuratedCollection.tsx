@@ -4,10 +4,10 @@ import Image from 'next/image'
 
 const CuratedCollection = () => {
   const logos = Array.from({ length: 8 }).map((_, i) => (
-    <span key={i} className="inline-flex items-center gap-3 mx-10 shrink-0">
+    <span key={i} className="inline-flex items-center gap-12 mx-8 shrink-0">
       <Image
         src="/logo/start-letter-logo-transparent.png"
-        className="w-10 h-6 mt-1"
+        className="w-8 h-6 object-contain mt-1"
         alt="logo"
         width={1000}
         height={1000}
