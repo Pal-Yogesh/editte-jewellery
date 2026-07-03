@@ -145,13 +145,13 @@ function Hamburger({ open, onClick }: { open: boolean; onClick: () => void }) {
       className="flex flex-col justify-center items-start gap-[7px] w-10 h-10 bg-transparent border-0 cursor-pointer p-0"
     >
       <motion.span
-        className="block h-[2px] rounded-full origin-center bg-sage"
-        animate={open ? { width: 28, rotate: 45, y: 4.5 } : { width: 36, rotate: 0, y: 0 }}
+        className="block h-[2px] rounded-full origin-center"
+        animate={open ? { width: 28, rotate: 45, y: 4.5, backgroundColor: "#b3ad6e" } : { width: 36, rotate: 0, y: 0, backgroundColor: "#361515" }}
         transition={{ duration: 0.38, ease }}
       />
       <motion.span
-        className="block h-[2px] rounded-full origin-center bg-sage"
-        animate={open ? { width: 28, rotate: -45, y: -4.5 } : { width: 36, rotate: 0, y: 0 }}
+        className="block h-[2px] rounded-full origin-center"
+        animate={open ? { width: 28, rotate: -45, y: -4.5, backgroundColor: "#b3ad6e" } : { width: 36, rotate: 0, y: 0, backgroundColor: "#361515" }}
         transition={{ duration: 0.38, ease }}
       />
     </button>
