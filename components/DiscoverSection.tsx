@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function DiscoverSection() {
   return (
     <section className="relative w-full bg-salt overflow-hidden">
-      <div className=" mx-auto px-8 md:px-16 pb-12 md:pb-32 flex flex-col md:flex-row items-center gap-8 md:gap-0">
+      <div className=" mx-auto px-8 md:px-24 pb-12 md:pb-32 flex flex-col md:flex-row items-center gap-8 md:gap-0">
         {/* Left — Text content */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}

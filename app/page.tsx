@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 import BrandBanner from "@/components/BrandBanner";
 import CuratedCollection from "@/components/CuratedCollection";
 import DiscoverSection from "@/components/DiscoverSection";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -44,6 +45,9 @@ export default function Home() {
           <TrustBadges />
           <Designers />
           <DiscoverSection />
+
+
+       
           <CuratedCollection />
         </div>
       </main>
