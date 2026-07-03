@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Open_Sans, Sorts_Mill_Goudy, Playfair_Display, Pinyon_Script } from "next/font/google";
+import { Open_Sans, Sorts_Mill_Goudy, Playfair_Display, Pinyon_Script, GFS_Didot } from "next/font/google";
 import "./globals.css";
 
 const openSans = Open_Sans({
@@ -16,12 +16,20 @@ const goudy = Sorts_Mill_Goudy({
   display: "swap",
 });
 
-// Playfair Display — high-contrast display serif for section headings + italic accents
+// Playfair Display — kept as fallback serif
 const playfair = Playfair_Display({
-  variable: "--font-heading-serif",
+  variable: "--font-playfair",
   weight: ["400", "500", "600", "700", "800", "900"],
   style: ["normal", "italic"],
   subsets: ["latin"],
+  display: "swap",
+});
+
+// GFS Didot — authentic Didot revival, extreme thin/thick contrast, tall editorial style
+const bodoni = GFS_Didot({
+  variable: "--font-heading-serif",
+  weight: ["400"],
+  subsets: ["greek", "latin"],
   display: "swap",
 });
 
@@ -47,7 +55,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${openSans.variable} ${goudy.variable} ${playfair.variable} ${pinyonScript.variable} h-full antialiased`}
+      className={`${openSans.variable} ${goudy.variable} ${playfair.variable} ${bodoni.variable} ${pinyonScript.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

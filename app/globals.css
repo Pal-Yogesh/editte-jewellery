@@ -25,7 +25,7 @@
   --color-sand: var(--sand);
   --color-ink: var(--ink);
 
-  --font-heading: "Goudy Old Style", var(--font-heading-serif), Goudy, "Times New Roman", serif;
+  --font-heading: var(--font-heading-serif), "Bodoni Moda", "Goudy Old Style", var(--font-playfair), serif;
   --font-logo: var(--font-goudy), "Goudy Old Style", Goudy, serif;
   --font-body: var(--font-open-sans), system-ui, -apple-system, sans-serif;
 }
@@ -60,6 +60,13 @@ body {
 .font-accent {
   font-family: var(--font-script), "Pinyon Script", cursive;
   font-style: normal;
+  font-weight: 400;
+}
+
+/* Bodoni/Didot italic for editorial accent */
+.font-editorial {
+  font-family: var(--font-heading-serif), "Bodoni Moda", serif;
+  font-style: italic;
   font-weight: 400;
 }
 
