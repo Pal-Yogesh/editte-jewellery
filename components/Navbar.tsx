@@ -145,12 +145,12 @@ function Hamburger({ open, onClick }: { open: boolean; onClick: () => void }) {
       className="flex flex-col justify-center items-start gap-[7px] w-10 h-10 bg-transparent border-0 cursor-pointer p-0"
     >
       <motion.span
-        className="block h-[2px] rounded-full origin-center bg-cacao"
+        className="block h-[2px] rounded-full origin-center bg-sage"
         animate={open ? { width: 28, rotate: 45, y: 4.5 } : { width: 36, rotate: 0, y: 0 }}
         transition={{ duration: 0.38, ease }}
       />
       <motion.span
-        className="block h-[2px] rounded-full origin-center bg-cacao"
+        className="block h-[2px] rounded-full origin-center bg-sage"
         animate={open ? { width: 28, rotate: -45, y: -4.5 } : { width: 36, rotate: 0, y: 0 }}
         transition={{ duration: 0.38, ease }}
       />
@@ -199,9 +199,15 @@ export default function Navbar() {
               animate="visible"
               exit="exit"
               className="fixed inset-0 z-[400] bg-salt overflow-y-auto"
-              style={{ willChange: "clip-path" }}
+              // style={{
+              //   willChange: "clip-path",
+              //   backgroundImage: "url('/EDITTA BACKGOUND/2.jpg')",
+              //   backgroundSize: "cover",
+              //   backgroundPosition: "cover",
+              //   backgroundRepeat: "no-repeat",
+              // }}
             >
-              <div className="min-h-full flex flex-col px-10 sm:px-16 lg:px-24 pt-20 pb-12">
+              <div className="min-h-full flex flex-col px-10 sm:px-16 lg:px-24 pt-12 pb-12">
                 {/* Logo row */}
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -210,12 +216,7 @@ export default function Navbar() {
                   className="flex items-center justify-between mb-8"
                 >
                   <Image src="/logo/logo.png" className="w-20 h-20 " alt="logo" width={1000} height={1000} />
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="text-[10px] tracking-[0.2em] uppercase text-cacao/40 hover:text-cacao transition-colors"
-                  >
-                    Close
-                  </button>
+                 
                 </motion.div>
 
                 <motion.div
@@ -252,13 +253,13 @@ export default function Navbar() {
                                 <li key={link.label} className="flex items-center gap-1.5">
                                   <a
                                     href="#"
-                                    className="text-[0.82rem] text-ink hover:text-rose transition-colors duration-200 leading-snug relative group"
+                                    className="text-[0.82rem] text-ink hover:text-sage transition-colors duration-200 leading-snug relative group"
                                   >
                                     {link.label}
-                                    <span className="absolute -bottom-px left-0 h-px w-0 bg-rose group-hover:w-full transition-[width] duration-300" />
+                                    <span className="absolute -bottom-px bg-sage left-0 h-px w-0 group-hover:w-full transition-[width] duration-300" />
                                   </a>
                                   {link.badge && (
-                                    <span className="text-[8px] font-bold tracking-[0.15em] text-rose uppercase leading-none">
+                                    <span className="text-[8px] font-bold tracking-[0.15em] text-sage uppercase leading-none">
                                       {link.badge}
                                     </span>
                                   )}
@@ -284,14 +285,14 @@ export default function Navbar() {
                 >
                   <div className="flex items-center gap-6">
                     {["About Us", "Careers", "Press"].map((l) => (
-                      <a key={l} href="#" className="text-[10px] tracking-[0.2em] uppercase text-cacao/40 hover:text-cacao transition-colors">
+                      <a key={l} href="#" className="text-[10px] tracking-[0.2em] uppercase text-cacao/40 hover:text-sage transition-colors">
                         {l}
                       </a>
                     ))}
                   </div>
                   <div className="flex items-center gap-6">
                     {["Instagram", "Pinterest", "YouTube"].map((s) => (
-                      <a key={s} href="#" className="text-[10px] tracking-[0.2em] uppercase text-cacao/40 hover:text-rose transition-colors">
+                      <a key={s} href="#" className="text-[10px] tracking-[0.2em] uppercase text-cacao/40 hover:text-sage transition-colors">
                         {s}
                       </a>
                     ))}

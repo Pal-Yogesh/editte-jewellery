@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Open_Sans, Sorts_Mill_Goudy, Playfair_Display } from "next/font/google";
+import { Open_Sans, Sorts_Mill_Goudy, Playfair_Display, Pinyon_Script } from "next/font/google";
 import "./globals.css";
 
 const openSans = Open_Sans({
@@ -25,6 +25,14 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
+// Pinyon Script — elegant Copperplate calligraphic script for decorative accent words
+const pinyonScript = Pinyon_Script({
+  variable: "--font-script",
+  weight: ["400"],
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "editte — Fine Jewellery",
   description:
@@ -39,7 +47,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${openSans.variable} ${goudy.variable} ${playfair.variable} h-full antialiased`}
+      className={`${openSans.variable} ${goudy.variable} ${playfair.variable} ${pinyonScript.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

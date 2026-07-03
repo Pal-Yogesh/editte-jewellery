@@ -7,16 +7,16 @@ export default function DiamondBanner() {
   return (
     <div className="relative w-full h-full overflow-hidden bg-salt">
       {/* Heading — sits above the building (z-[5]) */}
-        <Image
+        {/* <Image
           src="/dummy.jpeg"
           width={1000}
           height={1000}
           alt="Tree and building foreground"
           className="w-full h-[22%] "
           priority
-        />
+        /> */}
       <div className="absolute inset-0 z-[5] top-[20%] flex items-center justify-start">
-        <motion.h2
+        {/* <motion.h2
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
@@ -26,17 +26,17 @@ export default function DiamondBanner() {
         >
           <span className="font-accent">Crafting Memories</span>
           <br /> That Last Forever
-        </motion.h2>
+        </motion.h2> */}
       </div>
 
       {/* Foreground building/trees layer */}
       <div className="absolute inset-x-[-5%] bottom-0 z-[4] pointer-events-none">
         <Image
-          src="/animation-image/image-camel.png"
+          src="/animation-image/mid-banner.png"
           width={1000}
           height={1000}
           alt="Tree and building foreground"
-          className="w-full h-[80vh] "
+          className="w-full h-[100vh] "
           priority
         />
       </div>

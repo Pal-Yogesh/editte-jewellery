@@ -4,7 +4,6 @@ import { useRef, useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import {
   EffectFade,
-  Controller,
   Navigation,
   Autoplay,
 } from "swiper/modules";
@@ -19,44 +18,34 @@ import "./sponsored.css";
 // ─── Slide data ────────────────────────────────────────────────────────────
 const SLIDES = [
   {
-    title: "The Bridal & ceremony",
-    image: "/original-images/01.png",
-    thumb: "/original-images/01.png",
+    title: "Daily",
+    image: "/images-2/Daily.jpg",
+    thumb: "/images-2/Daily.jpg",
   },
   {
-    title: "After Dark",
-    image: "/original-images/02.png",
-    thumb: "/original-images/02.png",
+    title: "Men",
+    image: "/images-2/Men.jpg",
+    thumb: "/images-2/Men.jpg",
   },
   {
-    title: "Daily Icons",
-    image: "/original-images/03.png",
-    thumb: "/original-images/03.png",
+    title: "Thebridal",
+    image: "/images-2/Thebridal.jpg",
+    thumb: "/images-2/Thebridal.jpg",
   },
   {
-    title: "Workday Luxe",
-    image: "/original-images/04.png",
-    thumb: "/original-images/04.png",
+    title: "Vacation",
+    image: "/images-2/Vacation.jpg",
+    thumb: "/images-2/Vacation.jpg",
   },
   {
-    title: "Vacation Escape",
-    image: "/original-images/05.png",
-    thumb: "/original-images/05.png",
+    title: "Workday",
+    image: "/images-2/Workday.jpg",
+    thumb: "/images-2/Workday.jpg",
   },
   {
-    title: "Festive Finds",
-    image: "/original-images/06.png",
-    thumb: "/original-images/06.png",
-  },
-  {
-    title: "The Gift Guide",
-    image: "/original-images/07.png",
-    thumb: "/original-images/07.png",
-  },
-  {
-    title: "Men's Essentials",
-    image: "/original-images/08.png",
-    thumb: "/original-images/08.png",
+    title: "Gift",
+    image: "/images-2/gift.jpg",
+    thumb: "/images-2/gift.jpg",
   },
 ];
 
@@ -69,18 +58,21 @@ function pad(n: number) {
 export default function SponsoredProduct() {
   const [bgSwiper, setBgSwiper] = useState<SwiperType | null>(null);
   const [titlesSwiper, setTitlesSwiper] = useState<SwiperType | null>(null);
-  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   const [currentSlide, setCurrentSlide] = useState(1);
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
 
-  // Sync all three swipers via Controller once they're all mounted
+  // Sync bg swiper whenever titles change slide
   useEffect(() => {
-    if (!bgSwiper || !titlesSwiper || !thumbsSwiper) return;
-    // titles drives bg + thumbs
-    titlesSwiper.controller.control = [bgSwiper, thumbsSwiper];
-    // bg and thumbs don't drive anything back (one-way sync)
-  }, [bgSwiper, titlesSwiper, thumbsSwiper]);
+    if (!titlesSwiper || !bgSwiper) return;
+    const handleChange = () => {
+      bgSwiper.slideTo(titlesSwiper.realIndex);
+    };
+    titlesSwiper.on("slideChange", handleChange);
+    return () => {
+      titlesSwiper.off("slideChange", handleChange);
+    };
+  }, [bgSwiper, titlesSwiper]);
 
   return (
     <section className="sponsored-slider rounded-3xl my-7">
@@ -92,7 +84,7 @@ export default function SponsoredProduct() {
           <span className="sponsored-heading__line" />
         </span>
         <h2 className="sponsored-heading__title">
-          Curated <em>Collections</em>
+          Ocassion <em className="font-accent not-italic text-[1.3em]">Collections</em>
         </h2>
         <p className="sponsored-heading__sub">
           Handpicked jewellery styles from India&apos;s finest artisan houses
@@ -102,7 +94,7 @@ export default function SponsoredProduct() {
       {/* ── Background Slider ── */}
       <div className="sponsored-bg">
         <Swiper
-          modules={[EffectFade, Controller]}
+          modules={[EffectFade]}
           effect="fade"
           slidesPerView={1}
           speed={600}
@@ -120,7 +112,7 @@ export default function SponsoredProduct() {
       {/* ── Titles Slider (main driver) ── */}
       <div className="sponsored-titles">
         <Swiper
-          modules={[Controller, Navigation, Autoplay]}
+          modules={[Navigation, Autoplay]}
           slidesPerView="auto"
           speed={600}
           slideToClickedSlide
@@ -158,11 +150,11 @@ export default function SponsoredProduct() {
           </button>
         </div> */}
 
-        <p className="sponsored-counter">
+        {/* <p className="sponsored-counter">
           <span className="current">{pad(currentSlide)}</span> — {pad(SLIDES.length)}
-        </p>
+        </p> */}
 
-        <div className="sponsored-thumbs-wrap">
+        {/* <div className="sponsored-thumbs-wrap">
           <div className="sponsored-thumbs-overflow">
             <div>
               <div className="sponsored-thumbs-inner">
@@ -184,7 +176,7 @@ export default function SponsoredProduct() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );
