@@ -18,22 +18,22 @@ import "./sponsored.css";
 // ─── Slide data ────────────────────────────────────────────────────────────
 const SLIDES = [
   {
-    title: "Daily",
+    title: "Everyday",
     image: "/images-2/Daily.jpg",
     thumb: "/images-2/Daily.jpg",
   },
   {
-    title: "Men",
+    title: "Men Essential",
     image: "/images-2/Men.jpg",
     thumb: "/images-2/Men.jpg",
   },
   {
-    title: "Thebridal",
+    title: "Bridal",
     image: "/images-2/Thebridal.jpg",
     thumb: "/images-2/Thebridal.jpg",
   },
   {
-    title: "Vacation",
+    title: "Vacation Done",
     image: "/images-2/Vacation.jpg",
     thumb: "/images-2/Vacation.jpg",
   },
@@ -45,6 +45,11 @@ const SLIDES = [
   {
     title: "Gift",
     image: "/images-2/gift.jpg",
+    thumb: "/images-2/gift.jpg",
+  },
+  {
+    title: "Festive Find",
+    image: "/banner3/Festive-Finds.png",
     thumb: "/images-2/gift.jpg",
   },
 ];
@@ -76,23 +81,10 @@ export default function SponsoredProduct() {
 
   return (
     <section className="sponsored-slider rounded-3xl my-7">
-      {/* Heading */}
-      <div className="sponsored-heading">
-        <span className="sponsored-heading__eyebrow">
-          <span className="sponsored-heading__line" />
-          Sponsored
-          <span className="sponsored-heading__line" />
-        </span>
-        <h2 className="sponsored-heading__title">
-          Ocassion <em className="not-italic text-[1.3em]">Collections</em>
-        </h2>
-        <p className="sponsored-heading__sub">
-          Handpicked jewellery styles from India&apos;s finest artisan houses
-        </p>
-      </div>
+     
 
       {/* ── Background Slider ── */}
-      <div className="sponsored-bg">
+      <div className="sponsored-bg ">
         <Swiper
           modules={[EffectFade]}
           effect="fade"
@@ -110,7 +102,7 @@ export default function SponsoredProduct() {
       </div>
 
       {/* ── Titles Slider (main driver) ── */}
-      <div className="sponsored-titles">
+      <div className="sponsored-titles mt-40">
         <Swiper
           modules={[Navigation, Autoplay]}
           slidesPerView="auto"

@@ -12,6 +12,7 @@ import BrandBanner from "@/components/BrandBanner";
 import CuratedCollection from "@/components/CuratedCollection";
 import DiscoverSection from "@/components/DiscoverSection";
 import Image from "next/image";
+import SponsoredProduct from "@/components/Sponsored";
 
 export default function Home() {
   return (
@@ -40,7 +41,8 @@ export default function Home() {
         {/* Group 2 — pulled up to slide over the pinned banner from below */}
         <div className="relative z-10 bg-salt -mt-[100vh]">
           <NewArrivals />
-          <BrandBanner />
+          {/* <BrandBanner /> */}
+          <SponsoredProduct />
           <StorySection />
           <TrustBadges />
           <Designers />
