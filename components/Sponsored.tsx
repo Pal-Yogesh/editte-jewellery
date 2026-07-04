@@ -33,7 +33,7 @@ const SLIDES = [
     thumb: "/images-2/Thebridal.jpg",
   },
   {
-    title: "Vacation Done",
+    title: "Vacation",
     image: "/images-2/Vacation.jpg",
     thumb: "/images-2/Vacation.jpg",
   },
@@ -80,7 +80,7 @@ export default function SponsoredProduct() {
   }, [bgSwiper, titlesSwiper]);
 
   return (
-    <section className="sponsored-slider rounded-3xl my-7">
+    <section className="sponsored-slider">
      
 
       {/* ── Background Slider ── */}
