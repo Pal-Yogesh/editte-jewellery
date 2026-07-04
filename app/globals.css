@@ -25,9 +25,9 @@
   --color-sand: var(--sand);
   --color-ink: var(--ink);
 
-  --font-heading: var(--font-heading-serif), "Bodoni Moda", "Goudy Old Style", var(--font-playfair), serif;
-  --font-logo: var(--font-goudy), "Goudy Old Style", Goudy, serif;
-  --font-body: var(--font-open-sans), system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-goudy);
+  --font-logo: var(--font-goudy);
+  --font-body: var(--font-goudy);
 }
 
 html {
@@ -37,37 +37,31 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-body);
+  font-family: var(--font-goudy);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
-/* Heading font helper — bold high-contrast serif */
+* {
+  font-family: var(--font-goudy);
+}
+
 .font-heading {
-  font-family: var(--font-heading);
+  font-family: var(--font-goudy);
   font-weight: 700;
-
 }
 
-/* Logo / wordmark font helper (elegant thin Goudy revival) */
 .font-logo {
-  font-family: var(--font-logo);
-  font-weight: 400;
+  font-family: var(--font-goudy);
 }
 
-/* Copperplate calligraphic script for decorative accent words */
 .font-accent {
-  font-family: var(--font-script), "Pinyon Script", cursive;
-  font-style: normal;
-  font-weight: 400;
+  font-family: var(--font-goudy);
 }
 
-/* Bodoni/Didot italic for editorial accent */
 .font-editorial {
-  font-family: var(--font-heading-serif), "Bodoni Moda", serif;
-  font-style: italic;
-  font-weight: 400;
+  font-family: var(--font-goudy);
 }
 
 /* Thin scrollbar */

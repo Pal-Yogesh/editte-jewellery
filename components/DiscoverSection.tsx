@@ -17,8 +17,8 @@ export default function DiscoverSection() {
         >
           <h2 className="font-heading text-cacao leading-[1.15]">
             <span
-              className="font-accent block"
-              style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}
+              className="font-bold uppercase tracking-wider block"
+              style={{ fontSize: "clamp(1.5rem, 3.5vw, 2.4rem)" }}
             >
               Discover
             </span>

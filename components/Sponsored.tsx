@@ -84,7 +84,7 @@ export default function SponsoredProduct() {
           <span className="sponsored-heading__line" />
         </span>
         <h2 className="sponsored-heading__title">
-          Ocassion <em className="font-accent not-italic text-[1.3em]">Collections</em>
+          Ocassion <em className="not-italic text-[1.3em]">Collections</em>
         </h2>
         <p className="sponsored-heading__sub">
           Handpicked jewellery styles from India&apos;s finest artisan houses

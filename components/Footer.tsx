@@ -50,7 +50,7 @@ export default function Footer() {
         <div className=" px-12 pb-8 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10">
           {/* Brand blurb */}
           <div>
-            <p className="text-white text-sm leading-relaxed max-w-[280px] italic mt-12">
+            <p className="text-white text-sm leading-relaxed max-w-[280px] mt-12">
               India&apos;s first jewellery makers collective connecting 40+
               independent designers with those who appreciate the art of
               adornment. Handcrafted with love since 2018.
