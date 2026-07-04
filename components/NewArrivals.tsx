@@ -74,7 +74,7 @@ export default function NewArrivals() {
             className="shrink-0 w-auto h-full  group cursor-pointer"
           >
             {/* Card */}
-            <div className="bg-white rounded-[25px] shadow-sm overflow-hidden p-3">
+            <div className="bg-white  shadow-sm overflow-hidden p-3">
               <div className="relative w-72 h-60" >
                 <img
                   src={p.image}
