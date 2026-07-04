@@ -39,6 +39,18 @@ export default function CategoryIcons() {
           ))}
         </div>
       </div>
+      <div className="flex justify-center items-center">
+
+      <motion.button
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="mt-7 inline-block bg-sage cursor-pointer text-white text-xs md:text-xl  px-10  py-2 font-medium hover:bg-cacao transition-colors duration-300"
+            >
+            Shop All
+          </motion.button>
+            </div>
     </section>
   );
 }

@@ -38,7 +38,7 @@ const SLIDES = [
     thumb: "/images-2/Vacation.jpg",
   },
   {
-    title: "Workday",
+    title: "Showstopper",
     image: "/images-2/Workday.jpg",
     thumb: "/images-2/Workday.jpg",
   },
