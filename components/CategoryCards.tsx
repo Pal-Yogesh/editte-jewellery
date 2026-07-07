@@ -12,12 +12,7 @@ export default function CategoryCards() {
   return (
     <section
       className="px-3 py-5"
-      style={{
-        backgroundImage: "url('/bg.jpeg')",
-        backgroundSize: "cover",
-        backgroundPosition: "cover",
-        backgroundRepeat: "no-repeat",
-      }}
+     
     >
       <div className="max-w-4xl mx-auto grid grid-cols-3 gap-4 ">
         {CARDS.map((card, i) => (

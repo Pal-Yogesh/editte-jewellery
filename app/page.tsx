@@ -23,7 +23,15 @@ export default function Home() {
       </div>
       <main className="relative">
         {/* Group 1 — scrolls up to reveal the pinned banner */}
-        <div className="relative z-10 bg-salt">
+        <div
+          className="relative z-10 bg-salt"
+          style={{
+            backgroundImage: "url('/01.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "cover",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
           <CategoryIcons />
           <CategoryCards />
         </div>
@@ -47,8 +55,6 @@ export default function Home() {
           <TrustBadges />
           <Designers />
           <DiscoverSection />
-
-
 
           <CuratedCollection />
         </div>
