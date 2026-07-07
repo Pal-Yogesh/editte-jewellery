@@ -79,10 +79,10 @@ export default function Designers() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="font-heading text-cacao text-center mb-9 px-4"
+          className="font-heading text-cacao text-center uppercase mb-9 px-4"
           style={{ fontSize: "clamp(1.9rem, 4vw, 2.8rem)", fontWeight: 700 }}
         >
-        <span className="">Our</span> Designers
+        Our Designers
         </motion.h2>
 
         {/* Designer photos — full-bleed staggered row */}

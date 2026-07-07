@@ -36,7 +36,7 @@ export default function DiamondBanner() {
           width={1000}
           height={1000}
           alt="Tree and building foreground"
-          className="w-full h-[100vh] blur-xs"
+          className="w-full h-[100vh] blur-[2px]"
           priority
         />
       </div>

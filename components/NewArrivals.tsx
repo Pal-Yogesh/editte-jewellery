@@ -33,10 +33,10 @@ export default function NewArrivals() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="font-heading text-cacao text-center mb-9"
+        className="font-heading text-cacao uppercase text-center mb-9"
         style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}
       >
-        <span className="">New</span> Arrivals
+        New Arrivals
       </motion.h2>
 
       {/* Scroll arrows */}

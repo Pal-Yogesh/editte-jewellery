@@ -13,9 +13,9 @@ export default function CategoryCards() {
     <section
       className="px-3 py-5"
       style={{
-        backgroundImage: "url('/01.png')",
+        backgroundImage: "url('/bg.jpeg')",
         backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundPosition: "cover",
         backgroundRepeat: "no-repeat",
       }}
     >

@@ -169,12 +169,18 @@ export default function Navbar() {
           {/* Left — Hamburger */}
           <Hamburger open={isOpen} onClick={() => setIsOpen((v) => !v)} />
 
-          {/* Right — actions */}
-          <div className="flex flex-col items-end gap-2 text-cacao text-sm sm:text-base font-normal tracking-wide uppercase">
-            <button className="hover:opacity-60 transition-opacity">Search</button>
-            <button className="hover:opacity-60 transition-opacity">Shopping Bag</button>
-            <button className="hover:opacity-60 transition-opacity">Login</button>
-            <button className="hover:opacity-60 transition-opacity">Help</button>
+          {/* Right — actions, Zara-style: Search + rule, then BAG / LOG IN / HELP spaced evenly */}
+          <div className="flex flex-col items-end text-cacao text-xs sm:text-lg tracking-[0.18em] uppercase">
+            {/* Search sits at top */}
+            <button className="hover:opacity-60 transition-opacity pb-1">Search</button>
+            {/* thin rule below search, like the screenshot */}
+            <span className="w-full h-px bg-cacao/40 mb-6" />
+            {/* Remaining three items with equal spacing */}
+            <div className="flex flex-col items-end gap-5">
+              <button className="hover:opacity-60 transition-opacity">Bag</button>
+              <button className="hover:opacity-60 transition-opacity">Log In</button>
+              <button className="hover:opacity-60 transition-opacity">Help</button>
+            </div>
           </div>
         </div>
       </header>

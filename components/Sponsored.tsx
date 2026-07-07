@@ -18,24 +18,9 @@ import "./sponsored.css";
 // ─── Slide data ────────────────────────────────────────────────────────────
 const SLIDES = [
   {
-    title: "Everyday",
-    image: "/images-2/Daily.jpg",
-    thumb: "/images-2/Daily.jpg",
-  },
-  {
-    title: "Men Essential",
-    image: "/images-2/Men.jpg",
-    thumb: "/images-2/Men.jpg",
-  },
-  {
     title: "Bridal",
     image: "/images-2/Thebridal.jpg",
     thumb: "/images-2/Thebridal.jpg",
-  },
-  {
-    title: "Vacation",
-    image: "/images-2/Vacation.jpg",
-    thumb: "/images-2/Vacation.jpg",
   },
   {
     title: "Showstopper",
@@ -43,13 +28,28 @@ const SLIDES = [
     thumb: "/images-2/Workday.jpg",
   },
   {
-    title: "Gift",
-    image: "/images-2/gift.jpg",
-    thumb: "/images-2/gift.jpg",
+    title: "Everyday",
+    image: "/images-2/Daily.jpg",
+    thumb: "/images-2/Daily.jpg",
+  },
+  {
+    title: "Vacation",
+    image: "/images-2/Vacation.jpg",
+    thumb: "/images-2/Vacation.jpg",
   },
   {
     title: "Festive Find",
     image: "/banner3/Festive-Finds.png",
+    thumb: "/images-2/gift.jpg",
+  },
+  {
+    title: "Men Essential",
+    image: "/images-2/Men.jpg",
+    thumb: "/images-2/Men.jpg",
+  },
+  {
+    title: "Gift",
+    image: "/images-2/gift.jpg",
     thumb: "/images-2/gift.jpg",
   },
 ];
