@@ -6,12 +6,6 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "3mb",
     },
   },
-  // Prevent bundling firebase-admin and its deps — fixes CJS/ESM conflict on Vercel
-  serverExternalPackages: [
-    "firebase-admin",
-    "jwks-rsa",
-    "jose",
-  ],
   images: {
     remotePatterns: [
       {
