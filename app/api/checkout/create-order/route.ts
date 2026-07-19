@@ -4,12 +4,12 @@ import { getSession } from "@/lib/session";
 import { adminDb } from "@/lib/firebase/admin";
 import type { CartItem } from "@/lib/types";
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID_TEST!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET_TEST!,
-});
-
 export async function POST(req: NextRequest) {
+  // Initialize inside handler so env vars are available at runtime, not build time
+  const razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID_TEST!,
+    key_secret: process.env.RAZORPAY_KEY_SECRET_TEST!,
+  });
   const session = await getSession();
   if (!session?.uid) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
