@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["firebase-admin", "jwks-rsa"],
   experimental: {
     serverActions: {
       // Allow larger uploads (profile photos, ticket attachments) — default is 1MB
