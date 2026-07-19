@@ -5,6 +5,7 @@ import { markNotificationReadAction, markAllReadAction } from "@/app/actions/not
 import type { Notification } from "@/lib/types";
 import { motion, AnimatePresence } from "framer-motion";
 
+
 const TYPE_ICONS: Record<Notification["type"], string> = {
   order: "📦",
   wishlist: "♡",
