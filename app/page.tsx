@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import NavbarActions from "@/components/NavbarActions";
 import Hero from "@/components/Hero";
 import CategoryIcons from "@/components/CategoryIcons";
 import CategoryCards from "@/components/CategoryCards";
@@ -17,8 +18,8 @@ import SponsoredProduct from "@/components/Sponsored";
 export default function Home() {
   return (
     <>
-      <div className="relative  ">
-        <Navbar />
+      <div className="relative">
+        <Navbar actions={<NavbarActions />} />
         <Hero />
       </div>
       <main className="relative">
