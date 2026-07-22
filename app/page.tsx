@@ -9,11 +9,11 @@ import StorySection from "@/components/StorySection";
 import TrustBadges from "@/components/TrustBadges";
 import Designers from "@/components/Designers";
 import Footer from "@/components/Footer";
+import SponsoredWrapper from "@/components/SponsoredWrapper";
 import BrandBanner from "@/components/BrandBanner";
 import CuratedCollection from "@/components/CuratedCollection";
 import DiscoverSection from "@/components/DiscoverSection";
 import Image from "next/image";
-import SponsoredProduct from "@/components/Sponsored";
 
 export default function Home() {
   return (
@@ -51,7 +51,7 @@ export default function Home() {
         <div className="relative z-10 bg-salt -mt-[100vh]">
           <NewArrivals />
           {/* <BrandBanner /> */}
-          <SponsoredProduct />
+          <SponsoredWrapper />
           <StorySection />
           <TrustBadges />
           <Designers />

@@ -59,6 +59,8 @@ export interface Notification {
 export interface SupportTicket {
   id: string;
   uid: string;
+  userEmail: string;
+  userName: string;
   subject: string;
   message: string;
   category: "order" | "return" | "payment" | "other";
@@ -106,4 +108,67 @@ export interface Order {
   address?: string;
   createdAt: number;
   invoiceNumber: string;
+}
+
+// ─── CMS Content types ────────────────────────────────────────────────────────
+
+export type ItemStatus = "published" | "draft";
+
+export interface HeroSlide {
+  id: string;
+  url: string;
+  alt: string;
+  order: number;
+  status: ItemStatus;
+}
+
+export interface HeroContent {
+  slides: HeroSlide[];
+  intervalMs: number;
+  status: "published" | "draft";
+  updatedAt: number;
+  updatedBy: string;
+}
+
+export interface NewArrivalItem {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  image: string;
+  order: number;
+  status: ItemStatus;
+}
+
+export interface NewArrivalsContent {
+  items: NewArrivalItem[];
+  status: "published" | "draft";
+  updatedAt: number;
+  updatedBy: string;
+}
+
+export interface SponsoredSlide {
+  id: string;
+  title: string;
+  image: string;
+  order: number;
+  status: ItemStatus;
+}
+
+export interface SponsoredContent {
+  slides: SponsoredSlide[];
+  status: "published" | "draft";
+  updatedAt: number;
+  updatedBy: string;
+}
+
+export interface MediaFile {
+  id: string;
+  filename: string;
+  url: string;
+  storagePath: string;
+  type: string;
+  size: number;
+  uploadedBy: string;
+  createdAt: number;
 }

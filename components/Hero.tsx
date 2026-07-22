@@ -1,67 +1,40 @@
-"use client";
+import { unstable_cache } from "next/cache";
+import { adminDb } from "@/lib/firebase/admin";
+import HeroClient from "./HeroClient";
+import type { HeroContent } from "@/lib/types";
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-
-const BANNERS = [
+const FALLBACK_BANNERS = [
   "/images/main-banner/1.jpg",
   "/images/main-banner/2.jpg",
   "/images/main-banner/main-banner.jpeg",
-  "/images/main-banner/4.png"
+  "/images/main-banner/4.png",
 ];
 
-const INTERVAL = 4500; // ms per slide
+const getHeroContent = unstable_cache(
+  async () => {
+    try {
+      const snap = await adminDb.collection("siteContent").doc("hero").get();
+      if (!snap.exists) return null;
+      return snap.data() as HeroContent;
+    } catch {
+      return null;
+    }
+  },
+  ["content:hero"],
+  { tags: ["content:hero"], revalidate: 3600 }
+);
 
-export default function Hero() {
-  const [index, setIndex] = useState(0);
+export default async function Hero() {
+  const content = await getHeroContent();
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      setIndex((i) => (i + 1) % BANNERS.length);
-    }, INTERVAL);
-    return () => clearInterval(id);
-  }, []);
+  const publishedSlides = (content?.slides ?? [])
+    .filter((s) => s.status === "published")
+    .sort((a, b) => a.order - b.order);
 
-  return (
-    <section className="relative w-full h-[100svh] min-h-[600px] overflow-hidden bg-cacao">
-      {/* Sliding banner images — left to right */}
-      <AnimatePresence>
-        <motion.img
-          key={index}
-          src={BANNERS[index]}
-          alt="editte jewellery campaign"
-          initial={{ x: '100%', opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: '-100%', opacity: 0 }}
-          transition={{ duration: 0.8, ease: 'easeInOut' }}
-          className="absolute inset-0 w-full h-full object-cover object-center"
-        />
-      </AnimatePresence>
+  const banners =
+    publishedSlides.length > 0 ? publishedSlides.map((s) => s.url) : FALLBACK_BANNERS;
 
-      {/* Soft overlay for legibility */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(to bottom, rgba(54,21,21,0.25) 0%, rgba(54,21,21,0.05) 40%, rgba(54,21,21,0.2) 100%)",
-        }}
-      />
+  const intervalMs = content?.intervalMs ?? 4500;
 
-      {/* Slide dots */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2">
-        {BANNERS.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setIndex(i)}
-            aria-label={`Go to slide ${i + 1}`}
-            className="h-1.5 rounded-full transition-all duration-300"
-            style={{
-              width: i === index ? "24px" : "8px",
-              background: i === index ? "#fff" : "rgba(255,255,255,0.5)",
-            }}
-          />
-        ))}
-      </div>
-    </section>
-  );
+  return <HeroClient banners={banners} intervalMs={intervalMs} />;
 }

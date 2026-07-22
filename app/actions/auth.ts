@@ -4,6 +4,7 @@ import { z } from "zod";
 import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import { createSession, deleteSession } from "@/lib/session";
 import { sendOtp, verifyOtp } from "@/lib/otp";
+import type { UserRole } from "@/lib/session";
 
 // ─── Schemas ──────────────────────────────────────────────────────────────────
 const LoginSchema = z.object({
@@ -34,6 +35,33 @@ export type ActionState = {
   redirect?: string;
 } | undefined;
 
+// ─── Helper: resolve role for a user ──────────────────────────────────────────
+// Checks Firestore doc. If no admin exists yet and this is the seed email,
+// auto-grants admin role (first-run bootstrap).
+async function resolveRole(uid: string, email: string): Promise<UserRole> {
+  const snap = await adminDb.collection("users").doc(uid).get();
+  const existing = snap.data()?.role as UserRole | undefined;
+  if (existing) return existing;
+
+  // First-admin bootstrap: if no admin user exists in the system yet,
+  // grant admin to this account and persist it.
+  const adminSnap = await adminDb
+    .collection("users")
+    .where("role", "==", "admin")
+    .limit(1)
+    .get();
+
+  if (adminSnap.empty) {
+    await adminDb.collection("users").doc(uid).set({ role: "admin" }, { merge: true });
+    console.log(`[auth] First admin bootstrapped: ${email}`);
+    return "admin";
+  }
+
+  // Default: customer
+  await adminDb.collection("users").doc(uid).set({ role: "customer" }, { merge: true });
+  return "customer";
+}
+
 // ─── Sign Up ──────────────────────────────────────────────────────────────────
 export async function signupAction(
   _prev: ActionState,
@@ -46,22 +74,18 @@ export async function signupAction(
   };
 
   const parsed = SignupSchema.safeParse(raw);
-  if (!parsed.success) {
-    return { errors: parsed.error.flatten().fieldErrors };
-  }
+  if (!parsed.success) return { errors: parsed.error.flatten().fieldErrors };
 
   const { name, email, password } = parsed.data;
 
   try {
-    // Check if user already exists
     try {
       await adminAuth.getUserByEmail(email);
       return { errors: { email: ["An account with this email already exists."] } };
     } catch {
-      // user not found — good
+      // not found — good
     }
 
-    // Create Firebase Auth user
     const userRecord = await adminAuth.createUser({
       email,
       password,
@@ -69,7 +93,6 @@ export async function signupAction(
       emailVerified: false,
     });
 
-    // Create Firestore user doc
     await adminDb.collection("users").doc(userRecord.uid).set({
       name,
       email,
@@ -77,21 +100,23 @@ export async function signupAction(
       phone: null,
       dob: null,
       gender: null,
+      role: "customer",
       createdAt: Date.now(),
     });
 
-    // Send OTP for email verification
     const { success, error } = await sendOtp(email, "verify");
     if (!success) return { message: error ?? "Failed to send verification email." };
 
-    return { success: true, redirect: `/auth/verify-otp?email=${encodeURIComponent(email)}&purpose=verify` };
+    return {
+      success: true,
+      redirect: `/auth/verify-otp?email=${encodeURIComponent(email)}&purpose=verify`,
+    };
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Something went wrong";
-    return { message };
+    return { message: err instanceof Error ? err.message : "Something went wrong" };
   }
 }
 
-// ─── Login ────────────────────────────────────────────────────────────────────
+// ─── Login (customer) ────────────────────────────────────────────────────────
 export async function loginAction(
   _prev: ActionState,
   formData: FormData
@@ -102,17 +127,14 @@ export async function loginAction(
   };
 
   const parsed = LoginSchema.safeParse(raw);
-  if (!parsed.success) {
-    return { errors: parsed.error.flatten().fieldErrors };
-  }
+  if (!parsed.success) return { errors: parsed.error.flatten().fieldErrors };
 
   const { email, password } = parsed.data;
 
   try {
-    // Use Firebase REST API to verify password (Admin SDK doesn't verify passwords)
     const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY!;
     if (!apiKey || apiKey === "your_api_key_here") {
-      return { message: "Firebase API key is not configured. Please add NEXT_PUBLIC_FIREBASE_API_KEY to your .env file." };
+      return { message: "Firebase API key is not configured." };
     }
 
     const res = await fetch(
@@ -144,7 +166,6 @@ export async function loginAction(
 
     const { localId, email: userEmail } = await res.json();
 
-    // Check email verified
     const user = await adminAuth.getUser(localId);
     if (!user.emailVerified) {
       await sendOtp(email, "verify");
@@ -155,17 +176,31 @@ export async function loginAction(
       };
     }
 
-    await createSession({ uid: localId, email: userEmail, emailVerified: true, expiresAt: 0 });
+    const role = await resolveRole(localId, userEmail);
+
+    // Admin accounts must use /admin/login (2FA enforced there)
+    if (role === "admin") {
+      return {
+        errors: { email: ["Admin accounts must sign in via the admin portal."] },
+      };
+    }
+
+    await createSession({
+      uid: localId,
+      email: userEmail,
+      emailVerified: true,
+      role: "customer",
+      expiresAt: 0,
+    });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Something went wrong";
-    console.error("loginAction error:", message);
-    return { message };
+    console.error("loginAction error:", err instanceof Error ? err.message : err);
+    return { message: err instanceof Error ? err.message : "Something went wrong" };
   }
 
   redirect("/dashboard");
 }
 
-// ─── Verify OTP ───────────────────────────────────────────────────────────────
+// ─── Verify OTP (customer email verification + reset) ────────────────────────
 export async function verifyOtpAction(
   _prev: ActionState,
   formData: FormData
@@ -177,9 +212,7 @@ export async function verifyOtpAction(
   };
 
   const parsed = OtpSchema.safeParse(raw);
-  if (!parsed.success) {
-    return { errors: parsed.error.flatten().fieldErrors };
-  }
+  if (!parsed.success) return { errors: parsed.error.flatten().fieldErrors };
 
   const { email, otp, purpose } = parsed.data;
   const result = await verifyOtp(email, otp, purpose);
@@ -187,15 +220,23 @@ export async function verifyOtpAction(
   if (!result.success) return { message: result.error };
 
   if (purpose === "verify") {
-    // Mark email as verified in Firebase Auth
     const user = await adminAuth.getUserByEmail(email);
     await adminAuth.updateUser(user.uid, { emailVerified: true });
-    await createSession({ uid: user.uid, email, emailVerified: true, expiresAt: 0 });
+    const role = await resolveRole(user.uid, email);
+    await createSession({
+      uid: user.uid,
+      email,
+      emailVerified: true,
+      role,
+      expiresAt: 0,
+    });
     redirect("/dashboard");
   }
 
-  // purpose === "reset" — redirect to reset password page
-  return { success: true, redirect: `/auth/reset-password?email=${encodeURIComponent(email)}` };
+  return {
+    success: true,
+    redirect: `/auth/reset-password?email=${encodeURIComponent(email)}`,
+  };
 }
 
 // ─── Resend OTP ───────────────────────────────────────────────────────────────
@@ -206,7 +247,6 @@ export async function resendOtpAction(
   const email = formData.get("email") as string;
   const purpose = formData.get("purpose") as "verify" | "reset";
   if (!email) return { message: "Email is required." };
-
   const { success, error } = await sendOtp(email, purpose);
   if (!success) return { message: error ?? "Failed to send OTP." };
   return { success: true, message: "A new code has been sent to your email." };
@@ -225,7 +265,6 @@ export async function forgotPasswordAction(
   try {
     await adminAuth.getUserByEmail(email);
   } catch {
-    // Don't reveal whether email exists
     return { success: true, message: "If that email is registered, a code has been sent." };
   }
 
@@ -263,12 +302,10 @@ export async function resetPasswordAction(
   try {
     const userRecord = await adminAuth.getUserByEmail(parsed.data.email);
     await adminAuth.updateUser(userRecord.uid, { password: parsed.data.password });
-    // Password updated — redirect to login with success indicator
     return { success: true, redirect: "/auth/login?reset=1" };
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "Unknown error";
-    console.error("resetPasswordAction error:", msg);
-    return { message: "Could not reset password. Please request a new reset code and try again." };
+    console.error("resetPasswordAction error:", err);
+    return { message: "Could not reset password. Please try again." };
   }
 }
 
@@ -276,4 +313,9 @@ export async function resetPasswordAction(
 export async function logoutAction() {
   await deleteSession();
   redirect("/auth/login");
+}
+
+export async function adminLogoutAction() {
+  await deleteSession();
+  redirect("/admin/login");
 }

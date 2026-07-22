@@ -6,10 +6,13 @@ const SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
 const COOKIE = "editte_session";
 const EXPIRES_DAYS = 7;
 
+export type UserRole = "admin" | "customer";
+
 export interface SessionPayload {
   uid: string;
   email: string;
   emailVerified: boolean;
+  role: UserRole;
   expiresAt: number;
 }
 
