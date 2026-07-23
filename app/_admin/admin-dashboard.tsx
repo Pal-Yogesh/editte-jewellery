@@ -1,16 +1,19 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   buttonApprove,
   buttonChipActive,
   buttonChipInactive,
   buttonOutline,
+  buttonPrimary,
   buttonReject,
+  input,
   panel,
   statusBadge,
 } from "@/app/theme";
+import AdminProducts from "@/app/_admin/admin-products";
 
 type AdminSessionResponse = {
   authenticated: boolean;
@@ -34,11 +37,13 @@ type VendorDoc = {
   url: string;
 };
 
+type VendorStatus = "pending" | "under_review" | "approved" | "rejected";
+
 type Vendor = {
   vendorId: string;
   email: string;
   emailVerified: boolean;
-  status: "pending" | "approved" | "rejected";
+  status: VendorStatus;
   rejectionReason: string | null;
   profile: {
     brandName: string;
@@ -71,12 +76,17 @@ type StatusFilter = (typeof STATUS_FILTERS)[number];
 
 const outlineBtn = buttonOutline;
 
-export default function AdminDashboardPage() {
+function statusLabel(s: VendorStatus): string {
+  return s === "under_review" ? "under review" : s;
+}
+
+export default function AdminDashboard({ adminKey }: { adminKey: string }) {
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   const [adminId, setAdminId] = useState<string | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [section, setSection] = useState<"vendors" | "products">("vendors");
 
   const [filter, setFilter] = useState<StatusFilter>("pending");
   const [vendors, setVendors] = useState<Vendor[]>([]);
@@ -85,6 +95,11 @@ export default function AdminDashboardPage() {
   const [actionBusy, setActionBusy] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+
+  // Rejection textarea state — keyed by vendorId
+  const [rejecting, setRejecting] = useState<string | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
+  const rejectRef = useRef<HTMLTextAreaElement>(null);
 
   const loadVendors = useCallback(
     async (status: StatusFilter, { silent = false }: { silent?: boolean } = {}) => {
@@ -115,28 +130,32 @@ export default function AdminDashboardPage() {
         const res = await fetch("/api/admin/me", { cache: "no-store" });
         const data = (await res.json()) as AdminSessionResponse;
         if (!res.ok || !data.authenticated || data.role !== "admin") {
-          router.replace("/admin/login");
+          router.replace(`/${adminKey}/login`);
           return;
         }
         setAdminId(data.adminId ?? "admin");
       } catch {
-        router.replace("/admin/login");
+        router.replace(`/${adminKey}/login`);
       } finally {
         setLoading(false);
       }
     };
     void check();
-  }, [router]);
+  }, [router, adminKey]);
 
   useEffect(() => {
     if (!loading && adminId) void loadVendors(filter);
   }, [loading, adminId, filter, loadVendors]);
 
+  useEffect(() => {
+    if (rejecting && rejectRef.current) rejectRef.current.focus();
+  }, [rejecting]);
+
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
       await fetch("/api/admin/logout", { method: "POST" });
-      router.replace("/admin/login");
+      router.replace(`/${adminKey}/login`);
       router.refresh();
     } finally {
       setIsLoggingOut(false);
@@ -146,7 +165,9 @@ export default function AdminDashboardPage() {
   const handleAction = async (vendorId: string, action: "approve" | "reject") => {
     let reason: string | undefined;
     if (action === "reject") {
-      reason = prompt("Reason for rejection (optional):") ?? undefined;
+      reason = rejectReason.trim() || undefined;
+      setRejecting(null);
+      setRejectReason("");
     }
     setActionBusy(vendorId);
     try {
@@ -168,6 +189,16 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const startReject = (vendorId: string) => {
+    setRejecting(vendorId);
+    setRejectReason("");
+  };
+
+  const cancelReject = () => {
+    setRejecting(null);
+    setRejectReason("");
+  };
+
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-background px-6 py-12">
@@ -178,30 +209,58 @@ export default function AdminDashboardPage() {
 
   return (
     <main className="min-h-screen bg-background px-4 py-8 sm:px-6">
-      <div className="mx-auto max-w-4xl">
-        <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-              Admin Dashboard
-            </h1>
-            <p className="mt-1 text-sm text-muted">
-              Welcome, <span className="font-medium">{adminId}</span>
-            </p>
+      <div className="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row">
+        <aside className="md:w-60 md:shrink-0">
+          <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm md:sticky md:top-8">
+            <div className="mb-4">
+              <h1 className="text-lg font-semibold tracking-tight text-heading">
+                Admin
+              </h1>
+              <p className="truncate text-xs text-muted">{adminId}</p>
+            </div>
+            <nav className="space-y-1">
+              <button
+                type="button"
+                onClick={() => setSection("vendors")}
+                className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition ${
+                  section === "vendors"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted hover:bg-surface-hover"
+                }`}
+              >
+                Vendors
+              </button>
+              <button
+                type="button"
+                onClick={() => setSection("products")}
+                className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition ${
+                  section === "products"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted hover:bg-surface-hover"
+                }`}
+              >
+                Products
+              </button>
+            </nav>
+            <button
+              type="button"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className={`mt-4 w-full ${outlineBtn}`}
+            >
+              {isLoggingOut ? "Logging out..." : "Logout"}
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-            className={outlineBtn}
-          >
-            {isLoggingOut ? "Logging out..." : "Logout"}
-          </button>
-        </div>
+        </aside>
 
-        <section className={panel}>
+        <div className="min-w-0 flex-1">
+          {section === "products" ? (
+            <AdminProducts />
+          ) : (
+            <section className={panel}>
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <h2 className="text-lg font-semibold text-foreground">
+              <h2 className="text-lg font-semibold text-heading">
                 Vendor Approvals
               </h2>
               <button
@@ -227,9 +286,7 @@ export default function AdminDashboardPage() {
                   type="button"
                   onClick={() => setFilter(s)}
                   className={`rounded-md px-3 py-1.5 text-xs font-medium capitalize transition ${
-                    filter === s
-                      ? buttonChipActive
-                      : buttonChipInactive
+                    filter === s ? buttonChipActive : buttonChipInactive
                   }`}
                 >
                   {s}
@@ -280,10 +337,8 @@ export default function AdminDashboardPage() {
                           <p className="text-xs text-muted">{v.email}</p>
                         </div>
                       </div>
-                      <span
-                        className={`${statusBadge.base} ${statusBadge[v.status]}`}
-                      >
-                        {v.status}
+                      <span className={`${statusBadge.base} ${statusBadge[v.status]}`}>
+                        {statusLabel(v.status)}
                       </span>
                     </div>
 
@@ -354,33 +409,70 @@ export default function AdminDashboardPage() {
                     ) : null}
 
                     <div className="mt-3 flex gap-2">
-                        {v.status !== "approved" ? (
-                          <button
-                            type="button"
-                            disabled={actionBusy === v.vendorId}
-                            onClick={() => handleAction(v.vendorId, "approve")}
-                            className={buttonApprove}
-                          >
-                            Approve
-                          </button>
-                        ) : null}
-                        {v.status !== "rejected" ? (
+                      {v.status !== "approved" ? (
+                        <button
+                          type="button"
+                          disabled={actionBusy === v.vendorId}
+                          onClick={() => handleAction(v.vendorId, "approve")}
+                          className={buttonApprove}
+                        >
+                          Approve
+                        </button>
+                      ) : null}
+                      {v.status !== "rejected" ? (
+                        <button
+                          type="button"
+                          disabled={actionBusy === v.vendorId}
+                          onClick={() => startReject(v.vendorId)}
+                          className={buttonReject}
+                        >
+                          Reject
+                        </button>
+                      ) : null}
+                    </div>
+
+                    {rejecting === v.vendorId ? (
+                      <div className="mt-3 space-y-2 rounded-lg border border-error-fg/40 bg-error-bg/10 p-3">
+                        <label className="block text-xs font-medium text-foreground">
+                          Reason for rejection (will be emailed to vendor)
+                        </label>
+                        <textarea
+                          ref={rejectRef}
+                          className={input + " min-h-20"}
+                          value={rejectReason}
+                          onChange={(e) => setRejectReason(e.target.value)}
+                          placeholder="Provide feedback so the vendor can fix and resubmit…"
+                        />
+                        <div className="flex gap-2">
                           <button
                             type="button"
                             disabled={actionBusy === v.vendorId}
                             onClick={() => handleAction(v.vendorId, "reject")}
                             className={buttonReject}
                           >
-                            Reject
+                            {actionBusy === v.vendorId
+                              ? "Rejecting…"
+                              : "Confirm Rejection"}
                           </button>
-                        ) : null}
+                          <button
+                            type="button"
+                            disabled={actionBusy === v.vendorId}
+                            onClick={cancelReject}
+                            className={outlineBtn}
+                          >
+                            Cancel
+                          </button>
+                        </div>
                       </div>
+                    ) : null}
                   </li>
                 );
               })}
             </ul>
           )}
         </section>
+          )}
+        </div>
       </div>
     </main>
   );

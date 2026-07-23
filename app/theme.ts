@@ -16,8 +16,8 @@ export const panel =
   "rounded-2xl border border-border bg-surface p-6 shadow-sm";
 
 // Typography
-export const heading = "text-2xl font-semibold tracking-tight text-foreground";
-export const subheading = "text-lg font-semibold text-foreground";
+export const heading = "font-heading text-2xl font-semibold tracking-tight text-heading";
+export const subheading = "font-heading text-lg font-semibold text-heading";
 export const muted = "text-sm text-muted";
 export const label = "mb-1 block text-sm font-medium text-foreground";
 
@@ -46,8 +46,9 @@ export const buttonChipActive =
 export const buttonChipInactive =
   "border border-input text-muted hover:bg-surface-hover";
 export const linkMuted =
-  "text-muted underline transition hover:text-foreground";
-export const linkStrong = "font-medium text-foreground underline";
+  "text-muted underline-offset-2 transition hover:text-foreground hover:underline";
+export const linkStrong =
+  "font-medium text-primary underline-offset-2 transition hover:underline";
 
 // Status banners
 export const bannerBase = "rounded-md px-3 py-2 text-sm";
@@ -65,6 +66,7 @@ export const statusBadge = {
   base: "rounded-full px-2.5 py-0.5 text-xs font-medium capitalize",
   incomplete: "bg-surface-hover text-muted",
   pending: "bg-warning-bg text-warning-fg",
+  under_review: "bg-warning-bg text-warning-fg",
   approved: "bg-success-bg text-success-fg",
   rejected: "bg-error-bg text-error-fg",
 } as const;
@@ -72,6 +74,7 @@ export const statusBadge = {
 export const statusBanner = {
   incomplete: `${bannerBase} bg-surface-hover text-muted`,
   pending: `${bannerBase} bg-warning-bg text-warning-fg`,
+  under_review: `${bannerBase} bg-warning-bg text-warning-fg`,
   approved: `${bannerBase} bg-success-bg text-success-fg`,
   rejected: `${bannerBase} bg-error-bg text-error-fg`,
 } as const;

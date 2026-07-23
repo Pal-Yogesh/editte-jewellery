@@ -92,36 +92,67 @@ export default function DevAutofill({ onDone }: DevAutofillProps) {
   const run = async () => {
     setBusy(true);
     setMessage("Filling every section...");
-    try {
-      await postJson("/api/vendor/profile", "PUT", {
-        brandName: SAMPLE.profile.brandName,
-        brandStory: SAMPLE.profile.brandStory,
-        about: SAMPLE.profile.about,
-        socialLinks: SAMPLE.profile.socialLinks,
-      });
 
-      const logoForm = new FormData();
-      logoForm.append("logo", base64ToFile(TINY_PNG_BASE64, "logo.png", "image/png"));
-      await postForm("/api/vendor/logo", logoForm);
+    const logoForm = new FormData();
+    logoForm.append("logo", base64ToFile(TINY_PNG_BASE64, "logo.png", "image/png"));
 
-      await postJson("/api/vendor/documents", "PUT", SAMPLE.kyc);
+    const docForm = new FormData();
+    docForm.append(
+      "file",
+      base64ToFile(TINY_PNG_BASE64, "gst-certificate.png", "image/png")
+    );
+    docForm.append("name", "GST Certificate");
 
-      const docForm = new FormData();
-      docForm.append("file", base64ToFile(TINY_PNG_BASE64, "gst-certificate.png", "image/png"));
-      docForm.append("name", "GST Certificate");
-      await postForm("/api/vendor/documents", docForm);
+    const steps: { label: string; fn: () => Promise<void> }[] = [
+      {
+        label: "Profile",
+        fn: () =>
+          postJson("/api/vendor/profile", "PUT", {
+            brandName: SAMPLE.profile.brandName,
+            brandStory: SAMPLE.profile.brandStory,
+            about: SAMPLE.profile.about,
+            socialLinks: SAMPLE.profile.socialLinks,
+          }),
+      },
+      { label: "Logo upload", fn: () => postForm("/api/vendor/logo", logoForm) },
+      { label: "KYC numbers", fn: () => postJson("/api/vendor/documents", "PUT", SAMPLE.kyc) },
+      { label: "Document upload", fn: () => postForm("/api/vendor/documents", docForm) },
+      { label: "Bank", fn: () => postJson("/api/vendor/bank", "PUT", SAMPLE.bank) },
+      { label: "Address", fn: () => postJson("/api/vendor/address", "PUT", SAMPLE.address) },
+      {
+        label: "Commission",
+        fn: () => postJson("/api/vendor/commission", "POST", { accepted: true }),
+      },
+    ];
 
-      await postJson("/api/vendor/bank", "PUT", SAMPLE.bank);
-      await postJson("/api/vendor/address", "PUT", SAMPLE.address);
-      await postJson("/api/vendor/commission", "POST", { accepted: true });
-
-      setMessage("Done — all sections filled. You can now submit for approval.");
-      await onDone();
-    } catch (err) {
-      setMessage(err instanceof Error ? err.message : "Auto-fill failed.");
-    } finally {
-      setBusy(false);
+    const failed: string[] = [];
+    for (const step of steps) {
+      try {
+        await step.fn();
+      } catch (err) {
+        const reason = err instanceof Error ? err.message : "failed";
+        failed.push(step.label + " (" + reason + ")");
+      }
     }
+
+    try {
+      await onDone();
+    } catch {
+      // ignore reload errors
+    }
+
+    if (failed.length === 0) {
+      setMessage("Done — all sections filled. You can now submit for approval.");
+    } else {
+      setMessage(
+        "Filled the text sections. " +
+          failed.length +
+          " step(s) failed: " +
+          failed.join(", ") +
+          ". File uploads require Firebase Storage to be enabled."
+      );
+    }
+    setBusy(false);
   };
 
   return (

@@ -53,7 +53,7 @@ export function normaliseVendor(
     email: (data.email as string) ?? "",
     passwordHash: (data.passwordHash as string) ?? "",
     emailVerified: Boolean(data.emailVerified),
-    status: (data.status as VendorRecord["status"]) ?? "pending",
+    status: (data.status as VendorRecord["status"]) ?? "incomplete",
     rejectionReason: (data.rejectionReason as string | null) ?? null,
     profile: { ...createEmptyVendorProfile(), ...(data.profile ?? {}) },
     kyc: { ...createEmptyVendorKyc(), ...(data.kyc ?? {}) },

@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import DevAutofill from "./dev-autofill";
+import ProductsPanel from "./products-panel";
+import InventoryPanel from "./inventory-panel";
 import {
   banner as bannerClass,
   buttonDanger,
@@ -35,7 +37,7 @@ type Vendor = {
   vendorId: string;
   email: string;
   emailVerified: boolean;
-  status: "incomplete" | "pending" | "approved" | "rejected";
+  status: "incomplete" | "pending" | "under_review" | "approved" | "rejected";
   rejectionReason: string | null;
   completeness: { complete: boolean; missing: string[] };
   profile: {
@@ -85,9 +87,12 @@ export default function VendorDashboardPage() {
 
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const [loading, setLoading] = useState(true);
+  const [section, setSection] = useState<"account" | "products" | "inventory">("account");
+  const [uploadQueueCount, setUploadQueueCount] = useState(0);
   const [tab, setTab] = useState<TabId>("profile");
   const [banner, setBanner] = useState<{ text: string; error: boolean } | null>(null);
   const [busy, setBusy] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   // Section-local form state
   const [profileForm, setProfileForm] = useState({
@@ -187,6 +192,12 @@ export default function VendorDashboardPage() {
       msg
     );
 
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadVendor();
+    setRefreshing(false);
+  };
+
   const handleLogout = async () => {
     await fetch("/api/vendor/logout", { method: "POST" });
     router.replace("/vendor/login");
@@ -253,6 +264,8 @@ export default function VendorDashboardPage() {
       "Complete every section below, then submit your profile for admin approval.",
     pending:
       "Your profile has been submitted and is awaiting admin approval.",
+    under_review:
+      "Your profile is under review. We'll notify you once a decision is made.",
     approved: "Your account has been approved. You're all set!",
     rejected: `Your account was rejected. ${vendor.rejectionReason ?? ""}`,
   };
@@ -265,21 +278,95 @@ export default function VendorDashboardPage() {
 
   return (
     <main className="min-h-screen bg-background px-4 py-8 sm:px-6">
-      <div className="mx-auto max-w-4xl">
-        <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-              {vendor.profile.brandName || "Vendor Dashboard"}
-            </h1>
-            <p className="mt-1 text-sm text-muted">{vendor.email}</p>
+      <div className="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row">
+        <aside className="md:w-60 md:shrink-0">
+          <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm md:sticky md:top-8">
+            <div className="mb-4">
+              <div className="flex items-center justify-between">
+                <h1 className="truncate text-lg font-semibold tracking-tight text-heading">
+                  {vendor.profile.brandName || "Vendor"}
+                </h1>
+                <button
+                  type="button"
+                  onClick={handleRefresh}
+                  disabled={refreshing}
+                  className="ml-2 shrink-0 rounded-md border border-input px-2 py-1 text-xs font-medium text-muted transition hover:bg-surface-hover disabled:opacity-60"
+                  title="Refresh data"
+                >
+                  <span className={refreshing ? "inline-block animate-spin" : ""}>
+                    ↻
+                  </span>
+                </button>
+              </div>
+              <p className="truncate text-xs text-muted">{vendor.email}</p>
+            </div>
+            <nav className="space-y-1">
+              <button
+                type="button"
+                onClick={() => setSection("account")}
+                className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition ${
+                  section === "account"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted hover:bg-surface-hover"
+                }`}
+              >
+                Account &amp; Details
+              </button>
+              <button
+                type="button"
+                onClick={() => setSection("products")}
+                className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition ${
+                  section === "products"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted hover:bg-surface-hover"
+                }`}
+              >
+                <span className="flex items-center justify-between">
+                  <span>Products</span>
+                  {uploadQueueCount > 0 ? (
+                    <span className="rounded-full bg-rose px-1.5 py-0.5 text-xs font-semibold text-white">
+                      {uploadQueueCount}
+                    </span>
+                  ) : null}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setSection("inventory")}
+                className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition ${
+                  section === "inventory"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted hover:bg-surface-hover"
+                }`}
+              >
+                Inventory
+              </button>
+            </nav>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className={`mt-4 w-full ${outlineBtn}`}
+            >
+              {busy ? "..." : "Logout"}
+            </button>
           </div>
-          <button type="button" onClick={handleLogout} className={outlineBtn}>
-            Logout
-          </button>
-        </div>
+        </aside>
 
-        <div className={`mb-6 ${statusStyles[vendor.status]}`}>
-          <span className="font-medium capitalize">{vendor.status}</span> — {statusText[vendor.status]}
+        <div className="min-w-0 flex-1">
+          {/* Both panels stay mounted so the upload queue survives section switches. */}
+          <div className={section !== "products" ? "hidden" : ""}>
+            <ProductsPanel
+              vendorStatus={vendor.status}
+              brandName={vendor.profile.brandName}
+              onQueueChange={setUploadQueueCount}
+            />
+          </div>
+          <div className={section !== "inventory" ? "hidden" : ""}>
+            <InventoryPanel />
+          </div>
+          <div className={section === "products" || section === "inventory" ? "hidden" : ""}>
+              <div className={`mb-6 ${statusStyles[vendor.status]}`}>
+          <span className="font-medium capitalize">{vendor.status.replace("_", " ")}</span> — {statusText[vendor.status]}
         </div>
 
         {process.env.NODE_ENV !== "production" ? (
@@ -562,7 +649,7 @@ export default function VendorDashboardPage() {
                     <input
                       ref={docInputRef}
                       type="file"
-                      accept="application/pdf,image/png,image/jpeg,image/webp"
+                      accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/png,image/jpeg,image/webp"
                       className="hidden"
                       onChange={(e) => {
                         const f = e.target.files?.[0];
@@ -578,7 +665,7 @@ export default function VendorDashboardPage() {
                       Upload document
                     </button>
                     <p className="text-xs text-muted">
-                      PDF, PNG, JPEG or WebP, up to 10 MB each.
+                      PDF, Word (.doc/.docx), PNG, JPEG or WebP, up to 10 MB each.
                     </p>
                   </div>
                 ) : null}
@@ -794,6 +881,8 @@ export default function VendorDashboardPage() {
             </div>
           ) : null}
         </section>
+          </div>
+        </div>
       </div>
     </main>
   );

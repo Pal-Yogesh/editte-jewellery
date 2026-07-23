@@ -17,3 +17,6 @@ JWT_SECRET=
 # Resend (Email OTP)
 RESEND_API_KEY=
 RESEND_FROM_EMAIL=noreply@yourdomain.com
+
+# Internal API key for server-to-server calls (low-stock check, etc.)
+INTERNAL_API_KEY=

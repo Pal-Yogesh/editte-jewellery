@@ -1,4 +1,4 @@
-export type VendorStatus = "incomplete" | "pending" | "approved" | "rejected";
+export type VendorStatus = "incomplete" | "pending" | "under_review" | "approved" | "rejected";
 
 export type OtpPurpose = "signup" | "login" | "reset";
 

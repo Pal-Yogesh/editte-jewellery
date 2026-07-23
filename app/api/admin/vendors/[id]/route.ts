@@ -3,6 +3,7 @@ import { db } from "@/lib/firebase-admin";
 import { getAdminSession } from "@/lib/auth/admin";
 import { VENDOR_COLLECTION, getVendorById } from "@/lib/auth/vendor";
 import { serializeVendor } from "@/lib/vendor/serialize";
+import { sendVendorRejectionEmail } from "@/lib/resend";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -57,13 +58,25 @@ export async function PATCH(request: Request, { params }: Params) {
       updatedAt: now,
     });
   } else if (body.action === "reject") {
+    const reason = body.reason?.trim() || "Not specified.";
     await db.collection(VENDOR_COLLECTION).doc(id).update({
       status: "rejected",
-      rejectionReason: body.reason?.trim() || "Not specified.",
+      rejectionReason: reason,
       approvedAt: null,
       approvedBy: null,
       updatedAt: now,
     });
+
+    // Send rejection email to vendor (best-effort)
+    try {
+      await sendVendorRejectionEmail(
+        vendor.email,
+        vendor.profile.brandName || "Vendor",
+        reason
+      );
+    } catch {
+      // Email failure should not block the rejection
+    }
   } else {
     return NextResponse.json(
       { message: "action must be 'approve' or 'reject'." },

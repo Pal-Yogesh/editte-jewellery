@@ -5,7 +5,7 @@ import { VENDOR_COLLECTION, normaliseVendor } from "@/lib/auth/vendor";
 import { serializeVendor } from "@/lib/vendor/serialize";
 import type { VendorStatus } from "@/lib/vendor/types";
 
-const VALID_STATUSES: VendorStatus[] = ["pending", "approved", "rejected"];
+const VALID_STATUSES: VendorStatus[] = ["pending", "under_review", "approved", "rejected"];
 
 export async function GET(request: Request) {
   const admin = await getAdminSession();
@@ -17,11 +17,12 @@ export async function GET(request: Request) {
   const statusParam = url.searchParams.get("status") as VendorStatus | null;
 
   let query: FirebaseFirestore.Query = db.collection(VENDOR_COLLECTION);
-  if (statusParam && VALID_STATUSES.includes(statusParam)) {
+  if (statusParam === "pending") {
+    query = query.where("status", "in", ["pending", "under_review"]);
+  } else if (statusParam && VALID_STATUSES.includes(statusParam)) {
     query = query.where("status", "==", statusParam);
   } else {
-    // Never surface vendors who haven't submitted their completed profile yet.
-    query = query.where("status", "in", ["pending", "approved", "rejected"]);
+    query = query.where("status", "in", ["pending", "under_review", "approved", "rejected"]);
   }
 
   const snapshot = await query.get();

@@ -2,91 +2,64 @@
 
 /*
  * ============================================================
- *  THEME TOKENS — single source of truth for all colors.
- *  Change the palette here (light + dark) and it flows through
- *  the whole app via the semantic utilities in app/theme.ts.
+ *  editte — Web Design System
+ *  Single source of truth for colours + typography.
+ *  Brand palette: Salt, Cacao, Rose, Sage, Sand, Gold, Ink.
  * ============================================================
  */
 
 :root {
-  /* Base */
-  --background: #fafafa;
-  --foreground: #18181b;
+  /* Brand palette (raw) */
+  --salt: #f9f5f1;
+  --cacao: #361515;
+  --rose: #c87a79;
+  --sage: #b3ad6e;
+  --sand: #ede2c3;
+  --ink: #0c0e0e;
+  --gradient-gold: linear-gradient(135deg, #c9a24b 0%, #e8ce8f 50%, #b8862f 100%);
 
-  /* Surfaces (cards, panels) */
-  --surface: #ffffff;
-  --surface-hover: #f4f4f5;
+  /* Semantic tokens — light */
+  --background: var(--salt); /* Salt dominates as the canvas (~45%) */
+  --foreground: var(--ink); /* Body copy in Ink */
+  --heading: var(--cacao); /* Headings in Cacao */
+  --surface: #ffffff; /* Cards / panels */
+  --surface-hover: var(--sand); /* Sand accent surface + secondary hover */
+  --muted: #6e5f58; /* Secondary text (warm brown-grey) */
+  --border: #e6dccc; /* Soft neutral border */
+  --field: #ffffff; /* Input background */
+  --input: #d9cfc0; /* Input border (light grey) */
+  --ring: var(--ink); /* Focus border = Ink */
 
-  /* Text */
-  --muted: #52525b;
+  --primary: var(--rose); /* Primary action = Rose */
+  --primary-hover: var(--cacao); /* Hover = Cacao */
+  --primary-foreground: var(--salt);
 
-  /* Borders & form fields */
-  --border: #e4e4e7;
-  --field: #ffffff;
-  --input: #d4d4d8;
-  --ring: #a1a1aa;
+  --danger: #a83c3b; /* Destructive (deep rose-red) */
+  --danger-hover: #8c2e2d;
 
-  /* Primary action */
-  --primary: #18181b;
-  --primary-hover: #3f3f46;
-  --primary-foreground: #ffffff;
+  --success-solid: var(--sage); /* Positive/approve = Sage */
+  --success-solid-hover: #9a9455;
 
-  /* Destructive action */
-  --danger: #dc2626;
-  --danger-hover: #b91c1c;
+  --success-bg: #edebd6;
+  --success-fg: #5c5729;
+  --error-bg: #f6e6e5;
+  --error-fg: #a83c3b; /* Error helper text in rose tone */
+  --warning-bg: var(--sand);
+  --warning-fg: #8a6a1f;
 
-  /* Positive/solid action (e.g. approve) */
-  --success-solid: #059669;
-  --success-solid-hover: #047857;
+  --font-heading: "Goudy Old Style", Goudy, var(--font-goudy), "Times New Roman", serif;
+  --font-body: var(--font-open-sans), system-ui, -apple-system, sans-serif;
 
-  /* Status banners / badges */
-  --success-bg: #ecfdf5;
-  --success-fg: #047857;
-  --error-bg: #fef2f2;
-  --error-fg: #b91c1c;
-  --warning-bg: #fffbeb;
-  --warning-fg: #b45309;
+  /* editte is a light-first design — lock the palette so the OS dark-mode
+     setting doesn't repaint the canvas. */
+  color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #000000;
-    --foreground: #f4f4f5;
-
-    --surface: #09090b;
-    --surface-hover: #27272a;
-
-    --muted: #a1a1aa;
-
-    --border: #27272a;
-    --field: #18181b;
-    --input: #3f3f46;
-    --ring: #52525b;
-
-    --primary: #f4f4f5;
-    --primary-hover: #d4d4d8;
-    --primary-foreground: #18181b;
-
-    --danger: #dc2626;
-    --danger-hover: #ef4444;
-
-    --success-solid: #059669;
-    --success-solid-hover: #10b981;
-
-    --success-bg: rgba(6, 78, 59, 0.3);
-    --success-fg: #6ee7b7;
-    --error-bg: rgba(69, 10, 10, 0.35);
-    --error-fg: #fca5a5;
-    --warning-bg: rgba(69, 26, 3, 0.4);
-    --warning-fg: #fcd34d;
-  }
-}
-
-/* Expose the tokens to Tailwind so utilities like bg-surface,
-   text-foreground, border-input, bg-primary, etc. are generated. */
+/* Expose tokens to Tailwind: bg-surface, text-heading, bg-primary, bg-salt, text-cacao, etc. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-heading: var(--heading);
   --color-surface: var(--surface);
   --color-surface-hover: var(--surface-hover);
   --color-muted: var(--muted);
@@ -107,12 +80,50 @@
   --color-error-fg: var(--error-fg);
   --color-warning-bg: var(--warning-bg);
   --color-warning-fg: var(--warning-fg);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  /* Raw brand colours */
+  --color-salt: var(--salt);
+  --color-cacao: var(--cacao);
+  --color-rose: var(--rose);
+  --color-sage: var(--sage);
+  --color-sand: var(--sand);
+  --color-ink: var(--ink);
+
+  --font-sans: var(--font-body);
+  --font-heading: "Goudy Old Style", Goudy, var(--font-goudy), "Times New Roman", serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+}
+
+/* All headings use the Goudy Old Style serif stack. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+/* Form selection accents per the guide: Rose checkboxes, Sage radios. */
+input[type="checkbox"] {
+  accent-color: var(--rose);
+}
+input[type="radio"] {
+  accent-color: var(--sage);
+}
+
+/* Metallic gold — for headings on dark backgrounds / hero accents. */
+.text-gold {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.bg-gold {
+  background: var(--gradient-gold);
 }

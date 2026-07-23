@@ -24,7 +24,7 @@ type LoginResponse = {
 
 const OTP_DURATION = 60;
 
-export default function AdminLoginPage() {
+export default function AdminLogin({ adminKey }: { adminKey: string }) {
   const router = useRouter();
 
   const [adminId, setAdminId] = useState("");
@@ -121,7 +121,7 @@ export default function AdminLoginPage() {
       clearTimer();
       setIsError(false);
       setMessage("Verified. Redirecting to dashboard...");
-      router.push("/admin/dashboard");
+      router.push(`/${adminKey}/dashboard`);
       router.refresh();
     } catch {
       setIsError(true);
@@ -174,9 +174,7 @@ export default function AdminLoginPage() {
   return (
     <main className={pageCentered}>
       <section className={`w-full max-w-md ${card}`}>
-        <h1 className={`mb-2 ${heading}`}>
-          Admin Login
-        </h1>
+        <h1 className={`mb-2 ${heading}`}>Admin Login</h1>
         <p className={`mb-6 ${muted}`}>
           {step === "credentials"
             ? "Sign in with your admin ID and password."
@@ -219,11 +217,7 @@ export default function AdminLoginPage() {
               />
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className={buttonPrimaryBlock}
-            >
+            <button type="submit" disabled={loading} className={buttonPrimaryBlock}>
               {loading ? "Verifying..." : "Continue"}
             </button>
           </form>
@@ -251,14 +245,10 @@ export default function AdminLoginPage() {
             {countdown > 0 ? (
               <p className="text-center text-sm text-muted">
                 Code expires in{" "}
-                <span className="font-medium text-foreground">
-                  {countdown}s
-                </span>
+                <span className="font-medium text-foreground">{countdown}s</span>
               </p>
             ) : (
-              <p className="text-center text-sm text-error-fg">
-                Code expired.
-              </p>
+              <p className="text-center text-sm text-error-fg">Code expired.</p>
             )}
 
             <button
@@ -288,11 +278,7 @@ export default function AdminLoginPage() {
           </form>
         )}
 
-        {message ? (
-          <p className={`mt-4 ${banner(isError)}`}>
-            {message}
-          </p>
-        ) : null}
+        {message ? <p className={`mt-4 ${banner(isError)}`}>{message}</p> : null}
       </section>
     </main>
   );

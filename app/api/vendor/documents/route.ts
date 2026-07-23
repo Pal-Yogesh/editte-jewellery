@@ -10,10 +10,32 @@ import { MAX_VENDOR_DOCUMENTS, type VendorDocument } from "@/lib/vendor/types";
 const MAX_DOC_BYTES = 10 * 1024 * 1024; // 10 MB
 const ALLOWED_TYPES = [
   "application/pdf",
+  "application/msword", // .doc
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
   "image/png",
   "image/jpeg",
   "image/webp",
 ];
+const ALLOWED_EXTENSIONS = [
+  ".pdf",
+  ".doc",
+  ".docx",
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".webp",
+];
+
+/**
+ * Accepts a file if its MIME type is allowed, OR (as a fallback) its extension
+ * is allowed. Browsers sometimes report an empty or generic MIME type for
+ * .doc/.docx/.pdf, so extension matching prevents valid files being rejected.
+ */
+function isAllowedDocument(file: File): boolean {
+  if (ALLOWED_TYPES.includes(file.type)) return true;
+  const name = (file.name || "").toLowerCase();
+  return ALLOWED_EXTENSIONS.some((ext) => name.endsWith(ext));
+}
 
 type KycTextBody = {
   gstNumber?: string;
@@ -78,9 +100,9 @@ export async function POST(request: Request) {
   if (!(file instanceof File)) {
     return NextResponse.json({ message: "No file provided." }, { status: 400 });
   }
-  if (!ALLOWED_TYPES.includes(file.type)) {
+  if (!isAllowedDocument(file)) {
     return NextResponse.json(
-      { message: "Document must be a PDF, PNG, JPEG, or WebP file." },
+      { message: "Document must be a PDF, Word (.doc/.docx), PNG, JPEG, or WebP file." },
       { status: 400 }
     );
   }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
+import { getAdminSlug } from "@/lib/admin-slug";
 
 const ADMIN_COOKIE_NAME = "admin_token";
 const VENDOR_COOKIE_NAME = "vendor_token";
@@ -20,23 +21,26 @@ async function verifyRole(
   }
 }
 
-async function handleAdmin(request: NextRequest): Promise<NextResponse> {
+async function handleAdmin(
+  request: NextRequest,
+  slug: string
+): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
-  const isLogin = pathname === "/admin/login";
-  const isExact = pathname === "/admin";
+  const isLogin = pathname === `/${slug}/login`;
+  const isExact = pathname === `/${slug}`;
 
   const token = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
   const isAuthenticated = token ? await verifyRole(token, "admin") : false;
 
   if (isExact) {
-    const target = isAuthenticated ? "/admin/dashboard" : "/admin/login";
+    const target = isAuthenticated ? `/${slug}/dashboard` : `/${slug}/login`;
     return NextResponse.redirect(new URL(target, request.url));
   }
   if (isLogin && isAuthenticated) {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    return NextResponse.redirect(new URL(`/${slug}/dashboard`, request.url));
   }
   if (!isLogin && !isAuthenticated) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
+    return NextResponse.redirect(new URL(`/${slug}/login`, request.url));
   }
   return NextResponse.next();
 }
@@ -70,15 +74,25 @@ async function handleVendor(request: NextRequest): Promise<NextResponse> {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith("/admin")) {
-    return handleAdmin(request);
-  }
   if (pathname.startsWith("/vendor")) {
     return handleVendor(request);
   }
+
+  // Admin lives under a secret, env-configured slug.
+  const slug = getAdminSlug();
+  if (
+    pathname === `/${slug}` ||
+    pathname === `/${slug}/login` ||
+    pathname === `/${slug}/dashboard`
+  ) {
+    return handleAdmin(request, slug);
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin", "/admin/:path*", "/vendor", "/vendor/:path*"],
+  // Run on everything except Next internals and API routes; the proxy body
+  // decides what (if anything) to gate.
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
