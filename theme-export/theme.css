@@ -1,0 +1,105 @@
+/* ============================================================
+   editte — Portable Theme (Tailwind v4)
+   ------------------------------------------------------------
+   Drop this into your Next.js app's global stylesheet
+   (e.g. app/globals.css). Requires Tailwind v4.
+
+   Font: wire up "--font-goudy" in your layout (see layout-font.tsx).
+   ============================================================ */
+
+@import "tailwindcss";
+
+:root {
+  /* ── editte brand colours ── */
+  --salt: #f9f5f1; /* neutral off-white base */
+  --cacao: #361515; /* deep brown, headings & lifestyle */
+  --rose: #c87a79; /* dusty rose accent, buttons */
+  --sage: #b3ad6e; /* muted olive/green, UI elements */
+  --sand: #ede2c3; /* warm cream, accent backgrounds */
+  --ink: #0c0e0e; /* near-black, body copy */
+  --gold: linear-gradient(135deg, #c9a24b 0%, #e8ce8f 50%, #b8862f 100%);
+
+  --background: var(--salt);
+  --foreground: var(--ink);
+}
+
+/* Expose tokens to Tailwind utilities (bg-salt, text-cacao, etc.) */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-salt: var(--salt);
+  --color-cacao: var(--cacao);
+  --color-rose: var(--rose);
+  --color-sage: var(--sage);
+  --color-sand: var(--sand);
+  --color-ink: var(--ink);
+
+  /* Single typeface across the whole UI */
+  --font-heading: var(--font-goudy);
+  --font-logo: var(--font-goudy);
+  --font-body: var(--font-goudy);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-goudy);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+* {
+  font-family: var(--font-goudy);
+}
+
+.font-heading {
+  font-family: var(--font-goudy);
+  font-weight: 700;
+}
+
+.font-logo,
+.font-accent,
+.font-editorial {
+  font-family: var(--font-goudy);
+}
+
+/* ── Thin scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(54, 21, 21, 0.3);
+  border-radius: 3px;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ── Infinite marquee scroll ── */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
