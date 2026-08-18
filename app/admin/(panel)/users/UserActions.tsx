@@ -30,7 +30,7 @@ export default function UserActions({ uid, role, name, isSelf }: Props) {
   return (
     <div className="flex flex-wrap gap-2 items-center">
       {/* Role toggle */}
-      <form action={roleAction}>
+      {/* <form action={roleAction}>
         <input type="hidden" name="uid" value={uid} />
         <button type="submit" disabled={rolePending}
           className={`text-[10px] tracking-wide uppercase px-3 py-1.5 border transition-colors disabled:opacity-50 ${
@@ -40,7 +40,7 @@ export default function UserActions({ uid, role, name, isSelf }: Props) {
           }`}>
           {rolePending ? "…" : role === "admin" ? "Revoke Admin" : "Make Admin"}
         </button>
-      </form>
+      </form> */}
       {roleState?.message && <span className="text-xs text-ink/40">{roleState.message}</span>}
 
       {/* Reset password */}
