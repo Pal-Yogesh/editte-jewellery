@@ -34,11 +34,17 @@ export default async function proxy(req: NextRequest) {
   }
 
   // ── Customer protected routes ────────────────────────────────────────────
-  if (isCustomerProtected && !isLoggedIn) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/auth/login";
-    url.searchParams.set("from", pathname);
-    return NextResponse.redirect(url);
+  if (isCustomerProtected) {
+    if (!isLoggedIn) {
+      const url = req.nextUrl.clone();
+      url.pathname = "/auth/login";
+      url.searchParams.set("from", pathname);
+      return NextResponse.redirect(url);
+    }
+    // Admins should not access the customer dashboard — send them to /admin
+    if (isAdmin) {
+      return NextResponse.redirect(new URL("/admin", req.nextUrl));
+    }
   }
 
   // ── Redirect logged-in customers away from auth pages ────────────────────
@@ -46,7 +52,11 @@ export default async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
   }
 
-  // ── Redirect logged-in admins away from admin auth pages ─────────────────
+  // ── Redirect logged-in admins away from customer auth and admin auth pages
+  if (isPublicAuth && isAdmin) {
+    return NextResponse.redirect(new URL("/admin", req.nextUrl));
+  }
+
   if (isAdminAuth && isAdmin) {
     return NextResponse.redirect(new URL("/admin", req.nextUrl));
   }

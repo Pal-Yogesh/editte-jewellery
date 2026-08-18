@@ -26,7 +26,7 @@ export default async function NavbarActions() {
         <button className="hover:opacity-60 transition-opacity">Help</button>
         {isLoggedIn ? (
           <Link
-            href="/dashboard"
+            href={session!.role === "admin" ? "/admin" : "/dashboard"}
             className="hover:opacity-60 transition-opacity text-cacao font-heading"
           >
             {userName ?? "Account"}
