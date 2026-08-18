@@ -19,12 +19,13 @@ async function getUsers() {
 export default async function UsersPage() {
   const [session] = await Promise.all([verifyAdmin()]);
   const users = await getUsers();
+  const customers = users.filter((u) => u.role !== "admin");
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1 className="font-heading text-cacao text-3xl">Users</h1>
-        <span className="text-ink/40 text-sm">{users.length} total</span>
+        <span className="text-ink/40 text-sm">{customers.length} total</span>
       </div>
 
       <div className="bg-white rounded-xl border border-ink/5 overflow-x-auto">
@@ -39,7 +40,7 @@ export default async function UsersPage() {
             </tr>
           </thead>
           <tbody>
-            {users.map((u, i) => (
+            {customers.map((u, i) => (
               <tr key={u.uid} className={`border-b border-ink/5 last:border-0 ${i % 2 === 1 ? "bg-salt/50" : ""}`}>
                 <td className="px-5 py-3 font-heading text-cacao whitespace-nowrap">{u.name}</td>
                 <td className="px-5 py-3 text-ink/60 text-xs">{u.email}</td>
