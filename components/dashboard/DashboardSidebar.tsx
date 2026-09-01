@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logoutAction } from "@/app/actions/auth";
+import Image from "next/image";
 
 const NAV = [
   { href: "/dashboard", label: "Home", icon: "⌂" },
@@ -17,13 +18,10 @@ export default function DashboardSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden lg:flex flex-col fixed left-0 top-0 h-full w-64 bg-cacao text-white z-40">
+    <aside className="hidden lg:flex flex-col fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-cacao to-cacao/90 text-white z-40">
       {/* Logo */}
-      <div className="px-8 py-8 border-b border-white/10">
-        <Link href="/" className="font-heading text-xl tracking-[0.3em] uppercase text-white">
-          editte
-        </Link>
-        <p className="text-white/40 text-xs mt-1 tracking-wider">My Account</p>
+      <div className="border-b border-white/10 flex justify-center items-center">
+        <Image src="/logo/logo.png" className="w-28 h-24 invert brightness-0 object-cover" alt="logo" width={1000} height={1000} />
       </div>
 
       {/* Navigation */}
@@ -37,8 +35,11 @@ export default function DashboardSidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm tracking-wide transition-colors
-                ${active ? "bg-white/10 text-white" : "text-white/50 hover:text-white hover:bg-white/5"}`}
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm tracking-wide transition-all duration-200
+                ${active
+                  ? "bg-sage/25 text-sage border-l-2 border-sage"
+                  : "text-white/50 hover:text-white hover:bg-white/5 border-l-2 border-transparent"
+                }`}
             >
               <span className="text-base w-5 text-center">{item.icon}</span>
               {item.label}
@@ -47,12 +48,19 @@ export default function DashboardSidebar() {
         })}
       </nav>
 
-      {/* Logout */}
-      <div className="px-4 pb-8 border-t border-white/10 pt-4">
+      {/* Bottom: Back to site + Logout */}
+      <div className="px-4 pb-8 border-t border-white/10 pt-4 flex flex-col gap-1">
+        <Link
+          href="/"
+          className="flex items-center gap-3 px-4 py-3 text-sm text-sage/60 hover:text-sage transition-colors"
+        >
+          <span className="text-base w-5 text-center">↗</span>
+          Back to Site
+        </Link>
         <form action={logoutAction}>
           <button
             type="submit"
-            className="flex items-center gap-3 px-4 py-3 text-sm text-white/50 hover:text-white transition-colors w-full text-left"
+            className="flex items-center gap-3 px-4 py-3 text-sm text-white/40 hover:text-white transition-colors w-full text-left"
           >
             <span className="text-base w-5 text-center">→</span>
             Sign Out

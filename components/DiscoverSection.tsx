@@ -17,20 +17,20 @@ export default function DiscoverSection() {
         >
           <h2 className="font-heading text-cacao leading-[1.15]">
             <span
-              className="font-bold uppercase tracking-wider block"
-              style={{ fontSize: "clamp(1.5rem, 3.5vw, 2.4rem)" }}
+              className="font-bold  tracking-wider block"
+              style={{ fontSize: "clamp(2rem, 4.5vw, 3rem)" }}
             >
               Discover
             </span>
             <span
-              className="font-bold uppercase tracking-wider block"
-              style={{ fontSize: "clamp(1.5rem, 3.5vw, 2.4rem)" }}
+              className="font-bold  tracking-wider block"
+              style={{ fontSize: "clamp(2rem, 4.5vw, 3rem)" }}
             >
               Your Perfect Match
             </span>
           </h2>
 
-          <p className="text-ink/60 text-xs md:text-sm leading-relaxed mt-5 max-w-sm uppercase tracking-wider">
+          <p className="text-ink/60 text-xs md:text-xl leading-relaxed mt-5 max-w-sm  tracking-wider">
             Let our style consultants help you find accessories that reflect
             confidence, elegance, and timeless craftsmanship.
           </p>
@@ -39,7 +39,7 @@ export default function DiscoverSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="mt-7 inline-block bg-sage text-white text-xs md:text-sm  px-5  py-3.5 font-medium hover:bg-cacao transition-colors duration-300"
+            className="mt-7 inline-block bg-sage text-white text-xs md:text-lg cursor-pointer  px-5  py-3.5 font-medium hover:bg-cacao transition-colors duration-300"
           >
             Book a Personal Appointment
           </motion.button>

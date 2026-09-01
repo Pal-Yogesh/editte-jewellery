@@ -14,8 +14,8 @@ const FALLBACK_SLIDES: SponsoredSlide[] = [
   { id: "s2", title: "Showstopper",   image: "/images-2/Workday.jpg",   order: 1, status: "published" },
   { id: "s3", title: "Everyday",      image: "/images-2/Daily.jpg",     order: 2, status: "published" },
   { id: "s4", title: "Vacation",      image: "/images-2/Vacation.jpg",  order: 3, status: "published" },
-  { id: "s5", title: "Festive Find",  image: "/banner3/Festive-Finds.png", order: 4, status: "published" },
-  { id: "s6", title: "Men Essential", image: "/images-2/Men.jpg",       order: 5, status: "published" },
+  { id: "s5", title: "Festive Finds",  image: "/banner3/Festive-Finds.png", order: 4, status: "published" },
+  { id: "s6", title: "Men's Essential", image: "/images-2/Men.jpg",       order: 5, status: "published" },
   { id: "s7", title: "Gift",          image: "/images-2/gift.jpg",      order: 6, status: "published" },
 ];
 

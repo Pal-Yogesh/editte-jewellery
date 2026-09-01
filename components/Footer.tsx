@@ -107,19 +107,19 @@ export default function Footer() {
             <p className="text-salt/80 text-sm">@ Copyright 2026 . editte</p>
           <div className="flex items-center gap-5">
             <a
-              href="#"
+              href="/cookie-policy"
               className="text-salt/80 text-sm hover:text-salt transition-colors"
             >
-              Return Policy
+              Cookie Policy
             </a>
             <a
-              href="#"
+              href="/privacy-policy"
               className="text-salt/80 text-sm hover:text-salt transition-colors"
             >
               Privacy Policy
             </a>
             <a
-              href="#"
+              href="/term-condition"
               className="text-salt/80 text-sm hover:text-salt transition-colors"
             >
               Terms Condition

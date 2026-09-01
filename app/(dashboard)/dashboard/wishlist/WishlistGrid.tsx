@@ -6,12 +6,12 @@ import type { WishlistItem } from "@/lib/types";
 function WishlistCard({ item }: { item: WishlistItem }) {
   const [state, action, pending] = useActionState(removeFromWishlistAction, undefined);
   return (
-    <div className="bg-white rounded-xl border border-ink/5 overflow-hidden group">
-      <div className="aspect-square overflow-hidden relative">
+    <div className="bg-white border border-ink/5 overflow-hidden group">
+      <div className=" overflow-hidden relative">
         <img
           src={item.image}
           alt={item.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-36 object-contain group-hover:scale-105 transition-transform duration-500"
         />
         <form action={action} className="absolute top-2 right-2">
           <input type="hidden" name="id" value={item.id} />
@@ -25,11 +25,11 @@ function WishlistCard({ item }: { item: WishlistItem }) {
           </button>
         </form>
       </div>
-      <div className="p-4">
-        <p className="text-xs text-ink/40 uppercase tracking-wider mb-1">{item.category}</p>
+      <div className="p-4 grid grid-cols-2">
+        <p className="text-xs text-ink font-bold uppercase tracking-wider mb-1">{item.category}</p>
         <p className="font-heading text-cacao text-sm truncate">{item.name}</p>
-        <p className="text-ink/60 text-sm mt-1 font-medium">₹{item.price.toLocaleString("en-IN")}</p>
-        <p className="text-xs text-ink/30 mt-1">
+        <p className="text-ink/60 text-sm mt-1 font-bold">₹{item.price.toLocaleString("en-IN")}</p>
+        <p className="text-xs font-bold text-ink mt-1">
           Added {new Date(item.addedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
         </p>
       </div>

@@ -21,10 +21,7 @@ export default async function NavbarActions() {
     <div className="flex flex-col items-end text-xs sm:text-sm tracking-[0.18em] uppercase">
       <button className="hover:opacity-60 transition-opacity pb-1">Search</button>
       <span className="w-full h-px bg-cacao/40 mb-6" />
-      <div className="flex flex-col items-end gap-5 lg:mt-14">
-        <button className="hover:opacity-60 transition-opacity">Bag</button>
-        <button className="hover:opacity-60 transition-opacity">Help</button>
-        {isLoggedIn ? (
+      {isLoggedIn ? (
           <Link
             href={session!.role === "admin" ? "/admin" : "/dashboard"}
             className="hover:opacity-60 transition-opacity text-cacao font-heading"
@@ -39,6 +36,10 @@ export default async function NavbarActions() {
             Log In
           </Link>
         )}
+      <div className="flex flex-col items-end gap-5 lg:mt-8">
+        <button className="hover:opacity-60 transition-opacity">Bag</button>
+        <button className="hover:opacity-60 transition-opacity">Help</button>
+        
       </div>
     </div>
   );

@@ -50,8 +50,11 @@ export default function MobileNav() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm tracking-wide transition-colors
-                      ${active ? "bg-white/10 text-white" : "text-white/50 hover:text-white hover:bg-white/5"}`}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm tracking-wide transition-all duration-200
+                      ${active
+                        ? "bg-sage/25 text-sage border-l-2 border-sage"
+                        : "text-white/50 hover:text-white hover:bg-white/5 border-l-2 border-transparent"
+                      }`}
                   >
                     <span className="w-5 text-center">{item.icon}</span>
                     {item.label}
