@@ -12,7 +12,6 @@ type Category =
   | "MEN'S EDITTE"
   | "DESIGNERS"
   | "OCCASIONS"
-  | "GIFTS"
   | "SALE";
 
 interface NavItem {
@@ -114,24 +113,9 @@ const NAV_DATA: Record<Category, NavSection[]> = {
   DESIGNERS: [
     {
       number: "01",
-      title: "FEATURED",
+      title: "DESIGNERS",
       items: [
-        { label: "Meet the Artisans" },
-        { label: "Collaborations", badge: "NEW" },
-        { label: "Apply as Designer" },
-      ],
-    },
-    {
-      number: "02",
-      title: "DESIGNERS LIST",
-      items: [
-        { label: "Amrapali" },
-        { label: "Tribe by Amrapali" },
-        { label: "Ritika Sachdeva" },
-        { label: "Sangeeta Boochra" },
-        { label: "Lai" },
-        { label: "Dhora" },
-        { label: "View All Designers" },
+        { label: "Coming Soon" },
       ],
     },
   ],
@@ -146,20 +130,6 @@ const NAV_DATA: Record<Category, NavSection[]> = {
         { label: "Vacation" },
         { label: "Festive Finds" },
         { label: "Gift" },
-      ],
-    },
-  ],
-  GIFTS: [
-    {
-      number: "01",
-      title: "GIFT GUIDE",
-      items: [
-        { label: "Gifts for Her" },
-        { label: "Gifts for Him" },
-        { label: "Gifts Under ₹2,000" },
-        { label: "Gifts Under ₹5,000" },
-        { label: "Gift Cards" },
-        { label: "Wedding Gifting" },
       ],
     },
   ],
@@ -184,7 +154,6 @@ const CATEGORIES: Category[] = [
   "MEN'S EDITTE",
   "DESIGNERS",
   "OCCASIONS",
-  "GIFTS",
   "SALE",
 ];
 
@@ -312,7 +281,7 @@ function CategoryList({
                     ? "text-cacao"
                     : "text-cacao/25 group-hover:text-cacao/50"
                 }`}
-                style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.4rem)" }}
+                style={{ fontSize: "clamp(1rem, 3vw, 2rem)" }}
               >
                 {cat}
               </span>
@@ -407,7 +376,6 @@ const CATEGORY_IMAGES: Record<Category, string[]> = {
   "MEN'S EDITTE": ["/images-2/Men.jpg", "/basic-products/men-chain.png"],
   DESIGNERS:      ["/images-3/image-1.png", "/images-3/image-2.png"],
   OCCASIONS:      ["/images-2/Thebridal.jpg", "/images-2/Vacation.jpg"],
-  GIFTS:          ["/images-2/gift.jpg", "/basic-products/bangles.png"],
   SALE:           ["/images-2/Workday.jpg", "/basic-products/earrings.png"],
 };
 
@@ -425,7 +393,7 @@ function ImagePanel({ category }: { category: Category }) {
           className="flex flex-col gap-4"
         >
           {images.map((src, i) => (
-            <div key={i} className="w-[220px] h-[160px] overflow-hidden rounded-lg">
+            <div key={i} className="w-[250px] h-[230px] overflow-hidden">
               <img
                 src={src}
                 alt={`${category} collection`}

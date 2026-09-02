@@ -1,7 +1,7 @@
 "use client";
 
 const LINKS = [
-  { label: "Shop By", href: "#" },
+  // { label: "Shop By", href: "#" },
   { label: "Women", href: "#" },
   { label: "Men's Editte", href: "#" },
   { label: "Brands", href: "#" },

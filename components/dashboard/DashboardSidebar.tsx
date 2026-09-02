@@ -21,7 +21,7 @@ export default function DashboardSidebar() {
     <aside className="hidden lg:flex flex-col fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-cacao to-cacao/90 text-white z-40">
       {/* Logo */}
       <div className="border-b border-white/10 flex justify-center items-center">
-        <Image src="/logo/logo.png" className="w-28 h-24 invert brightness-0 object-cover" alt="logo" width={1000} height={1000} />
+        <Image src="/logo/start-letter-logo-transparent.png" className="w-12 h-12 my-5 invert brightness-0 object-cover" alt="logo" width={1000} height={1000} />
       </div>
 
       {/* Navigation */}

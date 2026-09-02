@@ -30,8 +30,6 @@ export default async function DashboardHome() {
     getCounts(session.uid),
   ]);
 
-  const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
   return (
     <div className="flex flex-col gap-10">
@@ -41,9 +39,8 @@ export default async function DashboardHome() {
         >
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "url('/line.png')", backgroundSize: "cover" }} />
         <div className="absolute top-0 right-0 w-32 h-32 bg-sage/10 rounded-full blur-3xl" />
-        <p className="text-sage text-xs tracking-[0.25em] uppercase mb-2 relative z-10">{greeting}</p>
         <h1 className="font-heading text-3xl md:text-4xl relative z-10">
-          Hi, {user?.name?.split(" ")[0] ?? "there"} ✦
+          Hi, {user?.name?.split(" ")[0] ?? "there"} 
         </h1>
         <p className="text-white/50 text-sm mt-2 relative z-10">Welcome to your editte account</p>
         {!user?.emailVerified && (
