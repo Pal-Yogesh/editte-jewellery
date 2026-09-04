@@ -56,7 +56,9 @@ export default function SponsoredProduct({ slides: propSlides }: { slides?: Spon
         >
           {slides.map((s, i) => (
             <SwiperSlide key={`title-${i}`}>
-              <p className="slider-title">{s.title}</p>
+              <p className="slider-title" style={{
+                color:"#F9EEDA"
+              }}>{s.title}</p>
             </SwiperSlide>
           ))}
         </Swiper>

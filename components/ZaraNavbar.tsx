@@ -281,7 +281,7 @@ function CategoryList({
                     ? "text-cacao"
                     : "text-cacao/25 group-hover:text-cacao/50"
                 }`}
-                style={{ fontSize: "clamp(1rem, 3vw, 2rem)" }}
+                style={{ fontSize: "clamp(1rem, 3vw, 1.75rem)" }}
               >
                 {cat}
               </span>

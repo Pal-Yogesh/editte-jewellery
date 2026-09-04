@@ -12,10 +12,10 @@ function ArrivalCard({ product, isLoggedIn }: { product: NewArrivalItem; isLogge
   const inWish = wishState?.success;
 
   return (
-    <div className="shrink-0 w-72 group cursor-pointer">
-      <div className="bg-white shadow-sm overflow-hidden p-3">
+    <div className=" w-60 group cursor-pointer">
+      <div className="bg-white w-52 shadow-sm overflow-hidden p-3">
         {/* Image with heart on top-right */}
-        <div className="relative w-full h-40  overflow-hidden">
+        <div className="relative w-full h-36  overflow-hidden">
           <img
             src={product.image}
             alt={product.name}
@@ -97,7 +97,7 @@ export default function NewArrivalsScroller({ items, isLoggedIn }: Props) {
     <div className="flex items-center gap-3">
       {/* Left arrow — sage default */}
       <button onClick={() => scroll("left")} aria-label="Scroll left"
-        className="shrink-0 w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center text-sage hover:bg-sage hover:text-white transition-colors">
+        className="shrink-0 w-9 h-9 rounded-full bg-sage shadow-md flex items-center justify-center text-white hover:bg-cacao hover:text-sage transition-colors">
         <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" /></svg>
       </button>
       <div ref={scrollRef} className="flex gap-4 overflow-x-auto overflow-y-hidden hide-scrollbar pb-2 scroll-smooth flex-1">
@@ -105,7 +105,7 @@ export default function NewArrivalsScroller({ items, isLoggedIn }: Props) {
       </div>
       {/* Right arrow — sage default */}
       <button onClick={() => scroll("right")} aria-label="Scroll right"
-        className="shrink-0 w-9 h-9 rounded-full bg-white shadow-md flex items-center justify-center text-sage hover:bg-sage hover:text-white transition-colors">
+        className="shrink-0 w-9 h-9 rounded-full bg-sage shadow-md flex items-center justify-center text-white hover:bg-cacao hover:text-sage transition-colors">
         <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6" /></svg>
       </button>
     </div>
