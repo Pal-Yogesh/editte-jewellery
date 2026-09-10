@@ -94,12 +94,12 @@ export default function CategoryFilters({ productTypes, designers, priceRange, o
           <div className="flex items-center gap-2 text-sm">
             <div className="flex items-center border border-ink/15 rounded px-2.5 py-2 flex-1 bg-white">
               <span className="text-ink/35 mr-1">₹</span>
-              <input type="number" value={minPrice} onChange={(e) => setMinPrice(Number(e.target.value))} className="w-full bg-transparent outline-none text-sm text-cacao" />
+              <input type="number" value={minPrice} onChange={(e) => setMinPrice(Number(e.target.value))} className="w-full bg-transparent outline-none text-sm text-cacao font-numeric" />
             </div>
             <span className="text-ink/25 text-xs font-heading">To</span>
             <div className="flex items-center border border-ink/15 rounded px-2.5 py-2 flex-1 bg-white">
               <span className="text-ink/35 mr-1">₹</span>
-              <input type="number" value={maxPrice} onChange={(e) => setMaxPrice(Number(e.target.value))} className="w-full bg-transparent outline-none text-sm text-cacao" />
+              <input type="number" value={maxPrice} onChange={(e) => setMaxPrice(Number(e.target.value))} className="w-full bg-transparent outline-none text-sm text-cacao font-numeric" />
             </div>
           </div>
         </div>
@@ -131,10 +131,10 @@ export default function CategoryFilters({ productTypes, designers, priceRange, o
 
       {/* Actions */}
       <div className="flex gap-3 mt-8">
-        <button onClick={clearAll} className="flex-1 bg-cacao text-white text-[11px] tracking-[0.18em] uppercase py-3 hover:bg-ink transition-colors">
+        <button onClick={clearAll} className="flex-1 bg-sage text-white text-[11px] tracking-[0.18em] uppercase py-3 hover:bg-cacao transition-colors">
           Clear All
         </button>
-        <button onClick={applyFilters} className="flex-1 bg-cacao text-white text-[11px] tracking-[0.18em] uppercase py-3 hover:bg-sage transition-colors">
+        <button onClick={applyFilters} className="flex-1 bg-sage text-white text-[11px] tracking-[0.18em] uppercase py-3 px-1 hover:bg-cacao transition-colors">
           Apply Filters
         </button>
       </div>

@@ -2,7 +2,7 @@
 
 :root {
   /* ── editte brand colours ── */
-  --salt: #F9EEDA;
+  --salt: #FAF5F0;
   --cacao: #361515;
   --rose: #c87a79;
   --sage: #b3ad6e;
@@ -140,4 +140,11 @@ body {
 .prose-editte strong {
   opacity: 1;
   color: var(--cacao);
+}
+
+/* Helvetica Neue for numeric values and specific headings */
+.font-numeric {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.5px;
 }

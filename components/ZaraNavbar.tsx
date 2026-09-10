@@ -9,7 +9,7 @@ import Image from "next/image";
 type Category =
   | "NEW IN"
   | "WOMEN"
-  | "MEN'S EDITTE"
+  | "MEN"
   | "DESIGNERS"
   | "OCCASIONS"
   | "SALE";
@@ -66,19 +66,19 @@ const NAV_DATA: Record<Category, NavSection[]> = {
         { label: "Potli Bags" },
       ],
     },
+    // {
+    //   number: "03",
+    //   title: "FOOTWEAR",
+    //   items: [
+    //     { label: "Heels" },
+    //     { label: "Flats" },
+    //     { label: "Wedges" },
+    //     { label: "Juttis" },
+    //     { label: "Sandals" },
+    //   ],
+    // },
     {
       number: "03",
-      title: "FOOTWEAR",
-      items: [
-        { label: "Heels" },
-        { label: "Flats" },
-        { label: "Wedges" },
-        { label: "Juttis" },
-        { label: "Sandals" },
-      ],
-    },
-    {
-      number: "04",
       title: "ACCESSORIES",
       items: [
         { label: "Hair Accessories" },
@@ -89,7 +89,7 @@ const NAV_DATA: Record<Category, NavSection[]> = {
       ],
     },
   ],
-  "MEN'S EDITTE": [
+  "MEN": [
     {
       number: "01",
       title: "NEW IN",
@@ -151,7 +151,7 @@ const NAV_DATA: Record<Category, NavSection[]> = {
 const CATEGORIES: Category[] = [
   "NEW IN",
   "WOMEN",
-  "MEN'S EDITTE",
+  "MEN",
   "DESIGNERS",
   "OCCASIONS",
   "SALE",
@@ -373,7 +373,7 @@ function SectionContent({ sections }: { sections: NavSection[] }) {
 const CATEGORY_IMAGES: Record<Category, string[]> = {
   "NEW IN":       ["/images-2/Daily.jpg", "/basic-products/ring.png"],
   WOMEN:          ["/basic-products/earrings.png", "/basic-products/neck-piece.png"],
-  "MEN'S EDITTE": ["/images-2/Men.jpg", "/basic-products/men-chain.png"],
+  "MEN": ["/images-2/Men.jpg", "/basic-products/men-chain.png"],
   DESIGNERS:      ["/images-3/image-1.png", "/images-3/image-2.png"],
   OCCASIONS:      ["/images-2/Thebridal.jpg", "/images-2/Vacation.jpg"],
   SALE:           ["/images-2/Workday.jpg", "/basic-products/earrings.png"],

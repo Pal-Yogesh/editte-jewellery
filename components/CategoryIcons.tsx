@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
@@ -12,10 +13,24 @@ const CATEGORIES = [
 ];
 
 export default function CategoryIcons() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const scroll = (dir: "left" | "right") =>
+    scrollRef.current?.scrollBy({ left: dir === "right" ? 220 : -220, behavior: "smooth" });
+
   return (
     <section className="py-12 px-6">
-      <div className="max-w-7xl mx-auto flex items-start gap-2">
-        <div className="flex-1 grid grid-cols-2 sm:grid-cols-5 gap-8 md:gap-4">
+      <div className="max-w-7xl mx-auto flex items-center gap-4">
+        {/* Left arrow — line with arrowhead ← */}
+        <button onClick={() => scroll("left")} aria-label="Scroll left"
+          className="shrink-0 text-cacao/60 hover:text-cacao transition-colors">
+          <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+        </button>
+
+        {/* Scrollable categories */}
+        <div ref={scrollRef} className="flex-1 flex gap-8 md:gap-4 overflow-x-auto hide-scrollbar scroll-smooth">
           {CATEGORIES.map(({ label, image, slug }, i) => (
             <motion.div
               key={label}
@@ -23,6 +38,7 @@ export default function CategoryIcons() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5, delay: i * 0.08, ease: "easeOut" }}
+              className="shrink-0 flex-1 min-w-[120px]"
             >
               <Link
                 href={`/category/${slug}`}
@@ -43,7 +59,17 @@ export default function CategoryIcons() {
             </motion.div>
           ))}
         </div>
+
+        {/* Right arrow — line with arrowhead → */}
+        <button onClick={() => scroll("right")} aria-label="Scroll right"
+          className="shrink-0 text-cacao/60 hover:text-cacao transition-colors">
+          <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </button>
       </div>
+
       <div className="flex justify-center items-center">
         <Link href="/category/bangles">
           <motion.span

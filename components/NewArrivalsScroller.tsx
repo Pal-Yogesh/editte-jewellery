@@ -51,7 +51,7 @@ function ArrivalCard({ product, isLoggedIn }: { product: NewArrivalItem; isLogge
         <div className="mt-3 flex items-end justify-between gap-2">
           <div>
             <p className="text-ink text-sm font-medium">{product.name}</p>
-            <p className="text-cacao/60 text-xs mt-0.5">₹ {product.price.toLocaleString("en-IN")}</p>
+            <p className="font-numeric text-cacao/60 text-xs mt-0.5">₹ {product.price.toLocaleString("en-IN")}</p>
           </div>
 
           {/* Cart only — heart moved to image */}
@@ -95,18 +95,24 @@ export default function NewArrivalsScroller({ items, isLoggedIn }: Props) {
 
   return (
     <div className="flex items-center gap-3">
-      {/* Left arrow — sage default */}
+      {/* Left arrow — line with arrowhead ← */}
       <button onClick={() => scroll("left")} aria-label="Scroll left"
-        className="shrink-0 w-9 h-9 rounded-full bg-sage shadow-md flex items-center justify-center text-white hover:bg-cacao hover:text-sage transition-colors">
-        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" /></svg>
+        className="shrink-0 text-cacao/60 hover:text-cacao transition-colors">
+        <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+          <line x1="19" y1="12" x2="5" y2="12" />
+          <polyline points="12 19 5 12 12 5" />
+        </svg>
       </button>
-      <div ref={scrollRef} className="flex gap-4 overflow-x-auto overflow-y-hidden hide-scrollbar pb-2 scroll-smooth flex-1">
+      <div ref={scrollRef} className="flex gap-10 overflow-x-auto overflow-y-hidden hide-scrollbar pb-2 scroll-smooth flex-1">
         {items.map((p) => <ArrivalCard key={p.id} product={p} isLoggedIn={isLoggedIn} />)}
       </div>
-      {/* Right arrow — sage default */}
+      {/* Right arrow — line with arrowhead → */}
       <button onClick={() => scroll("right")} aria-label="Scroll right"
-        className="shrink-0 w-9 h-9 rounded-full bg-sage shadow-md flex items-center justify-center text-white hover:bg-cacao hover:text-sage transition-colors">
-        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6" /></svg>
+        className="shrink-0 text-cacao/60 hover:text-cacao transition-colors">
+        <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
       </button>
     </div>
   );

@@ -6,7 +6,11 @@ import {
   getDesigners,
   getPriceRange,
 } from "@/lib/categoryProducts";
+import { getSession } from "@/lib/session";
 import CategoryPageClient from "./CategoryPageClient";
+import ZaraNavbar from "@/components/ZaraNavbar";
+import NavbarActions from "@/components/NavbarActions";
+import Footer from "@/components/Footer";
 import Link from "next/link";
 
 export function generateStaticParams() {
@@ -33,9 +37,13 @@ export default async function CategoryPage({
   const productTypes = getProductTypes(products);
   const designers = getDesigners(products);
   const priceRange = getPriceRange(products);
+  const session = await getSession();
+  const isLoggedIn = !!session?.uid;
 
   return (
-    <div className="min-h-screen bg-salt">
+    <>
+      <ZaraNavbar actions={<NavbarActions />} />
+      <div className="min-h-screen bg-salt">
       {/* Breadcrumb */}
       <div className="max-w-7xl mx-auto px-6 pt-24 pb-4">
         <div className="flex items-center gap-2 text-xs text-ink/40">
@@ -61,8 +69,11 @@ export default async function CategoryPage({
           productTypes={productTypes}
           designers={designers}
           priceRange={priceRange}
+          isLoggedIn={isLoggedIn}
         />
       </div>
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 }

@@ -9,6 +9,7 @@ interface Props {
   productTypes: string[];
   designers: string[];
   priceRange: [number, number];
+  isLoggedIn: boolean;
 }
 
 export default function CategoryPageClient({
@@ -16,6 +17,7 @@ export default function CategoryPageClient({
   productTypes,
   designers,
   priceRange,
+  isLoggedIn,
 }: Props) {
   const [filters, setFilters] = useState<FilterState>({
     minPrice: priceRange[0],
@@ -80,7 +82,7 @@ export default function CategoryPageClient({
       )}
 
       {/* Product grid */}
-      <CategoryProductGrid products={products} filters={filters} />
+      <CategoryProductGrid products={products} filters={filters} isLoggedIn={isLoggedIn} />
     </div>
   );
 }
