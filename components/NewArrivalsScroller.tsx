@@ -46,41 +46,41 @@ function ArrivalCard({ product, isLoggedIn }: { product: NewArrivalItem; isLogge
             </Link>
           )}
         </div>
+      </div>
 
-        {/* Bottom row: name+price left, cart button right */}
-        <div className="mt-3 flex items-end justify-between gap-2">
-          <div>
-            <p className="text-ink text-sm font-medium">{product.name}</p>
-            <p className="font-numeric text-cacao/60 text-xs mt-0.5">₹ {product.price.toLocaleString("en-IN")}</p>
-          </div>
-
-          {/* Cart only — heart moved to image */}
-          {isLoggedIn ? (
-            <form action={cartAction}>
-              <input type="hidden" name="productId" value={product.id} />
-              <input type="hidden" name="name" value={product.name} />
-              <input type="hidden" name="image" value={product.image} />
-              <input type="hidden" name="price" value={product.price} />
-              <input type="hidden" name="category" value={product.category} />
-              <button type="submit" disabled={cartPending || inCart} title={inCart ? "In cart" : "Add to cart"}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] tracking-wide transition-all duration-300
-                  ${inCart ? "bg-sage text-white cursor-default" : "bg-ink/8 text-ink/50 hover:bg-cacao hover:text-white"}`}>
-                {inCart ? (
-                  <><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>Added</>
-                ) : cartPending ? (
-                  <svg className="animate-spin" width="11" height="11" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>
-                ) : (
-                  <><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Add</>
-                )}
-              </button>
-            </form>
-          ) : (
-            <Link href="/auth/login"
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] tracking-wide bg-ink/8 text-ink/50 hover:bg-cacao hover:text-white transition-all duration-300">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Add
-            </Link>
-          )}
+      {/* Below the image box: name+price left, cart button right */}
+      <div className="w-52 mt-3 flex items-end justify-between gap-2">
+        <div>
+          <p className="text-ink text-sm font-medium">{product.name}</p>
+          <p className="font-numeric text-cacao/60 text-xs mt-0.5">₹ {product.price.toLocaleString("en-IN")}</p>
         </div>
+
+        {/* Cart only — heart moved to image */}
+        {isLoggedIn ? (
+          <form action={cartAction}>
+            <input type="hidden" name="productId" value={product.id} />
+            <input type="hidden" name="name" value={product.name} />
+            <input type="hidden" name="image" value={product.image} />
+            <input type="hidden" name="price" value={product.price} />
+            <input type="hidden" name="category" value={product.category} />
+            <button type="submit" disabled={cartPending || inCart} title={inCart ? "In cart" : "Add to cart"}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] tracking-wide transition-all duration-300
+                ${inCart ? "bg-sage text-white cursor-default" : "bg-ink/8 text-ink/50 hover:bg-cacao hover:text-white"}`}>
+              {inCart ? (
+                <><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>Added</>
+              ) : cartPending ? (
+                <svg className="animate-spin" width="11" height="11" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>
+              ) : (
+                <><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Add</>
+              )}
+            </button>
+          </form>
+        ) : (
+          <Link href="/auth/login"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] tracking-wide bg-ink/8 text-ink/50 hover:bg-cacao hover:text-white transition-all duration-300">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Add
+          </Link>
+        )}
       </div>
     </div>
   );

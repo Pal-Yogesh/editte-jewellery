@@ -8,37 +8,53 @@ interface Props {
   products: CategoryProduct[];
   productTypes: string[];
   designers: string[];
+  colours: string[];
+  materials: string[];
+  sizes: string[];
   priceRange: [number, number];
   isLoggedIn: boolean;
+  showViewAll: boolean;
 }
 
 export default function CategoryPageClient({
   products,
   productTypes,
   designers,
+  colours,
+  materials,
+  sizes,
   priceRange,
   isLoggedIn,
+  showViewAll,
 }: Props) {
   const [filters, setFilters] = useState<FilterState>({
     minPrice: priceRange[0],
     maxPrice: priceRange[1],
     productTypes: [],
     designers: [],
+    colours: [],
+    materials: [],
+    sizes: [],
     sort: "featured",
   });
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
+  const filterProps = {
+    productTypes,
+    designers,
+    colours,
+    materials,
+    sizes,
+    priceRange,
+    showViewAll,
+  };
+
   return (
     <div className="flex gap-10 items-start">
       {/* Desktop sidebar filters */}
       <aside className="hidden lg:block w-64 shrink-0 sticky top-24">
-        <CategoryFilters
-          productTypes={productTypes}
-          designers={designers}
-          priceRange={priceRange}
-          onFilter={setFilters}
-        />
+        <CategoryFilters {...filterProps} onFilter={setFilters} />
       </aside>
 
       {/* Mobile filter toggle */}
@@ -69,9 +85,7 @@ export default function CategoryPageClient({
               </button>
             </div>
             <CategoryFilters
-              productTypes={productTypes}
-              designers={designers}
-              priceRange={priceRange}
+              {...filterProps}
               onFilter={(f) => {
                 setFilters(f);
                 setMobileFiltersOpen(false);

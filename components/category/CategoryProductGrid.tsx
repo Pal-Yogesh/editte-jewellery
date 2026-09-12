@@ -9,10 +9,11 @@ import Link from "next/link";
 type GridCols = 2 | 3 | 4;
 
 const SORT_OPTIONS = [
-  { value: "featured", label: "Featured" },
+  { value: "", label: "Sort By" },
   { value: "price-asc", label: "Price: Low to High" },
   { value: "price-desc", label: "Price: High to Low" },
-  { value: "newest", label: "Newest" },
+  { value: "name-asc", label: "A to Z" },
+  { value: "name-desc", label: "Z to A" },
 ];
 
 function ProductCard({ product, isLoggedIn }: { product: CategoryProduct; isLoggedIn: boolean }) {
@@ -116,13 +117,17 @@ interface Props {
 
 export default function CategoryProductGrid({ products, filters, isLoggedIn }: Props) {
   const [gridCols, setGridCols] = useState<GridCols>(3);
-  const [sort, setSort] = useState("featured");
+  const [sort, setSort] = useState("");
 
   const filtered = useMemo(() => {
     let result = products.filter((p) => {
       if (p.price < filters.minPrice || p.price > filters.maxPrice) return false;
       if (filters.productTypes.length > 0 && !filters.productTypes.includes(p.productType)) return false;
       if (filters.designers.length > 0 && !filters.designers.includes(p.designer)) return false;
+      if (filters.colours.length > 0 && !filters.colours.includes(p.colour)) return false;
+      if (filters.materials.length > 0 && !filters.materials.includes(p.material)) return false;
+      // A product matches if it stocks any of the selected sizes.
+      if (filters.sizes.length > 0 && !p.sizes.some((s) => filters.sizes.includes(s))) return false;
       return true;
     });
 
@@ -133,8 +138,11 @@ export default function CategoryProductGrid({ products, filters, isLoggedIn }: P
       case "price-desc":
         result = [...result].sort((a, b) => b.price - a.price);
         break;
-      case "newest":
-        result = [...result].reverse();
+      case "name-asc":
+        result = [...result].sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "name-desc":
+        result = [...result].sort((a, b) => b.name.localeCompare(a.name));
         break;
     }
 

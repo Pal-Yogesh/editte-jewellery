@@ -41,7 +41,7 @@ export default function DiscoverSection() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="mt-7 inline-block bg-sage text-white text-xs md:text-lg cursor-pointer  px-5  py-3.5 font-medium hover:bg-cacao transition-colors duration-300"
           >
-            Book a Personal Appointment
+            Book A Personal Appointment
           </motion.button>
         </motion.div>
 

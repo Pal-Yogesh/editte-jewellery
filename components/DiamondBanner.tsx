@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function DiamondBanner() {
   return (
-    <div className="relative w-full h-full overflow-hidden bg-salt">
+    <div className="relative w-full h-full overflow-hidden">
       {/* Heading — sits above the building (z-[5]) */}
         {/* <Image
           src="/dummy.jpeg"
@@ -30,7 +30,7 @@ export default function DiamondBanner() {
       </div> */}
 
       {/* Foreground building/trees layer */}
-      <div className="absolute inset-x-[-5%] bottom-0 z-[4] pointer-events-none">
+      <div className="absolute inset-x-[-6%] bottom-0 z-[4] pointer-events-none">
         <Image
           src="https://firebasestorage.googleapis.com/v0/b/multi-vendor-jewellery.firebasestorage.app/o/images%2F1000014531.jpg?alt=media&token=5387d901-98f4-457f-9e03-b46794883bdd"
           width={1000}

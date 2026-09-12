@@ -1,11 +1,18 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
+import { ALL_PRODUCTS_SLUG, COLOUR_SWATCHES } from "@/lib/categoryProducts";
 
 interface Props {
   productTypes: string[];
   designers: string[];
+  colours: string[];
+  materials: string[];
+  sizes: string[];
   priceRange: [number, number];
   onFilter: (filters: FilterState) => void;
+  /** Hide the "View All Products" rail link when already on the all-products page. */
+  showViewAll?: boolean;
 }
 
 export interface FilterState {
@@ -13,6 +20,9 @@ export interface FilterState {
   maxPrice: number;
   productTypes: string[];
   designers: string[];
+  colours: string[];
+  materials: string[];
+  sizes: string[];
   sort: string;
 }
 
@@ -43,30 +53,81 @@ function FilterSection({
   );
 }
 
-export default function CategoryFilters({ productTypes, designers, priceRange, onFilter }: Props) {
+export default function CategoryFilters({
+  productTypes,
+  designers,
+  colours,
+  materials,
+  sizes,
+  priceRange,
+  onFilter,
+  showViewAll = true,
+}: Props) {
   const [minPrice, setMinPrice] = useState(priceRange[0]);
   const [maxPrice, setMaxPrice] = useState(priceRange[1]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedDesigners, setSelectedDesigners] = useState<string[]>([]);
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({ price: true, productType: false, designer: false });
+  const [selectedColours, setSelectedColours] = useState<string[]>([]);
+  const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    price: true,
+    productType: false,
+    colour: false,
+    material: false,
+    size: false,
+    designer: false,
+  });
 
   function toggle(s: string) { setOpenSections((p) => ({ ...p, [s]: !p[s] })); }
   function toggleItem(list: string[], item: string) { return list.includes(item) ? list.filter((i) => i !== item) : [...list, item]; }
 
   function applyFilters() {
-    onFilter({ minPrice, maxPrice, productTypes: selectedTypes, designers: selectedDesigners, sort: "featured" });
+    onFilter({
+      minPrice,
+      maxPrice,
+      productTypes: selectedTypes,
+      designers: selectedDesigners,
+      colours: selectedColours,
+      materials: selectedMaterials,
+      sizes: selectedSizes,
+      sort: "featured",
+    });
   }
   function clearAll() {
     setMinPrice(priceRange[0]);
     setMaxPrice(priceRange[1]);
     setSelectedTypes([]);
     setSelectedDesigners([]);
-    onFilter({ minPrice: priceRange[0], maxPrice: priceRange[1], productTypes: [], designers: [], sort: "featured" });
+    setSelectedColours([]);
+    setSelectedMaterials([]);
+    setSelectedSizes([]);
+    onFilter({
+      minPrice: priceRange[0],
+      maxPrice: priceRange[1],
+      productTypes: [],
+      designers: [],
+      colours: [],
+      materials: [],
+      sizes: [],
+      sort: "featured",
+    });
   }
 
   return (
     <div className="w-full">
       <h2 className="font-heading text-cacao text-2xl mb-2" style={{ fontStyle: "italic" }}>Filters</h2>
+
+      {/* View All Products — left rail shortcut out of the current category */}
+      {showViewAll && (
+        <Link
+          href={`/category/${ALL_PRODUCTS_SLUG}`}
+          className="flex items-center justify-between border border-cacao/20 px-3 py-2.5 mb-1 text-[11px] tracking-[0.18em] uppercase text-cacao hover:bg-cacao hover:text-white transition-colors"
+        >
+          View All Products
+          <span aria-hidden>→</span>
+        </Link>
+      )}
 
       {/* Price */}
       <FilterSection title="Price" open={openSections.price} onToggle={() => toggle("price")}>
@@ -117,13 +178,76 @@ export default function CategoryFilters({ productTypes, designers, priceRange, o
         </div>
       </FilterSection>
 
+      {/* Colour — swatch chips */}
+      <FilterSection title="Colour" open={openSections.colour} onToggle={() => toggle("colour")}>
+        <div className="flex flex-col gap-2.5">
+          {colours.map((colour) => {
+            const active = selectedColours.includes(colour);
+            return (
+              <button
+                key={colour}
+                onClick={() => setSelectedColours((p) => toggleItem(p, colour))}
+                aria-pressed={active}
+                className="flex items-center gap-3 text-left group"
+              >
+                <span
+                  className={`w-4 h-4 rounded-full border transition-all ${
+                    active ? "border-cacao ring-2 ring-cacao/25 ring-offset-1" : "border-ink/20"
+                  }`}
+                  style={{ backgroundColor: COLOUR_SWATCHES[colour] ?? "#D9D4CC" }}
+                />
+                <span className={`text-sm transition-colors ${active ? "text-cacao" : "text-ink/60 group-hover:text-cacao"}`}>
+                  {colour}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </FilterSection>
+
+      {/* Material */}
+      <FilterSection title="Material" open={openSections.material} onToggle={() => toggle("material")}>
+        <div className="flex flex-col gap-2.5">
+          {materials.map((material) => (
+            <label key={material} className="flex items-center gap-3 cursor-pointer group">
+              <input type="checkbox" checked={selectedMaterials.includes(material)} onChange={() => setSelectedMaterials((p) => toggleItem(p, material))} className="accent-sage w-4 h-4 rounded" />
+              <span className="text-sm text-ink/60 group-hover:text-cacao transition-colors">{material}</span>
+            </label>
+          ))}
+        </div>
+      </FilterSection>
+
+      {/* Size — chip grid */}
+      <FilterSection title="Size" open={openSections.size} onToggle={() => toggle("size")}>
+        <div className="flex flex-wrap gap-2">
+          {sizes.map((size) => {
+            const active = selectedSizes.includes(size);
+            return (
+              <button
+                key={size}
+                onClick={() => setSelectedSizes((p) => toggleItem(p, size))}
+                aria-pressed={active}
+                className={`min-w-[3rem] px-3 py-1.5 text-xs font-numeric border transition-colors ${
+                  active
+                    ? "border-cacao bg-cacao text-white"
+                    : "border-ink/15 text-ink/60 hover:border-cacao hover:text-cacao"
+                }`}
+              >
+                {size}
+              </button>
+            );
+          })}
+        </div>
+      </FilterSection>
+
       {/* Designer */}
       <FilterSection title="Designer" open={openSections.designer} onToggle={() => toggle("designer")}>
         <div className="flex flex-col gap-2.5">
-          {designers.map((d) => (
+          {/* Labelled generically — the real designer name stays the filter value. */}
+          {designers.map((d, i) => (
             <label key={d} className="flex items-center gap-3 cursor-pointer group">
               <input type="checkbox" checked={selectedDesigners.includes(d)} onChange={() => setSelectedDesigners((p) => toggleItem(p, d))} className="accent-sage w-4 h-4 rounded" />
-              <span className="text-sm text-ink/60 group-hover:text-cacao transition-colors">{d}</span>
+              <span className="text-sm text-ink/60 group-hover:text-cacao transition-colors">Designer {i + 1}</span>
             </label>
           ))}
         </div>

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
+import { ALL_PRODUCTS_SLUG } from "@/lib/categoryProducts";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -23,7 +25,12 @@ interface NavSection {
   number: string;
   title: string;
   items: NavItem[];
+  /** Target for this section's "View All" row. Defaults to the full catalogue. */
+  viewAllHref?: string;
 }
+
+/** The full catalogue — every "View All" falls back to this. */
+const ALL_PRODUCTS_HREF = `/category/${ALL_PRODUCTS_SLUG}`;
 
 // ─── Content Data ─────────────────────────────────────────────────────────────
 
@@ -247,9 +254,11 @@ function Hamburger({ open, onClick }: { open: boolean; onClick: () => void }) {
 function CategoryList({
   active,
   onSelect,
+  onNavigate,
 }: {
   active: Category;
   onSelect: (c: Category) => void;
+  onNavigate: () => void;
 }) {
   return (
     <motion.ul
@@ -260,6 +269,15 @@ function CategoryList({
     >
       {CATEGORIES.map((cat) => {
         const isActive = cat === active;
+        // SALE is called out in red; every other category uses the cacao ramp.
+        const isSale = cat === "SALE";
+        const colour = isSale
+          ? isActive
+            ? "text-red-600"
+            : "text-red-600/45 group-hover:text-red-600/75"
+          : isActive
+            ? "text-cacao"
+            : "text-cacao/25 group-hover:text-cacao/50";
         return (
           <motion.li key={cat} variants={catItemVariants}>
             <button
@@ -276,11 +294,7 @@ function CategoryList({
                 ·
               </motion.span>
               <span
-                className={`font-heading leading-tight tracking-wide transition-colors duration-300 ${
-                  isActive
-                    ? "text-cacao"
-                    : "text-cacao/25 group-hover:text-cacao/50"
-                }`}
+                className={`font-heading leading-tight tracking-wide transition-colors duration-300 ${colour}`}
                 style={{ fontSize: "clamp(1rem, 3vw, 1.75rem)" }}
               >
                 {cat}
@@ -289,26 +303,43 @@ function CategoryList({
           </motion.li>
         );
       })}
+
+      {/* Always-visible shortcut to the whole catalogue — sits below SALE */}
+      <motion.li variants={catItemVariants} className="mt-6">
+        <Link
+          href={ALL_PRODUCTS_HREF}
+          onClick={onNavigate}
+          className="inline-flex items-center justify-between gap-3 w-full max-w-[15rem] border border-cacao/25 px-4 py-3 text-[11px] tracking-[0.2em] uppercase text-cacao hover:bg-cacao hover:text-white hover:border-cacao transition-colors"
+        >
+          View All Products
+          <span aria-hidden>→</span>
+        </Link>
+      </motion.li>
     </motion.ul>
   );
 }
 
 // ─── Section Content ──────────────────────────────────────────────────────────
 
-function SectionContent({ sections }: { sections: NavSection[] }) {
+function SectionContent({
+  sections,
+  onNavigate,
+}: {
+  sections: NavSection[];
+  onNavigate: () => void;
+}) {
   const ROW_H = 40;
+  const VIEW_ALL_H = 34;
   const GROUP_GAP = 40;
 
-  let cumOffset = 0;
-  const offsets = sections.map((sec, i) => {
-    if (i === 0) {
-      cumOffset = sec.items.length * ROW_H + GROUP_GAP;
-      return 0;
-    }
-    const off = cumOffset;
-    cumOffset += sec.items.length * ROW_H + GROUP_GAP;
-    return off;
-  });
+  // Each group is its item rows plus the "View All" row beneath them.
+  const groupH = (sec: NavSection) => sec.items.length * ROW_H + VIEW_ALL_H;
+
+  // Running top offset for each group's label, stacked in order.
+  const offsets = sections.reduce<number[]>((acc, sec, i) => {
+    const prev = i === 0 ? 0 : acc[i - 1] + groupH(sections[i - 1]) + GROUP_GAP;
+    return [...acc, prev];
+  }, []);
 
   return (
     <motion.div
@@ -361,6 +392,22 @@ function SectionContent({ sections }: { sections: NavSection[] }) {
                 )}
               </motion.div>
             ))}
+
+            {/* View All for this section */}
+            <motion.div
+              variants={rowVariants}
+              className="flex items-center"
+              style={{ height: VIEW_ALL_H }}
+            >
+              <Link
+                href={sec.viewAllHref ?? ALL_PRODUCTS_HREF}
+                onClick={onNavigate}
+                className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.2em] uppercase text-cacao/50 hover:text-sage transition-colors"
+              >
+                View All
+                <span aria-hidden>→</span>
+              </Link>
+            </motion.div>
           </div>
         ))}
       </div>
@@ -493,6 +540,7 @@ export default function ZaraNavbar({ actions }: { actions?: React.ReactNode }) {
                 <CategoryList
                   active={activeCategory}
                   onSelect={setActiveCategory}
+                  onNavigate={() => setIsOpen(false)}
                 />
               </div>
 
@@ -502,6 +550,7 @@ export default function ZaraNavbar({ actions }: { actions?: React.ReactNode }) {
                   <SectionContent
                     key={activeCategory}
                     sections={NAV_DATA[activeCategory]}
+                    onNavigate={() => setIsOpen(false)}
                   />
                 </AnimatePresence>
               </div>
