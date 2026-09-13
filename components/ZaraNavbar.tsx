@@ -463,14 +463,14 @@ export default function ZaraNavbar({ actions }: { actions?: React.ReactNode }) {
   return (
     <>
       {/* ── Fixed Header Bar (over hero) ── */}
-      <header className="fixed top-0 left-0 right-0 z-[500]">
+      <header className="fixed top-0 left-0 right-0 z-[500] pointer-events-none">
         <div className="flex items-start justify-between px-5 sm:px-7 pt-5">
           {/* Left — Hamburger (inline, not fixed separately) */}
           <button
             onClick={() => setIsOpen((v) => !v)}
             aria-label={isOpen ? "Close menu" : "Open menu"}
             aria-expanded={isOpen}
-            className="flex flex-col justify-center items-start gap-[7px] w-10 h-10 bg-transparent border-0 cursor-pointer p-0 z-[500]"
+            className="flex flex-col justify-center items-start gap-[7px] w-10 h-10 bg-transparent border-0 cursor-pointer p-0 z-[500] pointer-events-auto"
           >
             <motion.span
               className="block h-[2px] rounded-full origin-center"
@@ -493,7 +493,7 @@ export default function ZaraNavbar({ actions }: { actions?: React.ReactNode }) {
           </button>
 
           {/* Right — actions (Search, Bag, Help, Login/Name) */}
-          {actions}
+          <div className="pointer-events-auto">{actions}</div>
         </div>
       </header>
 

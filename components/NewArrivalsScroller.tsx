@@ -29,7 +29,7 @@ function ArrivalCard({ product, isLoggedIn }: { product: NewArrivalItem; isLogge
     <div className=" w-60 group cursor-pointer">
       <div className="bg-white w-52 shadow-sm overflow-hidden p-3">
         {/* Image with heart on top-right + add-to-cart sliding up from the bottom */}
-        <div className="relative w-full h-36  overflow-hidden">
+        <div className="relative w-full h-52  overflow-hidden">
           <img
             src={product.image}
             alt={product.name}
@@ -82,7 +82,7 @@ function ArrivalCard({ product, isLoggedIn }: { product: NewArrivalItem; isLogge
               </form>
             ) : (
               <Link href="/auth/login"
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] uppercase tracking-[0.12em] shadow-sm bg-cacao text-white hover:bg-sage transition-colors duration-300">
+                className="flex items-center gap-1.5 px-3.5 py-2  rounded-full text-[10px] uppercase tracking-[0.12em] shadow-sm bg-sage text-white hover:bg-cacao transition-colors duration-300">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Add to cart
               </Link>
             )}
