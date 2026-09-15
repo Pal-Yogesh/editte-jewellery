@@ -136,7 +136,6 @@ const NAV_DATA: Record<Category, NavSection[]> = {
         { label: "Everyday" },
         { label: "Vacation" },
         { label: "Festive Finds" },
-        { label: "Gift" },
       ],
     },
   ],
@@ -309,7 +308,7 @@ function CategoryList({
         <Link
           href={ALL_PRODUCTS_HREF}
           onClick={onNavigate}
-          className="inline-flex items-center justify-between gap-3 w-full max-w-[15rem] border border-cacao/25 px-4 py-3 text-[11px] tracking-[0.2em] uppercase text-cacao hover:bg-cacao hover:text-white hover:border-cacao transition-colors"
+          className="inline-flex items-center justify-between gap-3 w-full max-w-[15rem] border border-cacao/25 px-4 py-3 text-[11px] tracking-[0.2em] uppercase text-white bg-cacao hover:bg-sage hover:text-white hover:border-sage transition-colors"
         >
           View All Products
           <span aria-hidden>→</span>
@@ -515,13 +514,14 @@ export default function ZaraNavbar({ actions }: { actions?: React.ReactNode }) {
               animate="visible"
               className="pt-6 pb-4 pl-[10%] pr-10 flex items-center justify-between"
             >
+              <Link href="/"> 
               <Image
                 src="/logo/logo.png"
                 className="w-36 h-32"
                 alt="editte logo"
                 width={1000}
                 height={1000}
-              />
+              /></Link>
              
             </motion.div>
 

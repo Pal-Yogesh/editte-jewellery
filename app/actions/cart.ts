@@ -30,6 +30,7 @@ export async function addToCartAction(
   }
 
   revalidatePath("/dashboard/cart");
+  revalidatePath("/", "layout");
   return { success: true, message: "Added to cart." };
 }
 
@@ -50,6 +51,7 @@ export async function updateCartQuantityAction(
   });
 
   revalidatePath("/dashboard/cart");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -63,6 +65,7 @@ export async function removeFromCartAction(
 
   await adminDb.collection("carts").doc(session.uid).collection("items").doc(id).delete();
   revalidatePath("/dashboard/cart");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -74,5 +77,6 @@ export async function clearCartAction(): Promise<ActionState> {
   all.docs.forEach((d) => batch.delete(d.ref));
   await batch.commit();
   revalidatePath("/dashboard/cart");
+  revalidatePath("/", "layout");
   return { success: true };
 }

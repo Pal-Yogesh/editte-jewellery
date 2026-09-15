@@ -9,12 +9,12 @@ const COLLECTIONS = [
   "Kundan & Jadau",
 ];
 const QUICK_LINKS = [
-  "About Us",
-  "Our Designers",
-  "Custom Orders",
-  "Gift Cards",
-  "Size Guide",
-  "Care Instruction",
+  { label: "About Us", href: "/about" },
+  { label: "Our Designers", href: "#" },
+  { label: "Custom Orders", href: "#" },
+  { label: "Gift Cards", href: "#" },
+  { label: "Size Guide", href: "#" },
+  { label: "Care Instruction", href: "#" },
 ];
 
 export default function Footer() {
@@ -79,12 +79,12 @@ export default function Footer() {
             <p className="font-heading text-cacao text-xl mb-3">Quick Links</p>
             <ul className="flex flex-col gap-1.5">
               {QUICK_LINKS.map((l) => (
-                <li key={l}>
+                <li key={l.label}>
                   <a
-                    href="#"
+                    href={l.href}
                     className="text-white text-sm hover:text-cacao transition-colors"
                   >
-                    {l}
+                    {l.label}
                   </a>
                 </li>
               ))}

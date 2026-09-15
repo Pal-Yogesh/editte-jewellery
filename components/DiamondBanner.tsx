@@ -30,9 +30,9 @@ export default function DiamondBanner() {
       </div> */}
 
       {/* Foreground building/trees layer */}
-      <div className="absolute inset-x-[-6%] bottom-0 z-[4] pointer-events-none">
+      <div className="absolute inset-x-[-1%] bottom-0 z-[4] pointer-events-none">
         <Image
-          src="https://firebasestorage.googleapis.com/v0/b/multi-vendor-jewellery.firebasestorage.app/o/images%2F1000014531.jpg?alt=media&token=5387d901-98f4-457f-9e03-b46794883bdd"
+          src="https://firebasestorage.googleapis.com/v0/b/multi-vendor-jewellery.firebasestorage.app/o/images%2Filldo.jpeg?alt=media&token=e53953bb-f601-4351-a642-85cf464d5dc2"
           width={1000}
           height={1000}
           alt="Tree and building foreground"

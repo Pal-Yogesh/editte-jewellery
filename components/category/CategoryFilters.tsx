@@ -119,7 +119,7 @@ export default function CategoryFilters({
       <h2 className="font-heading text-cacao text-2xl mb-2" style={{ fontStyle: "italic" }}>Filters</h2>
 
       {/* View All Products — left rail shortcut out of the current category */}
-      {showViewAll && (
+      {/* {showViewAll && (
         <Link
           href={`/category/${ALL_PRODUCTS_SLUG}`}
           className="flex items-center justify-between border border-cacao/20 px-3 py-2.5 mb-1 text-[11px] tracking-[0.18em] uppercase text-cacao hover:bg-cacao hover:text-white transition-colors"
@@ -127,7 +127,7 @@ export default function CategoryFilters({
           View All Products
           <span aria-hidden>→</span>
         </Link>
-      )}
+      )} */}
 
       {/* Price */}
       <FilterSection title="Price" open={openSections.price} onToggle={() => toggle("price")}>

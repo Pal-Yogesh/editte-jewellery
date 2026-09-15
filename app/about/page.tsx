@@ -1,6 +1,8 @@
+import Link from "next/link";
 import ZaraNavbar from "@/components/ZaraNavbar";
 import NavbarActions from "@/components/NavbarActions";
 import Footer from "@/components/Footer";
+import { ALL_PRODUCTS_SLUG } from "@/lib/categoryProducts";
 
 export const metadata = {
   title: "About — editte",
@@ -8,16 +10,26 @@ export const metadata = {
     "Editte brings together jewellery, accessories and lifestyle pieces chosen with intention — a space to explore different sides of your style.",
 };
 
-/** Label-left / copy-right row, as used for Vision and Mission. */
-function StatementRow({ label, children }: { label: string; children: React.ReactNode }) {
+/** Numbered editorial statement card, used for Vision and Mission. */
+function StatementCard({
+  index,
+  label,
+  children,
+}: {
+  index: string;
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[14rem_1fr] gap-3 md:gap-10">
-      <h3 className="font-heading text-cacao uppercase tracking-[0.14em] text-lg md:text-xl md:pt-0.5">
+    <div className="flex-1 border-t border-cacao/15 pt-7">
+      <span className="block font-numeric text-[11px] tracking-[0.3em] text-sage mb-4">{index}</span>
+      <h3
+        className="font-heading text-cacao text-xl md:text-2xl mb-4"
+        style={{ fontStyle: "italic" }}
+      >
         {label}
       </h3>
-      <p className="text-ink/70 leading-[1.85] text-[0.95rem] md:text-base max-w-2xl">
-        {children}
-      </p>
+      <p className="text-ink/65 leading-[1.85] text-[0.95rem] md:text-base max-w-md">{children}</p>
     </div>
   );
 }
@@ -27,20 +39,58 @@ export default function AboutPage() {
     <>
       <ZaraNavbar actions={<NavbarActions />} />
       <div className="min-h-screen bg-salt">
-        <div className="text-cacao pt-28 pb-10 px-6 text-center">
-          <h1 className="font-heading text-3xl md:text-5xl">About</h1>
-        </div>
+        {/* ── Hero ── */}
+        <section className="relative w-full h-[62svh] min-h-[420px] overflow-hidden bg-cacao">
+          <img
+            src="/original-images/01.png"
+            alt="Editte jewellery"
+            className="absolute inset-0 w-full h-full object-cover object-[78%_center]"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to bottom, rgba(12,14,14,0.45) 0%, rgba(12,14,14,0.08) 35%, rgba(12,14,14,0.55) 100%)",
+            }}
+          />
+          <div className="relative h-full flex flex-col items-center justify-end text-center pb-16 px-6">
+            <span className="text-[11px] tracking-[0.35em] uppercase text-white/70 mb-3">Editte</span>
+            <h1 className="font-heading text-white text-4xl md:text-6xl" style={{ fontStyle: "italic" }}>
+              About
+            </h1>
+          </div>
+        </section>
 
-        {/* ── Why do we exist ── */}
-        <section className="max-w-3xl mx-auto px-6 pb-20 text-center">
-          <h2
-            className="font-heading text-cacao uppercase tracking-[0.05em]"
-            style={{ fontSize: "clamp(1.6rem, 4vw, 2.4rem)" }}
-          >
-            Why Do We Exist?
-          </h2>
+        {/* ── Vision & Mission ── */}
+        <section className="max-w-5xl mx-auto px-6 py-20 md:py-28">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
+            <StatementCard index="01" label="Our Vision">
+              To build a contemporary platform for design-led discovery, bringing together diverse
+              brands, categories, and expressions of style, while creating a more thoughtful and
+              accessible way to pick pieces.
+            </StatementCard>
 
-          <div className="mt-10 flex flex-col gap-6 text-ink/70 leading-[1.85] text-[0.95rem] md:text-base">
+            <StatementCard index="02" label="Our Mission">
+              To make well-designed jewellery, accessories, and lifestyle pieces easier to
+              discover, so people can explore, choose, and express their style with clarity and
+              confidence.
+            </StatementCard>
+          </div>
+        </section>
+
+        {/* ── Editorial break image ── */}
+        <section className="relative w-full h-[40vh] md:h-[52vh] overflow-hidden">
+          <img
+            src="/original-images/07.png"
+            alt="Editte occasion jewellery"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-cacao/10" />
+        </section>
+
+        {/* ── Story copy ── */}
+        <section className="max-w-3xl mx-auto px-6 py-20 md:py-28">
+          <div className="flex flex-col gap-6 text-ink/70 leading-[1.9] text-[0.95rem] md:text-base text-center">
             <p>
               We&rsquo;ve always believed that style should feel like your own. Some days, that
               looks simple. Some days it&rsquo;s expressive, and sometimes it&rsquo;s something you
@@ -64,21 +114,15 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── Vision & Mission ── */}
-        <section className="max-w-5xl mx-auto px-6 pb-28">
-          <div className="border-t border-cacao/10 pt-14 flex flex-col gap-12 md:gap-16">
-            <StatementRow label="Our Vision">
-              To build a contemporary platform for design-led discovery, bringing together diverse
-              brands, categories, and expressions of style, while creating a more thoughtful and
-              accessible way to pick pieces.
-            </StatementRow>
-
-            <StatementRow label="Our Mission">
-              To make well-designed jewellery, accessories, and lifestyle pieces easier to
-              discover, so people can explore, choose, and express their style with clarity and
-              confidence.
-            </StatementRow>
-          </div>
+        {/* ── CTA ── */}
+        <section className="text-center pb-28 px-6">
+          <Link
+            href={`/category/${ALL_PRODUCTS_SLUG}`}
+            className="inline-flex items-center gap-2 border border-cacao px-8 py-3.5 text-[11px] tracking-[0.22em] uppercase text-cacao hover:bg-cacao hover:text-white transition-colors duration-300"
+          >
+            Shop The Edit
+            <span aria-hidden>→</span>
+          </Link>
         </section>
       </div>
       <Footer />

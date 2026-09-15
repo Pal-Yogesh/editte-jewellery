@@ -60,17 +60,17 @@ export default async function CategoryPage({
       <div className="min-h-screen bg-salt">
         {/* Breadcrumb */}
         <div className="max-w-7xl mx-auto px-6 pt-24 pb-4">
-          <div className="flex items-center gap-2 text-xs text-ink/40">
+          <div className="flex items-center gap-2 text-sm text-ink/40">
             <Link
               href="/"
-              className="hover:text-cacao transition-colors cursor-pointer"
+              className="hover:text-cacao -mt-1.25 transition-colors cursor-pointer"
             >
               <Image
-                src="/logo/full-name-logo-removebg-preview.png"
+                src="/logo/full-name-logo-removebg-preview.png" 
                 alt="logo"
                 width={1000}
                 height={1000}
-                className="w-12 h-12"
+                className="w-16 h-16"
               />
             </Link>
             <span>/</span>
@@ -80,7 +80,7 @@ export default async function CategoryPage({
               <>
                 <Link
                   href={`/category/${ALL_PRODUCTS_SLUG}`}
-                  className="hover:text-cacao transition-colors"
+                  className="text-cacao hover:opacity-60 transition-opacity"
                 >
                   All Products
                 </Link>

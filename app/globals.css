@@ -5,6 +5,7 @@
   --salt: #FAF5F0;
   --cacao: #361515;
   --rose: #c87a79;
+  --ruby: #8a1c24;
   --sage: #b3ad6e;
   --sand: #ede2c3;
   --ink: #0c0e0e;
@@ -21,6 +22,7 @@
   --color-salt: var(--salt);
   --color-cacao: var(--cacao);
   --color-rose: var(--rose);
+  --color-ruby: var(--ruby);
   --color-sage: var(--sage);
   --color-sand: var(--sand);
   --color-ink: var(--ink);
