@@ -51,9 +51,7 @@ export default function Footer() {
           {/* Brand blurb */}
           <div>
             <p className="text-white text-sm leading-relaxed max-w-[280px] mt-12">
-              India&apos;s first jewellery makers collective connecting 40+
-              independent designers with those who appreciate the art of
-              adornment. Handcrafted with love since 2018.
+              We&apos;ve always believed that style should feel like your own. Some days, that looks simple. Some days it&apos;s expressive, and sometimes it&apos;s something you wear every day.
             </p>
           </div>
 

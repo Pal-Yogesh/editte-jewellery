@@ -17,7 +17,6 @@ const SORT_OPTIONS = [
 ];
 
 const PRICE_FILTER_OPTIONS = [
-  { value: "under-2000", label: "Under 2K", max: 2000 },
   { value: "under-5000", label: "Under 5K", max: 5000 },
   { value: "under-10000", label: "Under 10K", max: 10000 },
   { value: "above-10000", label: "Above 10K", max: Infinity },
@@ -249,7 +248,7 @@ export default function CategoryProductGrid({ products, filters, isLoggedIn }: P
           </select>
           <span className="text-ink/15">|</span>
           <ShopByPrice value={priceFilter} onChange={setPriceFilter} />
-          <span className="text-[10px] text-ink/30 tracking-wider uppercase">
+          <span className="text-[14px] text-ink/60 tracking-wider">
             {filtered.length} product{filtered.length !== 1 ? "s" : ""}
           </span>
         </div>

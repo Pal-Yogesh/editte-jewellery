@@ -35,21 +35,21 @@ export default async function NavbarActions() {
       <button className="hover:opacity-60 transition-opacity pb-1">SEARCH</button>
       <span className="w-full h-px bg-cacao/40 mb-6" />
      
-      <div className="flex flex-col items-end gap-5 lg:mt-8">
+      <div className="flex flex-col items-end gap-2.5 lg:mt-8">
         <Link
           href="/dashboard/cart"
           aria-label={cartCount > 0 ? `Bag, ${cartCount} item${cartCount > 1 ? "s" : ""}` : "Bag"}
           className="hover:opacity-60 transition-opacity flex items-center gap-1.5"
         >
           BAG
-          <span className="relative inline-flex">
+          <span className="relative inline-flex -mt-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               strokeWidth={1.4}
-              className="w-7 h-6"
+              className="w-5 h-5"
               aria-hidden="true"
             >
               <path
@@ -64,7 +64,7 @@ export default async function NavbarActions() {
               />
             </svg>
             {cartCount > 0 && (
-              <span className="absolute -top-3 left-4.25 flex items-center justify-center min-w-6 h-6 p-1 font-bold rounded-full bg-cacao text-salt text-[16px] leading-none tracking-normal tabular-nums">
+              <span className="absolute -top-1.5 left-3.5 flex items-center justify-center min-w-4 h-4 px-1 font-medium rounded-full bg-cacao text-salt text-[10px] leading-none tracking-normal tabular-nums">
                 {bagLabel}
               </span>
             )}

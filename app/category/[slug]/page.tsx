@@ -80,12 +80,12 @@ export default async function CategoryPage({
               <>
                 <Link
                   href={`/category/${ALL_PRODUCTS_SLUG}`}
-                  className="text-cacao hover:opacity-60 transition-opacity"
+                  className="text-cacao text-sm hover:opacity-60 transition-opacity"
                 >
                   All Products
                 </Link>
                 <span>/</span>
-                <span className="text-cacao">{categoryName}</span>
+                <span className="text-cacao text-sm">{categoryName}</span>
               </>
             )}
           </div>

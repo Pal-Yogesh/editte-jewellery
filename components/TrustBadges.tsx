@@ -42,19 +42,19 @@ function Card() {
 }
 
 const BADGES = [
-  { Icon: ShieldCheck, title: "100% AUTHENTIC", sub: "EVERY PIECE CERTIFIED BY MASTER ARTISANS" },
-  { Icon: Truck, title: "FREE SHIPPING", sub: "ON ALL ORDERS ABOVE ₹ 2,000" },
-  { Icon: Return, title: "EASY RETURNS", sub: "HASSLE-FREE 16-DAYS RETURN POLICY" },
-  { Icon: Card, title: "SECURE PAYMENT", sub: "UPI, CARDS, EMI & MORE" },
+  { Icon: ShieldCheck, titleNum: "100%", titleRest: " AUTHENTIC", sub: "EVERY PIECE CERTIFIED BY MASTER ARTISANS" },
+  { Icon: Truck, titleNum: "", titleRest: "FREE SHIPPING", sub: "ON ALL ORDERS ABOVE ₹ 2,000" },
+  { Icon: Return, titleNum: "", titleRest: "EASY RETURNS", sub: "HASSLE-FREE 16-DAYS RETURN POLICY" },
+  { Icon: Card, titleNum: "", titleRest: "SECURE PAYMENT", sub: "UPI, CARDS, EMI & MORE" },
 ];
 
 export default function TrustBadges() {
   return (
     <section className="bg-white py-5 px-6">
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10">
-        {BADGES.map(({ Icon, title, sub }, i) => (
+        {BADGES.map(({ Icon, titleNum, titleRest, sub }, i) => (
           <motion.div
-            key={title}
+            key={titleRest}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
@@ -62,7 +62,10 @@ export default function TrustBadges() {
             className="flex flex-col items-center text-center gap-1"
           >
             <Icon />
-            <p className="text-cacao text-[10px] font-bold ">{title}</p>
+            <p className="text-cacao text-[10px] font-bold ">
+              {titleNum && <span className="font-numeric">{titleNum}</span>}
+              {titleRest}
+            </p>
             <p className="text-ink/50 text-[9px]">
               {sub}
             </p>
