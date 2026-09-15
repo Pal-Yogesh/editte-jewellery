@@ -95,7 +95,7 @@ export default function Footer() {
             <ul className="flex flex-col gap-1.5 text-white text-sm">
               <li>Brand Studio India</li>
               <li>+91 22 2600 0000</li>
-              <li>hello@Brand.in</li>
+              <li>hello@shopeditte.com</li>
             </ul>
           </div>
         </div>
