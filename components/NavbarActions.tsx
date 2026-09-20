@@ -33,7 +33,7 @@ export default async function NavbarActions() {
   return (
     <div className="flex flex-col items-end text-xs sm:text-sm tracking-[0.18em] uppercase">
       <button className="hover:opacity-60 transition-opacity pb-1">SEARCH</button>
-      <span className="w-full h-px bg-cacao/40 mb-6" />
+      <span className="w-28 h-px bg-cacao/40 mb-6" />
      
       <div className="flex flex-col items-end gap-2.5 lg:mt-8">
         <Link

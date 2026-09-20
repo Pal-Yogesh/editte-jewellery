@@ -51,7 +51,10 @@ export default function Footer() {
           {/* Brand blurb */}
           <div>
             <p className="text-white text-sm leading-relaxed max-w-[280px] mt-12">
-              We&apos;ve always believed that style should feel like your own. Some days, that looks simple. Some days it&apos;s expressive, and sometimes it&apos;s something you wear every day.
+              Style should feel like your own.Editte brings together jewelry,
+              accessories and lifestyle pieces from distinctive brands,
+              thoughtfully curated for every side of your style, from every day
+              to occasion, subtle to statement.
             </p>
           </div>
 
@@ -102,7 +105,7 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className=" px-12 py-5 border-t border-white flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-salt/80 text-sm">@ Copyright 2026 . editte</p>
+          <p className="text-salt/80 text-sm">@ Copyright 2026 . editte</p>
           <div className="flex items-center gap-5">
             <a
               href="/cookie-policy"

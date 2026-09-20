@@ -55,7 +55,7 @@ const NAV_DATA: Record<Category, NavSection[]> = {
         { label: "Neckpieces" },
         { label: "Earrings" },
         { label: "Rings" },
-        { label: "Bangles & Bracelets" },
+        { label: "Bangles" },
         { label: "Anklets" },
         { label: "Nose Pins" },
         { label: "Maang Tikka" },
@@ -89,7 +89,6 @@ const NAV_DATA: Record<Category, NavSection[]> = {
       title: "ACCESSORIES",
       items: [
         { label: "Hair Accessories" },
-        { label: "Scarves & Stoles" },
         { label: "Sunglasses" },
         { label: "Watches" },
         { label: "Belts" },
@@ -114,6 +113,8 @@ const NAV_DATA: Record<Category, NavSection[]> = {
         { label: "Bracelets" },
         { label: "Cufflinks" },
         { label: "Tie Pins" },
+        { label: "Button Covers" },
+        { label: "Lapel Pins" },
       ],
     },
   ],
@@ -308,10 +309,10 @@ function CategoryList({
         <Link
           href={ALL_PRODUCTS_HREF}
           onClick={onNavigate}
-          className="inline-flex items-center justify-between gap-3 w-full max-w-[15rem] border border-cacao/25 px-4 py-3 text-[11px] tracking-[0.2em] uppercase text-white bg-cacao hover:bg-sage hover:text-white hover:border-sage transition-colors"
-        >
-          View All Products
-          <span aria-hidden>→</span>
+          className="inline-flex items-center px-3 gap-2 text-[11px] tracking-[0.2em] uppercase text-cacao/50 hover:text-sage transition-colors"
+              >
+                View All
+                <span aria-hidden>→</span>
         </Link>
       </motion.li>
     </motion.ul>

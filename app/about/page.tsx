@@ -120,7 +120,7 @@ export default function AboutPage() {
             href={`/category/${ALL_PRODUCTS_SLUG}`}
             className="inline-flex items-center gap-2 border border-cacao px-8 py-3.5 text-[11px] tracking-[0.22em] uppercase text-cacao hover:bg-cacao hover:text-white transition-colors duration-300"
           >
-            Shop The Edit
+            Shop Now
             <span aria-hidden>→</span>
           </Link>
         </section>
