@@ -3,7 +3,9 @@ import crypto from "crypto";
 import { getSession } from "@/lib/session";
 import { adminDb } from "@/lib/firebase/admin";
 import { resend, FROM } from "@/lib/resend";
+import { createOrder } from "@/lib/shiprocket/order";
 import type { CartItem, OrderItem } from "@/lib/types";
+import type { CreateOrderPayload } from "@/lib/shiprocket/types";
 
 function generateInvoiceNumber(): string {
   const date = new Date();
@@ -36,7 +38,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid payment signature" }, { status: 400 });
   }
 
-  // ── 2. Fetch cart & user ─────────────────────────────────────────────────
+  // ── 2. Fetch cart, user & delivery address ───────────────────────────────
   const [cartSnap, userSnap] = await Promise.all([
     adminDb.collection("carts").doc(session.uid).collection("items").get(),
     adminDb.collection("users").doc(session.uid).get(),
@@ -46,6 +48,17 @@ export async function POST(req: NextRequest) {
   const userData = userSnap.data() ?? {};
   const userName: string = userData.name ?? "Customer";
   const userEmail: string = session.email;
+
+  // Get user's default delivery address
+  const addressSnap = await adminDb
+    .collection("addresses")
+    .doc(session.uid)
+    .collection("items")
+    .where("isDefault", "==", true)
+    .limit(1)
+    .get();
+
+  const deliveryAddress = addressSnap.empty ? null : addressSnap.docs[0].data();
 
   const orderItems: OrderItem[] = cartItems.map((i) => ({
     productId: i.productId,
@@ -61,7 +74,7 @@ export async function POST(req: NextRequest) {
   const createdAt = Date.now();
 
   // ── 3. Save order to Firestore ───────────────────────────────────────────
-  const orderRef = await adminDb.collection("orders").add({
+  const orderData: Record<string, unknown> = {
     uid: session.uid,
     razorpayOrderId: razorpay_order_id,
     razorpayPaymentId: razorpay_payment_id,
@@ -75,14 +88,126 @@ export async function POST(req: NextRequest) {
     userName,
     invoiceNumber,
     createdAt,
-  });
+  };
+
+  // Attach delivery address if available
+  if (deliveryAddress) {
+    orderData.shippingAddress = {
+      name: deliveryAddress.name ?? userName,
+      phone: deliveryAddress.phone ?? "",
+      line1: deliveryAddress.line1 ?? "",
+      line2: deliveryAddress.line2 ?? "",
+      city: deliveryAddress.city ?? "",
+      state: deliveryAddress.state ?? "",
+      pincode: deliveryAddress.pincode ?? "",
+    };
+  }
+
+  const orderRef = await adminDb.collection("orders").add(orderData);
 
   // ── 4. Clear cart ────────────────────────────────────────────────────────
   const batch = adminDb.batch();
   cartSnap.docs.forEach((d) => batch.delete(d.ref));
   await batch.commit();
 
-  // ── 5. Send confirmation email ───────────────────────────────────────────
+  // ── 5. Create shipment via Shiprocket (best-effort) ──────────────────────
+  if (!deliveryAddress) {
+    await adminDb.collection("orders").doc(orderRef.id).update({
+      shipmentStatus: "pending",
+      shipmentNote: "No delivery address found at checkout.",
+    });
+  } else {
+    try {
+      // Get vendor's Shiprocket pickup location name (from first product's vendor)
+      const firstProductId = orderItems[0]?.productId;
+      let pickupLocationName = "";
+      let vendorId = "";
+
+      if (firstProductId) {
+        const productDoc = await adminDb.collection("products").doc(firstProductId).get();
+        vendorId = (productDoc.data()?.vendorId as string) ?? "";
+
+        if (vendorId) {
+          const vendorDoc = await adminDb.collection("vendors").doc(vendorId).get();
+          pickupLocationName = (vendorDoc.data()?.shipping?.shiprocketPickupLocation as string) ?? "";
+        }
+      }
+
+      if (!pickupLocationName) {
+        // Vendor pickup not registered — mark order for manual processing
+        await adminDb.collection("orders").doc(orderRef.id).update({
+          shipmentStatus: "pending",
+          shipmentNote: `Vendor pickup location not registered (vendorId: ${vendorId || "unknown"}).`,
+        });
+      } else {
+        const fullName = (deliveryAddress.name as string) ?? userName;
+        const nameParts = fullName.split(" ");
+        const firstName = nameParts[0] ?? "";
+        const lastName = nameParts.slice(1).join(" ") || "";
+
+        const payload: CreateOrderPayload = {
+          order_id: invoiceNumber,
+          order_date: new Date(createdAt).toISOString().split("T")[0],
+          pickup_location: pickupLocationName,
+          billing_customer_name: firstName,
+          billing_last_name: lastName,
+          billing_address: (deliveryAddress.line1 as string) ?? "",
+          billing_address_2: (deliveryAddress.line2 as string) ?? "",
+          billing_city: (deliveryAddress.city as string) ?? "",
+          billing_pincode: (deliveryAddress.pincode as string) ?? "",
+          billing_state: (deliveryAddress.state as string) ?? "",
+          billing_country: "India",
+          billing_email: userEmail,
+          billing_phone: (deliveryAddress.phone as string) ?? "",
+          shipping_is_billing: true,
+          order_items: orderItems.map((item) => ({
+            name: item.name,
+            sku: item.productId,
+            units: item.quantity,
+            selling_price: item.price,
+          })),
+          payment_method: "Prepaid",
+          sub_total: subtotal,
+          length: 15,
+          breadth: 12,
+          height: 8,
+          weight: 0.3,
+        };
+
+        const shipResult = await createOrder(payload);
+
+        // Store AWB and courier info on the order
+        const awb = shipResult.awb_code ?? "";
+        const courierName = shipResult.courier_name ?? "";
+
+        if (awb) {
+          await adminDb.collection("orders").doc(orderRef.id).update({
+            awb,
+            courierName,
+            shipmentStatus: "booked",
+            shiprocketOrderId: shipResult.order_id ?? null,
+            shiprocketShipmentId: shipResult.shipment_id ?? null,
+          });
+        } else {
+          await adminDb.collection("orders").doc(orderRef.id).update({
+            shipmentStatus: "pending",
+            shipmentNote: "Shiprocket did not return an AWB.",
+            shiprocketOrderId: shipResult.order_id ?? null,
+            shiprocketShipmentId: shipResult.shipment_id ?? null,
+          });
+        }
+      }
+    } catch (err) {
+      // Shipment creation is best-effort — order still succeeds
+      console.error("Shiprocket shipment creation failed:", err);
+      await adminDb.collection("orders").doc(orderRef.id).update({
+        shipmentStatus: "failed",
+        shipmentNote: `Shipment booking failed: ${err instanceof Error ? err.message : "Unknown error"}`,
+      }).catch(() => {});
+    }
+  }
+
+  // ── 6. Send confirmation email ───────────────────────────────────────────
   const itemsHtml = orderItems
     .map(
       (item) => `
@@ -153,7 +278,7 @@ export async function POST(req: NextRequest) {
       </div>`,
   });
 
-  // ── 6. Add in-app notification ───────────────────────────────────────────
+  // ── 7. Add in-app notification ───────────────────────────────────────────
   await adminDb
     .collection("notifications")
     .doc(session.uid)

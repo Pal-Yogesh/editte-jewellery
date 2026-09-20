@@ -108,6 +108,21 @@ export interface Order {
   address?: string;
   createdAt: number;
   invoiceNumber: string;
+  // Shipping fields (populated after shipment is booked)
+  awb?: string;
+  courierName?: string;
+  shipmentStatus?: "pending" | "booked" | "in_transit" | "out_for_delivery" | "delivered" | "cancelled" | "failed";
+  shiprocketOrderId?: number;
+  shiprocketShipmentId?: number;
+  shippingAddress?: {
+    name: string;
+    phone: string;
+    line1: string;
+    line2?: string;
+    city: string;
+    state: string;
+    pincode: string;
+  };
 }
 
 // ─── CMS Content types ────────────────────────────────────────────────────────
