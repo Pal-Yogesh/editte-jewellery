@@ -1,8 +1,9 @@
 import { verifySession } from "@/lib/dal";
 import { adminDb } from "@/lib/firebase/admin";
+import { trackByAwb } from "@/lib/shiprocket/tracking";
 import type { Order } from "@/lib/types";
+import type { ShipmentTrackingData } from "@/lib/shiprocket/types";
 import Link from "next/link";
-import { Suspense } from "react";
 
 async function getOrders(uid: string): Promise<Order[]> {
   const snap = await adminDb
@@ -14,10 +15,29 @@ async function getOrders(uid: string): Promise<Order[]> {
     .sort((a, b) => b.createdAt - a.createdAt);
 }
 
+async function getTrackingInfo(awb: string): Promise<ShipmentTrackingData | null> {
+  if (!awb) return null;
+  try {
+    return await trackByAwb(awb);
+  } catch {
+    return null;
+  }
+}
+
 const STATUS_STYLE: Record<Order["status"], string> = {
   paid: "bg-sage/20 text-sage",
   pending: "bg-sand text-cacao",
   failed: "bg-rose/20 text-rose",
+};
+
+const SHIPMENT_STATUS_LABEL: Record<string, { label: string; color: string }> = {
+  pending: { label: "Processing", color: "bg-amber-100 text-amber-700" },
+  booked: { label: "Booked", color: "bg-blue-100 text-blue-700" },
+  in_transit: { label: "In Transit", color: "bg-amber-100 text-amber-700" },
+  out_for_delivery: { label: "Out for Delivery", color: "bg-purple-100 text-purple-700" },
+  delivered: { label: "Delivered", color: "bg-green-100 text-green-700" },
+  cancelled: { label: "Cancelled", color: "bg-red-100 text-red-700" },
+  failed: { label: "Failed", color: "bg-red-100 text-red-700" },
 };
 
 function SuccessBanner({ invoice }: { invoice: string }) {
@@ -30,6 +50,133 @@ function SuccessBanner({ invoice }: { invoice: string }) {
           Invoice {invoice} confirmed. A confirmation email has been sent.
         </p>
       </div>
+    </div>
+  );
+}
+
+function ShippingStatus({
+  order,
+  tracking,
+}: {
+  order: Order;
+  tracking: ShipmentTrackingData | null;
+}) {
+  // No AWB yet — show appropriate message based on status
+  if (!order.awb) {
+    if (order.shipmentStatus === "pending") {
+      return (
+        <div className="mt-3 pt-3 border-t border-ink/5">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+            <p className="text-xs text-amber-700 font-medium">Shipment pending</p>
+          </div>
+          <p className="text-[10px] text-ink/40 mt-1">
+            Your order is being processed. Shipment details will be updated soon.
+          </p>
+        </div>
+      );
+    }
+    if (order.shipmentStatus === "failed") {
+      return (
+        <div className="mt-3 pt-3 border-t border-ink/5">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-400" />
+            <p className="text-xs text-amber-700 font-medium">Shipment being arranged</p>
+          </div>
+          <p className="text-[10px] text-ink/40 mt-1">
+            We're arranging your shipment. You'll receive tracking details once dispatched.
+          </p>
+        </div>
+      );
+    }
+    return (
+      <div className="mt-3 pt-3 border-t border-ink/5">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-ink/20 animate-pulse" />
+          <p className="text-xs text-ink/40">Shipment will be booked shortly.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Has AWB — show tracking info from Shiprocket
+  const statusInfo = SHIPMENT_STATUS_LABEL[order.shipmentStatus ?? "booked"] ?? SHIPMENT_STATUS_LABEL.booked;
+  const trackData = tracking?.tracking_data;
+  const shipmentTrack = trackData?.shipment_track?.[0];
+  const activities = trackData?.shipment_track_activities ?? [];
+  const liveStatus = shipmentTrack?.current_status;
+  const expectedDelivery = shipmentTrack?.edd || trackData?.etd;
+  const trackUrl = trackData?.track_url;
+  const latestActivity = activities[0];
+
+  return (
+    <div className="mt-3 pt-3 border-t border-ink/5">
+      {/* Status badge row */}
+      <div className="flex items-center gap-2 flex-wrap mb-2">
+        <span className={`text-[10px] tracking-wider uppercase font-semibold px-2.5 py-1 rounded-full ${statusInfo.color}`}>
+          {statusInfo.label}
+        </span>
+        {order.courierName && (
+          <span className="text-[10px] text-ink/40">via {order.courierName}</span>
+        )}
+      </div>
+
+      {/* AWB */}
+      <div className="flex items-center gap-2 text-xs text-ink/50 mb-2">
+        <span className="text-ink/30">AWB:</span>
+        <span className="font-mono">{order.awb}</span>
+        {trackUrl && (
+          <a
+            href={trackUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sage underline text-[10px] ml-1"
+          >
+            Track ↗
+          </a>
+        )}
+      </div>
+
+      {/* Live tracking info */}
+      {liveStatus && (
+        <div className="bg-sand/30 rounded-lg px-3 py-2.5 mb-2">
+          <p className="text-xs font-medium text-cacao">{liveStatus}</p>
+          {latestActivity?.location && (
+            <p className="text-[10px] text-ink/40 mt-0.5">{latestActivity.location}</p>
+          )}
+          {latestActivity?.date && (
+            <p className="text-[10px] text-ink/30 mt-0.5">{latestActivity.date}</p>
+          )}
+        </div>
+      )}
+
+      {/* Expected delivery */}
+      {expectedDelivery && (
+        <p className="text-[10px] text-ink/40">
+          Expected delivery: <span className="text-ink/60 font-medium">{expectedDelivery}</span>
+        </p>
+      )}
+
+      {/* Recent tracking events */}
+      {activities.length > 1 && (
+        <details className="mt-2 group">
+          <summary className="text-[10px] text-ink/40 cursor-pointer hover:text-cacao transition-colors">
+            View tracking history ({activities.length} updates)
+          </summary>
+          <div className="mt-2 ml-2 border-l-2 border-ink/10 pl-3 space-y-2">
+            {activities.slice(0, 8).map((event, i) => (
+              <div key={i} className="relative">
+                <span className="absolute -left-[17px] top-1 w-2 h-2 rounded-full bg-ink/20" />
+                <p className="text-[11px] text-ink/60">{event.activity ?? event.status}</p>
+                <p className="text-[10px] text-ink/30">
+                  {event.location && `${event.location} · `}
+                  {event.date}
+                </p>
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
     </div>
   );
 }
@@ -47,6 +194,16 @@ export default async function OrdersPage({
 
   const justPaid = params.success === "1";
   const invoiceParam = params.invoice ?? "";
+
+  // Fetch tracking for orders that have an AWB (limit to recent 5 to avoid too many API calls)
+  const ordersWithAwb = orders.filter((o) => o.awb).slice(0, 5);
+  const trackingResults = await Promise.all(
+    ordersWithAwb.map((o) => getTrackingInfo(o.awb!))
+  );
+  const trackingMap = new Map<string, ShipmentTrackingData | null>();
+  ordersWithAwb.forEach((o, i) => {
+    trackingMap.set(o.id, trackingResults[i]);
+  });
 
   return (
     <div className="flex flex-col gap-6">
@@ -122,6 +279,14 @@ export default async function OrdersPage({
                   </div>
                 ))}
               </div>
+
+              {/* Shipping Status */}
+              {order.status === "paid" && (
+                <ShippingStatus
+                  order={order}
+                  tracking={trackingMap.get(order.id) ?? null}
+                />
+              )}
 
               {/* Payment details */}
               <div className="mt-4 pt-3 border-t border-ink/5 grid grid-cols-2 gap-1 text-xs text-ink/40">
