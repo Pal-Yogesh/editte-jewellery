@@ -127,7 +127,11 @@ export async function POST(request: Request) {
   ws.eachRow((excelRow, rowNumber) => {
     if (rowNumber === 1) return; // skip header
 
-    const get = (key: string) => excelRow.getCell(colMap[key] ?? 0);
+    const get = (key: string): ExcelJS.Cell => {
+      const col = colMap[key];
+      if (!col) return { value: null } as ExcelJS.Cell;
+      return excelRow.getCell(col);
+    };
 
     const title           = cellText(get("title"));
     const description     = cellText(get("description"));

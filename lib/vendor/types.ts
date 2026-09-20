@@ -53,6 +53,14 @@ export type VendorCommission = {
   acceptedAt: string | null;
 };
 
+export type VendorShipping = {
+  /** Shiprocket pickup location name used when booking shipments. */
+  shiprocketPickupLocation: string | null;
+  registeredAt: string | null;
+  /** True when the last Shiprocket pickup registration attempt failed. */
+  registrationFailed: boolean;
+};
+
 export type VendorRecord = {
   vendorId: string;
   email: string;
@@ -65,6 +73,7 @@ export type VendorRecord = {
   bankDetails: VendorBankDetails;
   pickupAddress: VendorPickupAddress;
   commission: VendorCommission;
+  shipping: VendorShipping;
   createdAt: string;
   updatedAt: string;
   approvedAt: string | null;
@@ -109,5 +118,13 @@ export function createEmptyPickupAddress(): VendorPickupAddress {
     state: "",
     pincode: "",
     phone: "",
+  };
+}
+
+export function createEmptyVendorShipping(): VendorShipping {
+  return {
+    shiprocketPickupLocation: null,
+    registeredAt: null,
+    registrationFailed: false,
   };
 }

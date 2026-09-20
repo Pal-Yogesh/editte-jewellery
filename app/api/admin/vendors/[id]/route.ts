@@ -3,6 +3,7 @@ import { db } from "@/lib/firebase-admin";
 import { getAdminSession } from "@/lib/auth/admin";
 import { VENDOR_COLLECTION, getVendorById } from "@/lib/auth/vendor";
 import { serializeVendor } from "@/lib/vendor/serialize";
+import { registerVendorWarehouse } from "@/lib/vendor/shipping";
 import { sendVendorRejectionEmail } from "@/lib/resend";
 
 type Params = { params: Promise<{ id: string }> };
@@ -50,11 +51,20 @@ export async function PATCH(request: Request, { params }: Params) {
   const now = new Date().toISOString();
 
   if (body.action === "approve") {
+    // Register the vendor's pickup address as an iThink warehouse so their
+    // orders can be shipped. Best-effort: approval succeeds even if iThink
+    // is down — shipping.registrationFailed flags it for retry.
+    const shipping = await registerVendorWarehouse(
+      vendor.profile.brandName || "Vendor",
+      vendor.pickupAddress
+    );
+
     await db.collection(VENDOR_COLLECTION).doc(id).update({
       status: "approved",
       rejectionReason: null,
       approvedAt: now,
       approvedBy: admin.adminId,
+      shipping,
       updatedAt: now,
     });
   } else if (body.action === "reject") {

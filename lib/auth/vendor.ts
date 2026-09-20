@@ -6,6 +6,7 @@ import {
   createEmptyPickupAddress,
   createEmptyVendorKyc,
   createEmptyVendorProfile,
+  createEmptyVendorShipping,
   type VendorRecord,
 } from "@/lib/vendor/types";
 
@@ -66,6 +67,7 @@ export function normaliseVendor(
       accepted: Boolean(data.commission?.accepted),
       acceptedAt: (data.commission?.acceptedAt as string | null) ?? null,
     },
+    shipping: { ...createEmptyVendorShipping(), ...(data.shipping ?? {}) },
     createdAt: (data.createdAt as string) ?? "",
     updatedAt: (data.updatedAt as string) ?? "",
     approvedAt: (data.approvedAt as string | null) ?? null,

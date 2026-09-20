@@ -10,6 +10,7 @@ import { sendVendorOtpEmail } from "@/lib/resend";
 import {
   createEmptyBankDetails,
   createEmptyPickupAddress,
+  createEmptyVendorShipping,
   createEmptyVendorKyc,
   createEmptyVendorProfile,
 } from "@/lib/vendor/types";
@@ -73,6 +74,7 @@ export async function POST(request: Request) {
     bankDetails: createEmptyBankDetails(),
     pickupAddress: createEmptyPickupAddress(),
     commission: { accepted: false, acceptedAt: null },
+    shipping: createEmptyVendorShipping(),
     createdAt: now,
     updatedAt: now,
     approvedAt: null,

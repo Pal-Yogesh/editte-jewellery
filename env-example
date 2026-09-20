@@ -20,3 +20,10 @@ RESEND_FROM_EMAIL=noreply@yourdomain.com
 
 # Internal API key for server-to-server calls (low-stock check, etc.)
 INTERNAL_API_KEY=
+
+# iThink Logistics (shipping: rates, order booking, tracking, labels)
+ITHINK_ACCESS_TOKEN=
+ITHINK_SECRET_KEY=
+ITHINK_PICKUP_ADDRESS_ID=
+ITHINK_PICKUP_PINCODE=
+ITHINK_DEFAULT_WEIGHT_G=500
