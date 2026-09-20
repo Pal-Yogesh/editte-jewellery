@@ -1,5 +1,6 @@
 "use server";
 import { adminDb } from "@/lib/firebase/admin";
+import { getSession } from "@/lib/session";
 import { verifySession } from "@/lib/dal";
 import { revalidatePath } from "next/cache";
 import type { ActionState } from "./auth";
@@ -8,7 +9,8 @@ export async function addToCartAction(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
-  const session = await verifySession();
+  const session = await getSession();
+  if (!session?.uid) return { message: "Please sign in to add items." };
   const productId = formData.get("productId") as string;
   const name = formData.get("name") as string;
   const image = formData.get("image") as string;
@@ -28,6 +30,7 @@ export async function addToCartAction(
   }
 
   revalidatePath("/dashboard/cart");
+  revalidatePath("/", "layout");
   return { success: true, message: "Added to cart." };
 }
 
@@ -48,6 +51,7 @@ export async function updateCartQuantityAction(
   });
 
   revalidatePath("/dashboard/cart");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -61,6 +65,7 @@ export async function removeFromCartAction(
 
   await adminDb.collection("carts").doc(session.uid).collection("items").doc(id).delete();
   revalidatePath("/dashboard/cart");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -72,5 +77,6 @@ export async function clearCartAction(): Promise<ActionState> {
   all.docs.forEach((d) => batch.delete(d.ref));
   await batch.commit();
   revalidatePath("/dashboard/cart");
+  revalidatePath("/", "layout");
   return { success: true };
 }

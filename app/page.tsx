@@ -1,4 +1,4 @@
-import Navbar from "@/components/Navbar";
+import ZaraNavbar from "@/components/ZaraNavbar";
 import NavbarActions from "@/components/NavbarActions";
 import Hero from "@/components/Hero";
 import CategoryIcons from "@/components/CategoryIcons";
@@ -15,26 +15,29 @@ import CuratedCollection from "@/components/CuratedCollection";
 import DiscoverSection from "@/components/DiscoverSection";
 import Image from "next/image";
 
+import SubNavBar from "@/components/SubNavBar";
+
 export default function Home() {
   return (
     <>
       <div className="relative">
-        <Navbar actions={<NavbarActions />} />
+        <ZaraNavbar actions={<NavbarActions />} />
         <Hero />
+        <SubNavBar />
       </div>
       <main className="relative">
         {/* Group 1 — scrolls up to reveal the pinned banner */}
         <div
           className="relative z-10 bg-salt"
-          style={{
-            backgroundImage: "url('/01.png')",
-            backgroundSize: "cover",
-            backgroundPosition: "cover",
-            backgroundRepeat: "no-repeat",
-          }}
+          // style={{
+          //   backgroundImage: "url('/01.png')",
+          //   backgroundSize: "cover",
+          //   backgroundPosition: "cover",
+          //   backgroundRepeat: "no-repeat",
+          // }}
         >
           <CategoryIcons />
-          <CategoryCards />
+          {/* <CategoryCards /> */}
         </div>
 
         {/* Pinned reveal banner — stays fixed behind everything.

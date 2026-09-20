@@ -9,12 +9,12 @@ const COLLECTIONS = [
   "Kundan & Jadau",
 ];
 const QUICK_LINKS = [
-  "About Us",
-  "Our Designers",
-  "Custom Orders",
-  "Gift Cards",
-  "Size Guide",
-  "Care Instruction",
+  { label: "About Us", href: "/about" },
+  { label: "Our Designers", href: "#" },
+  { label: "Custom Orders", href: "#" },
+  { label: "Gift Cards", href: "#" },
+  { label: "Size Guide", href: "#" },
+  { label: "Care Instruction", href: "#" },
 ];
 
 export default function Footer() {
@@ -51,9 +51,10 @@ export default function Footer() {
           {/* Brand blurb */}
           <div>
             <p className="text-white text-sm leading-relaxed max-w-[280px] mt-12">
-              India&apos;s first jewellery makers collective connecting 40+
-              independent designers with those who appreciate the art of
-              adornment. Handcrafted with love since 2018.
+              Style should feel like your own.Editte brings together jewelry,
+              accessories and lifestyle pieces from distinctive brands,
+              thoughtfully curated for every side of your style, from every day
+              to occasion, subtle to statement.
             </p>
           </div>
 
@@ -79,12 +80,12 @@ export default function Footer() {
             <p className="font-heading text-cacao text-xl mb-3">Quick Links</p>
             <ul className="flex flex-col gap-1.5">
               {QUICK_LINKS.map((l) => (
-                <li key={l}>
+                <li key={l.label}>
                   <a
-                    href="#"
+                    href={l.href}
                     className="text-white text-sm hover:text-cacao transition-colors"
                   >
-                    {l}
+                    {l.label}
                   </a>
                 </li>
               ))}
@@ -97,29 +98,29 @@ export default function Footer() {
             <ul className="flex flex-col gap-1.5 text-white text-sm">
               <li>Brand Studio India</li>
               <li>+91 22 2600 0000</li>
-              <li>hello@Brand.in</li>
+              <li>hello@shopeditte.com</li>
             </ul>
           </div>
         </div>
 
         {/* Bottom bar */}
         <div className=" px-12 py-5 border-t border-white flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-salt/80 text-sm">@ Copyright 2026 . editte</p>
+          <p className="text-salt/80 text-sm">@ Copyright 2026 . editte</p>
           <div className="flex items-center gap-5">
             <a
-              href="#"
+              href="/cookie-policy"
               className="text-salt/80 text-sm hover:text-salt transition-colors"
             >
-              Return Policy
+              Cookie Policy
             </a>
             <a
-              href="#"
+              href="/privacy-policy"
               className="text-salt/80 text-sm hover:text-salt transition-colors"
             >
               Privacy Policy
             </a>
             <a
-              href="#"
+              href="/term-condition"
               className="text-salt/80 text-sm hover:text-salt transition-colors"
             >
               Terms Condition

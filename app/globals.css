@@ -2,9 +2,10 @@
 
 :root {
   /* ── editte brand colours ── */
-  --salt: #f9f5f1;
+  --salt: #FAF5F0;
   --cacao: #361515;
   --rose: #c87a79;
+  --ruby: #8a1c24;
   --sage: #b3ad6e;
   --sand: #ede2c3;
   --ink: #0c0e0e;
@@ -21,6 +22,7 @@
   --color-salt: var(--salt);
   --color-cacao: var(--cacao);
   --color-rose: var(--rose);
+  --color-ruby: var(--ruby);
   --color-sage: var(--sage);
   --color-sand: var(--sand);
   --color-ink: var(--ink);
@@ -97,4 +99,54 @@ body {
 
 .animate-marquee {
   animation: marquee 30s linear infinite;
+}
+
+/* Legal page prose styles */
+.prose-editte h2 {
+  font-family: var(--font-goudy);
+  font-weight: 700;
+  color: var(--cacao);
+  font-size: 1.25rem;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose-editte p {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--ink);
+  opacity: 0.75;
+  margin-bottom: 0.75rem;
+}
+
+.prose-editte .lead {
+  font-size: 1rem;
+  opacity: 0.85;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+.prose-editte ul {
+  margin: 0.5rem 0 1rem 1.25rem;
+  list-style-type: disc;
+}
+
+.prose-editte ul li {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--ink);
+  opacity: 0.75;
+  margin-bottom: 0.375rem;
+}
+
+.prose-editte strong {
+  opacity: 1;
+  color: var(--cacao);
+}
+
+/* Helvetica Neue for numeric values and specific headings */
+.font-numeric {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.5px;
 }

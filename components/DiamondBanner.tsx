@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function DiamondBanner() {
   return (
-    <div className="relative w-full h-full overflow-hidden bg-salt">
+    <div className="relative w-full h-full overflow-hidden">
       {/* Heading — sits above the building (z-[5]) */}
         {/* <Image
           src="/dummy.jpeg"
@@ -15,7 +15,7 @@ export default function DiamondBanner() {
           className="w-full h-[22%] "
           priority
         /> */}
-      <div className="absolute inset-0 z-[5] top-[20%] flex items-center justify-start">
+      {/* <div className="absolute inset-0 z-[5] top-[20%] flex items-center justify-start">
         <motion.h2
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -27,16 +27,16 @@ export default function DiamondBanner() {
           <span>Crafting Memories</span>
           <br /> That Last Forever
         </motion.h2>
-      </div>
+      </div> */}
 
       {/* Foreground building/trees layer */}
-      <div className="absolute inset-x-[-5%] bottom-0 z-[4] pointer-events-none">
+      <div className="absolute inset-x-[-1%] bottom-0 z-[4] pointer-events-none">
         <Image
-          src="/animation-image/mid-banner.png"
+          src="https://firebasestorage.googleapis.com/v0/b/multi-vendor-jewellery.firebasestorage.app/o/images%2Filldo.jpeg?alt=media&token=e53953bb-f601-4351-a642-85cf464d5dc2"
           width={1000}
           height={1000}
           alt="Tree and building foreground"
-          className="w-full h-[100vh] blur-[2px]"
+          className="w-full h-[100vh] "
           priority
         />
       </div>
