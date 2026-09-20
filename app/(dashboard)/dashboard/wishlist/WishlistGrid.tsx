@@ -9,12 +9,9 @@ function WishlistCard({ item }: { item: WishlistItemWithVendor }) {
   const [cartState, cartAction, cartPending] = useActionState(addToCartAction, undefined);
 
   return (
-    <div className="bg-white rounded-xl border border-ink/5 overflow-hidden group">
-      {/* Image */}
-      <div className="aspect-square overflow-hidden relative">
-
     <div className="bg-white border border-ink/5 overflow-hidden group">
-      <div className=" overflow-hidden relative">
+      {/* Image */}
+      <div className="overflow-hidden relative">
         <img
           src={item.image}
           alt={item.name}
@@ -35,9 +32,9 @@ function WishlistCard({ item }: { item: WishlistItemWithVendor }) {
 
       {/* Info */}
       <div className="p-4">
-        <p className="text-xs text-ink/40 uppercase tracking-wider mb-1">{item.category}</p>
+        <p className="text-xs text-ink font-bold uppercase tracking-wider mb-1">{item.category}</p>
         <p className="font-heading text-cacao text-sm truncate">{item.name}</p>
-        <p className="text-ink/60 text-sm mt-1 font-medium">₹{item.price.toLocaleString("en-IN")}</p>
+        <p className="text-ink/60 text-sm mt-1 font-bold">₹{item.price.toLocaleString("en-IN")}</p>
 
         {/* Vendor info */}
         {item.vendorBrand && (
@@ -69,12 +66,7 @@ function WishlistCard({ item }: { item: WishlistItemWithVendor }) {
           </button>
         </form>
 
-        <p className="text-[10px] text-ink/30 mt-2 text-center">
-      <div className="p-4 grid grid-cols-2">
-        <p className="text-xs text-ink font-bold uppercase tracking-wider mb-1">{item.category}</p>
-        <p className="font-heading text-cacao text-sm truncate">{item.name}</p>
-        <p className="text-ink/60 text-sm mt-1 font-bold">₹{item.price.toLocaleString("en-IN")}</p>
-        <p className="text-xs font-bold text-ink mt-1">
+        <p className="text-xs font-bold text-ink mt-2 text-center">
           Added {new Date(item.addedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
         </p>
       </div>
