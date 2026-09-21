@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import ExcelJS from "exceljs";
 import { getSessionVendor } from "@/lib/vendor/session";
 import { EXCEL_COLUMNS } from "@/lib/product/excel-schema";
+import {
+  DEPARTMENTS,
+  allGroupLabels,
+  allTypeLabels,
+} from "@/lib/product/categories";
 
 const HEADER_FILL: ExcelJS.Fill = {
   type: "pattern",
@@ -53,6 +58,10 @@ export async function GET() {
   const discIdx       = EXCEL_COLUMNS.findIndex((c) => c.key === "discountPercent");
   const quantityIdx   = EXCEL_COLUMNS.findIndex((c) => c.key === "quantity");
   const minQtyIdx     = EXCEL_COLUMNS.findIndex((c) => c.key === "minQuantity");
+  const weightIdx     = EXCEL_COLUMNS.findIndex((c) => c.key === "weightGrams");
+  const deptIdx       = EXCEL_COLUMNS.findIndex((c) => c.key === "department");
+  const groupIdx      = EXCEL_COLUMNS.findIndex((c) => c.key === "categoryGroup");
+  const typeIdx       = EXCEL_COLUMNS.findIndex((c) => c.key === "productType");
 
   // Tint required-field columns + number formatting (discount is a plain number, e.g. 15 — not a percentage)
   const requiredIndices = EXCEL_COLUMNS
@@ -67,6 +76,44 @@ export async function GET() {
     ws.getRow(row).getCell(discIdx + 1).numFmt     = "0.00";
     ws.getRow(row).getCell(quantityIdx + 1).numFmt = "0";
     ws.getRow(row).getCell(minQtyIdx + 1).numFmt = "0";
+    ws.getRow(row).getCell(weightIdx + 1).numFmt   = "0.00";
+  }
+
+  // ── Category dropdowns ────────────────────────────────────────────────────
+  // The option lists live on a hidden sheet: inline `formulae` lists are capped
+  // at 255 characters and the product-type list is longer than that.
+  const lists = wb.addWorksheet("Lists");
+  lists.state = "veryHidden";
+
+  const deptLabels  = DEPARTMENTS.map((d) => d.label);
+  const groupLabels = allGroupLabels();
+  const typeLabels  = allTypeLabels();
+
+  deptLabels.forEach((v, i)  => { lists.getCell(i + 1, 1).value = v; });
+  groupLabels.forEach((v, i) => { lists.getCell(i + 1, 2).value = v; });
+  typeLabels.forEach((v, i)  => { lists.getCell(i + 1, 3).value = v; });
+
+  const dropdowns: { idx: number; ref: string; prompt: string }[] = [
+    { idx: deptIdx,  ref: `Lists!$A$1:$A$${deptLabels.length}`,  prompt: "Pick a category" },
+    { idx: groupIdx, ref: `Lists!$B$1:$B$${groupLabels.length}`, prompt: "Pick a sub-category that belongs to the category" },
+    { idx: typeIdx,  ref: `Lists!$C$1:$C$${typeLabels.length}`,  prompt: "Pick a product type that belongs to the sub-category" },
+  ];
+
+  for (let row = 2; row <= 200; row++) {
+    for (const { idx, ref, prompt } of dropdowns) {
+      ws.getRow(row).getCell(idx + 1).dataValidation = {
+        type: "list",
+        allowBlank: false,
+        formulae: [ref],
+        showErrorMessage: true,
+        errorStyle: "error",
+        errorTitle: "Invalid value",
+        error: "Choose one of the listed options.",
+        showInputMessage: true,
+        promptTitle: "editte",
+        prompt,
+      };
+    }
   }
 
   // ── Serialize ─────────────────────────────────────────────────────────────

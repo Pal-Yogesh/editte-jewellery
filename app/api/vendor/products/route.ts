@@ -11,6 +11,13 @@ import {
   normaliseProduct,
   type ProductMedia,
 } from "@/lib/product/types";
+import {
+  departmentLabels,
+  formatCategoryPath,
+  getDepartment,
+  getGroup,
+  isValidCategory,
+} from "@/lib/product/categories";
 
 const IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];
 const VIDEO_TYPES = ["video/mp4", "video/webm", "video/quicktime"];
@@ -76,7 +83,10 @@ export async function POST(request: Request) {
   const metal = (form.get("metal") as string | null)?.trim() ?? "";
   const colors = parseList(form.get("colors"));
   const size = (form.get("size") as string | null)?.trim() ?? "";
-  const category = (form.get("category") as string | null)?.trim() ?? "";
+  const weightGrams = Number(form.get("weightGrams"));
+  const department = (form.get("department") as string | null)?.trim() ?? "";
+  const categoryGroup = (form.get("categoryGroup") as string | null)?.trim() ?? "";
+  const productType = (form.get("productType") as string | null)?.trim() ?? "";
   const brandName =
     (form.get("brandName") as string | null)?.trim() || vendor.profile.brandName;
   const quantity = Number(form.get("quantity")) || 0;
@@ -95,6 +105,35 @@ export async function POST(request: Request) {
   if (discountPercent < 0 || discountPercent > 100) {
     return NextResponse.json({ message: "Discount must be between 0 and 100." }, { status: 400 });
   }
+  if (!Number.isFinite(weightGrams) || weightGrams <= 0) {
+    return NextResponse.json(
+      { message: "Product weight in grams is required and must be greater than 0." },
+      { status: 400 }
+    );
+  }
+
+  // Category must be a complete, valid path through the taxonomy — a partial
+  // or mismatched selection (e.g. Men / Bags) is rejected outright.
+  if (!getDepartment(department)) {
+    return NextResponse.json(
+      { message: `Select a category. Options: ${departmentLabels()}.` },
+      { status: 400 }
+    );
+  }
+  if (!getGroup(department, categoryGroup)) {
+    return NextResponse.json(
+      { message: "Select a valid sub-category for the chosen category." },
+      { status: 400 }
+    );
+  }
+  if (!isValidCategory(department, categoryGroup, productType)) {
+    return NextResponse.json(
+      { message: "Select a valid product type for the chosen sub-category." },
+      { status: 400 }
+    );
+  }
+
+  const category = formatCategoryPath(department, categoryGroup, productType);
 
   const images = form.getAll("images").filter((f): f is File => f instanceof File);
   const video = form.get("video");
@@ -185,6 +224,10 @@ export async function POST(request: Request) {
     metal,
     colors,
     size,
+    weightGrams,
+    department,
+    categoryGroup,
+    productType,
     category,
     brandName,
     quantity,

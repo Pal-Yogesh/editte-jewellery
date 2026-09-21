@@ -3,17 +3,28 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+  bannerError,
   buttonApprove,
   buttonChipActive,
   buttonChipInactive,
   buttonOutline,
-  buttonPrimary,
+  buttonQuiet,
   buttonReject,
-  input,
+  chipBase,
+  linkMuted,
   panel,
+  sidebarButton,
   statusBadge,
+  subheading,
+  textarea as textareaClass,
 } from "@/app/theme";
 import AdminProducts from "@/app/_admin/admin-products";
+import DashboardShell, { type ShellNavItem } from "@/app/components/dashboard-shell";
+
+const NAV: readonly ShellNavItem[] = [
+  { id: "vendors", label: "Vendors" },
+  { id: "products", label: "Products" },
+];
 
 type AdminSessionResponse = {
   authenticated: boolean;
@@ -208,73 +219,42 @@ export default function AdminDashboard({ adminKey }: { adminKey: string }) {
   }
 
   return (
-    <main className="min-h-screen bg-background px-4 py-8 sm:px-6">
-      <div className="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row">
-        <aside className="md:w-60 md:shrink-0">
-          <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm md:sticky md:top-8">
-            <div className="mb-4">
-              <h1 className="text-lg font-semibold tracking-tight text-heading">
-                Admin
-              </h1>
-              <p className="truncate text-xs text-muted">{adminId}</p>
-            </div>
-            <nav className="space-y-1">
-              <button
-                type="button"
-                onClick={() => setSection("vendors")}
-                className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition ${
-                  section === "vendors"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted hover:bg-surface-hover"
-                }`}
-              >
-                Vendors
-              </button>
-              <button
-                type="button"
-                onClick={() => setSection("products")}
-                className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition ${
-                  section === "products"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted hover:bg-surface-hover"
-                }`}
-              >
-                Products
-              </button>
-            </nav>
-            <button
-              type="button"
-              onClick={handleLogout}
-              disabled={isLoggingOut}
-              className={`mt-4 w-full ${outlineBtn}`}
-            >
-              {isLoggingOut ? "Logging out..." : "Logout"}
-            </button>
-          </div>
-        </aside>
-
-        <div className="min-w-0 flex-1">
-          {section === "products" ? (
+    <DashboardShell
+      subtitle="Admin Panel"
+      items={NAV}
+      active={section}
+      onSelect={(id) => setSection(id as "vendors" | "products")}
+      meta={<p className="truncate text-xs text-white/50">{adminId}</p>}
+      footer={
+        <button
+          type="button"
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          className={`${sidebarButton} text-left`}
+        >
+          {isLoggingOut ? "Signing out…" : "Sign out"}
+        </button>
+      }
+    >
+      {section === "products" ? (
             <AdminProducts />
           ) : (
             <section className={panel}>
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <h2 className="text-lg font-semibold text-heading">
-                Vendor Approvals
-              </h2>
+              <h2 className={subheading}>Vendor Approvals</h2>
               <button
                 type="button"
                 onClick={() => loadVendors(filter)}
                 disabled={vendorsLoading}
-                className="inline-flex items-center gap-1 rounded-md border border-input px-2.5 py-1 text-xs font-medium text-muted transition hover:bg-surface-hover disabled:opacity-60"
+                className={`gap-1.5 ${buttonQuiet}`}
                 title="Refresh vendor list"
               >
                 <span className={vendorsLoading ? "animate-spin" : ""}>↻</span>
                 Refresh
               </button>
               {lastUpdated ? (
-                <span className="text-xs text-muted">
+                <span className="text-[10px] uppercase tracking-[0.12em] text-muted">
                   Updated {lastUpdated.toLocaleTimeString()}
                 </span>
               ) : null}
@@ -285,7 +265,7 @@ export default function AdminDashboard({ adminKey }: { adminKey: string }) {
                   key={s}
                   type="button"
                   onClick={() => setFilter(s)}
-                  className={`rounded-md px-3 py-1.5 text-xs font-medium capitalize transition ${
+                  className={`${chipBase} ${
                     filter === s ? buttonChipActive : buttonChipInactive
                   }`}
                 >
@@ -296,9 +276,7 @@ export default function AdminDashboard({ adminKey }: { adminKey: string }) {
           </div>
 
           {error ? (
-            <p className="mb-4 rounded-md bg-error-bg px-3 py-2 text-sm text-error-fg">
-              {error}
-            </p>
+            <p className={`mb-4 ${bannerError}`}>{error}</p>
           ) : null}
 
           {vendorsLoading ? (
@@ -316,7 +294,7 @@ export default function AdminDashboard({ adminKey }: { adminKey: string }) {
                 return (
                   <li
                     key={v.vendorId}
-                    className="rounded-xl border border-border p-4"
+                    className="rounded-xl border border-border p-5 transition-colors hover:border-heading/20"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
@@ -331,7 +309,7 @@ export default function AdminDashboard({ adminKey }: { adminKey: string }) {
                           <div className="h-10 w-10 rounded-full border border-dashed border-input" />
                         )}
                         <div>
-                          <p className="text-sm font-medium text-foreground">
+                          <p className="font-heading text-base text-heading">
                             {v.profile.brandName || "(no brand name)"}
                           </p>
                           <p className="text-xs text-muted">{v.email}</p>
@@ -346,14 +324,14 @@ export default function AdminDashboard({ adminKey }: { adminKey: string }) {
                       <button
                         type="button"
                         onClick={() => setExpanded(isOpen ? null : v.vendorId)}
-                        className="text-xs font-medium text-muted underline"
+                        className={`text-[10px] uppercase tracking-[0.15em] ${linkMuted}`}
                       >
                         {isOpen ? "Hide details" : "View details"}
                       </button>
                     </div>
 
                     {isOpen ? (
-                      <div className="mt-3 space-y-3 rounded-lg bg-surface-hover p-4 text-sm">
+                      <div className="mt-4 space-y-3 rounded-lg bg-surface-hover p-4 text-sm">
                         <Detail label="About" value={v.profile.about} />
                         <Detail label="Brand story" value={v.profile.brandStory} />
                         <Detail label="GST" value={v.kyc.gstNumber} />
@@ -383,7 +361,7 @@ export default function AdminDashboard({ adminKey }: { adminKey: string }) {
                           value={v.commission.accepted ? "Accepted" : "Not accepted"}
                         />
                         <div>
-                          <p className="font-medium text-foreground">
+                          <p className="text-xs uppercase tracking-[0.15em] text-heading">
                             Documents ({v.kyc.documents.length})
                           </p>
                           {v.kyc.documents.length ? (
@@ -394,7 +372,7 @@ export default function AdminDashboard({ adminKey }: { adminKey: string }) {
                                     href={d.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-foreground underline"
+                                    className={linkMuted}
                                   >
                                     {d.name}
                                   </a>
@@ -432,13 +410,13 @@ export default function AdminDashboard({ adminKey }: { adminKey: string }) {
                     </div>
 
                     {rejecting === v.vendorId ? (
-                      <div className="mt-3 space-y-2 rounded-lg border border-error-fg/40 bg-error-bg/10 p-3">
-                        <label className="block text-xs font-medium text-foreground">
+                      <div className="mt-4 space-y-2 rounded-lg border border-error-fg/30 bg-error-bg p-4">
+                        <label className="block text-[10px] uppercase tracking-[0.15em] text-heading">
                           Reason for rejection (will be emailed to vendor)
                         </label>
                         <textarea
                           ref={rejectRef}
-                          className={input + " min-h-20"}
+                          className={textareaClass + " min-h-20"}
                           value={rejectReason}
                           onChange={(e) => setRejectReason(e.target.value)}
                           placeholder="Provide feedback so the vendor can fix and resubmit…"
@@ -471,10 +449,8 @@ export default function AdminDashboard({ adminKey }: { adminKey: string }) {
             </ul>
           )}
         </section>
-          )}
-        </div>
-      </div>
-    </main>
+      )}
+    </DashboardShell>
   );
 }
 
@@ -482,7 +458,9 @@ function Detail({ label, value }: { label: string; value: string }) {
   if (!value) return null;
   return (
     <div>
-      <span className="font-medium text-foreground">{label}:</span>{" "}
+      <span className="text-xs uppercase tracking-[0.15em] text-heading">
+        {label}:
+      </span>{" "}
       <span className="text-muted">{value}</span>
     </div>
   );

@@ -3,8 +3,11 @@
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  pageCentered,
-  card,
+  authCardDark,
+  authFootnote,
+  authPageDark,
+  authWordmark,
+  authWordmarkSub,
   heading,
   muted,
   label,
@@ -172,9 +175,15 @@ export default function AdminLogin({ adminKey }: { adminKey: string }) {
   };
 
   return (
-    <main className={pageCentered}>
-      <section className={`w-full max-w-md ${card}`}>
-        <h1 className={`mb-2 ${heading}`}>Admin Login</h1>
+    <main className={authPageDark}>
+      <div className="w-full max-w-sm">
+        <div className="mb-10 text-center">
+          <p className={`${authWordmark} text-white`}>editte</p>
+          <p className={`${authWordmarkSub} text-white/40`}>Admin Portal</p>
+        </div>
+
+        <section className={authCardDark}>
+        <h1 className={`mb-2 ${heading}`}>Sign In</h1>
         <p className={`mb-6 ${muted}`}>
           {step === "credentials"
             ? "Sign in with your admin ID and password."
@@ -182,7 +191,7 @@ export default function AdminLogin({ adminKey }: { adminKey: string }) {
         </p>
 
         {step === "credentials" ? (
-          <form onSubmit={handleCredentialsSubmit} className="space-y-4">
+          <form onSubmit={handleCredentialsSubmit} className="space-y-5">
             <div>
               <label htmlFor="adminId" className={label}>
                 Admin ID
@@ -222,7 +231,7 @@ export default function AdminLogin({ adminKey }: { adminKey: string }) {
             </button>
           </form>
         ) : (
-          <form onSubmit={handleOtpSubmit} className="space-y-4">
+          <form onSubmit={handleOtpSubmit} className="space-y-5">
             <div>
               <label htmlFor="otp" className={label}>
                 Verification Code
@@ -279,7 +288,12 @@ export default function AdminLogin({ adminKey }: { adminKey: string }) {
         )}
 
         {message ? <p className={`mt-4 ${banner(isError)}`}>{message}</p> : null}
-      </section>
+        </section>
+
+        <p className={`${authFootnote} text-white/25`}>
+          Admin access only · Unauthorised access is prohibited
+        </p>
+      </div>
     </main>
   );
 }

@@ -5,15 +5,22 @@ import { useRouter } from "next/navigation";
 import DevAutofill from "./dev-autofill";
 import ProductsPanel from "./products-panel";
 import InventoryPanel from "./inventory-panel";
+import DashboardShell, { type ShellNavItem } from "@/app/components/dashboard-shell";
 import {
   banner as bannerClass,
+  buttonChipActive,
+  buttonChipInactive,
   buttonDanger,
   buttonOutline,
   buttonPrimary,
+  chipBase,
   input,
   label as labelClass,
+  linkMuted,
   panel,
+  sidebarButton,
   statusBanner,
+  subheading,
   textarea,
 } from "@/app/theme";
 
@@ -276,84 +283,50 @@ export default function VendorDashboardPage() {
   const showSubmitCard =
     vendor.status === "incomplete" || vendor.status === "rejected";
 
-  return (
-    <main className="min-h-screen bg-background px-4 py-8 sm:px-6">
-      <div className="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row">
-        <aside className="md:w-60 md:shrink-0">
-          <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm md:sticky md:top-8">
-            <div className="mb-4">
-              <div className="flex items-center justify-between">
-                <h1 className="truncate text-lg font-semibold tracking-tight text-heading">
-                  {vendor.profile.brandName || "Vendor"}
-                </h1>
-                <button
-                  type="button"
-                  onClick={handleRefresh}
-                  disabled={refreshing}
-                  className="ml-2 shrink-0 rounded-md border border-input px-2 py-1 text-xs font-medium text-muted transition hover:bg-surface-hover disabled:opacity-60"
-                  title="Refresh data"
-                >
-                  <span className={refreshing ? "inline-block animate-spin" : ""}>
-                    ↻
-                  </span>
-                </button>
-              </div>
-              <p className="truncate text-xs text-muted">{vendor.email}</p>
-            </div>
-            <nav className="space-y-1">
-              <button
-                type="button"
-                onClick={() => setSection("account")}
-                className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition ${
-                  section === "account"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted hover:bg-surface-hover"
-                }`}
-              >
-                Account &amp; Details
-              </button>
-              <button
-                type="button"
-                onClick={() => setSection("products")}
-                className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition ${
-                  section === "products"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted hover:bg-surface-hover"
-                }`}
-              >
-                <span className="flex items-center justify-between">
-                  <span>Products</span>
-                  {uploadQueueCount > 0 ? (
-                    <span className="rounded-full bg-rose px-1.5 py-0.5 text-xs font-semibold text-white">
-                      {uploadQueueCount}
-                    </span>
-                  ) : null}
-                </span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setSection("inventory")}
-                className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition ${
-                  section === "inventory"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted hover:bg-surface-hover"
-                }`}
-              >
-                Inventory
-              </button>
-            </nav>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className={`mt-4 w-full ${outlineBtn}`}
-            >
-              {busy ? "..." : "Logout"}
-            </button>
-          </div>
-        </aside>
+  const navItems: readonly ShellNavItem[] = [
+    { id: "account", label: "Account & Details" },
+    { id: "products", label: "Products", badge: uploadQueueCount },
+    { id: "inventory", label: "Inventory" },
+  ];
 
-        <div className="min-w-0 flex-1">
-          {/* Both panels stay mounted so the upload queue survives section switches. */}
+  return (
+    <DashboardShell
+      subtitle="Vendor Portal"
+      items={navItems}
+      active={section}
+      onSelect={(id) =>
+        setSection(id as "account" | "products" | "inventory")
+      }
+      meta={
+        <>
+          <p className="truncate font-heading text-sm text-white">
+            {vendor.profile.brandName || "Vendor"}
+          </p>
+          <p className="truncate text-xs text-white/40">{vendor.email}</p>
+        </>
+      }
+      headerAction={
+        <button
+          type="button"
+          onClick={handleRefresh}
+          disabled={refreshing}
+          className="shrink-0 text-white/40 transition-colors hover:text-white disabled:opacity-40"
+          title="Refresh data"
+        >
+          <span className={refreshing ? "inline-block animate-spin" : ""}>↻</span>
+        </button>
+      }
+      footer={
+        <button
+          type="button"
+          onClick={handleLogout}
+          className={`${sidebarButton} text-left`}
+        >
+          {busy ? "…" : "Sign out"}
+        </button>
+      }
+    >
+      {/* Both panels stay mounted so the upload queue survives section switches. */}
           <div className={section !== "products" ? "hidden" : ""}>
             <ProductsPanel
               vendorStatus={vendor.status}
@@ -366,7 +339,7 @@ export default function VendorDashboardPage() {
           </div>
           <div className={section === "products" || section === "inventory" ? "hidden" : ""}>
               <div className={`mb-6 ${statusStyles[vendor.status]}`}>
-          <span className="font-medium capitalize">{vendor.status.replace("_", " ")}</span> — {statusText[vendor.status]}
+          <span className="uppercase tracking-[0.15em]">{vendor.status.replace("_", " ")}</span> — {statusText[vendor.status]}
         </div>
 
         {process.env.NODE_ENV !== "production" ? (
@@ -374,7 +347,7 @@ export default function VendorDashboardPage() {
         ) : null}
 
         {showSubmitCard ? (
-          <div className="mb-6 rounded-xl border border-border bg-surface p-4">
+          <div className="mb-6 rounded-xl border border-border bg-surface p-5">
             {vendor.completeness.complete ? (
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <p className="text-sm text-foreground">
@@ -392,7 +365,7 @@ export default function VendorDashboardPage() {
               </div>
             ) : (
               <div>
-                <p className="mb-2 text-sm font-medium text-foreground">
+                <p className="mb-2 text-xs uppercase tracking-[0.15em] text-heading">
                   Complete these {vendor.completeness.missing.length} item(s) to submit
                   for approval:
                 </p>
@@ -415,10 +388,8 @@ export default function VendorDashboardPage() {
                 setTab(t.id);
                 setBanner(null);
               }}
-              className={`rounded-md px-3 py-1.5 text-sm font-medium transition ${
-                tab === t.id
-                  ? "bg-primary text-primary-foreground"
-                  : "border border-input text-muted hover:bg-surface-hover"
+              className={`${chipBase} ${
+                tab === t.id ? buttonChipActive : buttonChipInactive
               }`}
             >
               {t.label}
@@ -434,7 +405,7 @@ export default function VendorDashboardPage() {
 
         <section className={panel}>
           {tab === "profile" ? (
-            <div className="space-y-5">
+            <div className="space-y-6">
               <div className="flex items-center gap-4">
                 {vendor.profile.logoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -506,7 +477,7 @@ export default function VendorDashboardPage() {
                 />
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2">
                 {(["website", "instagram", "facebook", "youtube", "twitter"] as const).map(
                   (key) => (
                     <div key={key}>
@@ -551,8 +522,8 @@ export default function VendorDashboardPage() {
           ) : null}
 
           {tab === "kyc" ? (
-            <div className="space-y-5">
-              <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-6">
+              <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2">
                 <div>
                   <label className={labelClass}>GST number</label>
                   <input
@@ -591,10 +562,10 @@ export default function VendorDashboardPage() {
 
               <div>
                 <div className="mb-2 flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-foreground">
+                  <h3 className={subheading}>
                     Business documents
                   </h3>
-                  <span className="text-xs text-muted">
+                  <span className="text-[10px] uppercase tracking-[0.12em] text-muted">
                     {vendor.kyc.documents.length}/{MAX_DOCUMENTS} uploaded
                   </span>
                 </div>
@@ -604,13 +575,13 @@ export default function VendorDashboardPage() {
                     {vendor.kyc.documents.map((doc) => (
                       <li
                         key={doc.id}
-                        className="flex items-center justify-between rounded-md border border-border px-3 py-2 text-sm"
+                        className="flex items-center justify-between rounded-lg border border-border px-4 py-2.5 text-sm"
                       >
                         <a
                           href={doc.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="truncate text-foreground underline"
+                          className={`truncate ${linkMuted}`}
                         >
                           {doc.name}
                         </a>
@@ -625,7 +596,7 @@ export default function VendorDashboardPage() {
                               "Document removed."
                             )
                           }
-                          className="ml-3 shrink-0 text-xs text-danger hover:underline"
+                          className="ml-3 shrink-0 text-[10px] uppercase tracking-[0.15em] text-danger transition-colors hover:opacity-70"
                         >
                           Remove
                         </button>
@@ -674,7 +645,7 @@ export default function VendorDashboardPage() {
           ) : null}
 
           {tab === "bank" ? (
-            <div className="space-y-5">
+            <div className="space-y-6">
               <div>
                 <label className={labelClass}>Account holder name</label>
                 <input
@@ -685,7 +656,7 @@ export default function VendorDashboardPage() {
                   }
                 />
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2">
                 <div>
                   <label className={labelClass}>Account number</label>
                   <input
@@ -729,7 +700,7 @@ export default function VendorDashboardPage() {
           ) : null}
 
           {tab === "address" ? (
-            <div className="space-y-5">
+            <div className="space-y-6">
               <div>
                 <label className={labelClass}>Address line 1</label>
                 <input
@@ -750,7 +721,7 @@ export default function VendorDashboardPage() {
                   }
                 />
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2">
                 <div>
                   <label className={labelClass}>City</label>
                   <input
@@ -811,11 +782,11 @@ export default function VendorDashboardPage() {
           ) : null}
 
           {tab === "commission" ? (
-            <div className="space-y-5">
-              <h3 className="text-sm font-semibold text-foreground">
+            <div className="space-y-6">
+              <h3 className={subheading}>
                 Commission agreement
               </h3>
-              <div className="max-h-64 overflow-y-auto rounded-md border border-border bg-surface-hover p-4 text-sm text-muted">
+              <div className="max-h-64 overflow-y-auto rounded-lg border border-border bg-surface-hover p-5 text-sm text-muted">
                 <p className="mb-2">
                   By listing your products on this platform, you agree that a
                   commission will be deducted from each successful sale as per the
@@ -862,8 +833,8 @@ export default function VendorDashboardPage() {
           ) : null}
 
           {tab === "account" ? (
-            <div className="space-y-5">
-              <h3 className="text-sm font-semibold text-danger">
+            <div className="space-y-6">
+              <h3 className="font-heading text-xl text-danger">
                 Delete account
               </h3>
               <p className="text-sm text-muted">
@@ -881,9 +852,7 @@ export default function VendorDashboardPage() {
             </div>
           ) : null}
         </section>
-          </div>
-        </div>
       </div>
-    </main>
+    </DashboardShell>
   );
 }

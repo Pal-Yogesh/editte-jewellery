@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   banner as bannerClass,
-  buttonOutline,
   buttonPrimary,
   muted,
   subheading,
@@ -122,7 +121,7 @@ export default function InventoryPanel() {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+      <div className="rounded-xl border border-border bg-surface p-6">
         <p className={muted}>Loading inventory…</p>
       </div>
     );
@@ -136,7 +135,7 @@ export default function InventoryPanel() {
         <p className={bannerClass(banner.error)}>{banner.text}</p>
       )}
 
-      <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+      <div className="rounded-xl border border-border bg-surface p-6">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <h2 className={subheading}>Inventory</h2>
           {hasChanges && (
@@ -160,13 +159,13 @@ export default function InventoryPanel() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border text-left text-xs uppercase text-muted">
-                  <th className="pb-2 pr-4 font-medium">Product</th>
-                  <th className="pb-2 pr-4 font-medium">SKU</th>
-                  <th className="pb-2 pr-4 font-medium">Price</th>
-                  <th className="pb-2 pr-4 font-medium">Current Qty</th>
-                  <th className="pb-2 pr-4 font-medium">New Qty</th>
-                  <th className="pb-2 font-medium">Adjust</th>
+                <tr className="border-b border-border bg-surface-hover text-left text-[10px] uppercase tracking-[0.12em] text-muted">
+                  <th className="px-4 py-3">Product</th>
+                  <th className="px-4 py-3">SKU</th>
+                  <th className="px-4 py-3">Price</th>
+                  <th className="px-4 py-3">Current Qty</th>
+                  <th className="px-4 py-3">New Qty</th>
+                  <th className="px-4 py-3">Adjust</th>
                 </tr>
               </thead>
               <tbody>
@@ -183,45 +182,45 @@ export default function InventoryPanel() {
                         changed ? "bg-warning-bg/20" : ""
                       }`}
                     >
-                      <td className="py-3 pr-4">
+                      <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           {thumb ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
                               src={thumb.url}
                               alt=""
-                              className="h-10 w-10 rounded-md border border-border object-cover"
+                              className="h-10 w-10 rounded-lg border border-border object-cover"
                             />
                           ) : (
-                            <div className="flex h-10 w-10 items-center justify-center rounded-md border border-dashed border-input text-xs text-muted">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-dashed border-input text-xs text-muted">
                               🖼
                             </div>
                           )}
-                          <span className="truncate font-medium text-foreground">
+                          <span className="truncate font-heading text-base text-heading">
                             {p.title}
                           </span>
                         </div>
                       </td>
-                      <td className="py-3 pr-4 text-muted">{p.sku}</td>
-                      <td className="py-3 pr-4 text-muted">
+                      <td className="px-4 py-3 text-muted">{p.sku}</td>
+                      <td className="px-4 py-3 text-muted">
                         {money(p.finalPrice)}
                       </td>
-                      <td className="py-3 pr-4 text-muted">{currentQty}</td>
-                      <td className="py-3 pr-4">
+                      <td className="px-4 py-3 text-muted">{currentQty}</td>
+                      <td className="px-4 py-3">
                         <input
                           type="number"
                           min="0"
                           value={newQty}
                           onChange={(e) => setExact(p.productId, e.target.value)}
-                          className="w-20 rounded-md border border-input bg-field px-2 py-1 text-sm text-foreground outline-none transition focus:ring-2 focus:ring-ring"
+                          className="w-20 rounded-lg border border-input bg-field px-2 py-1.5 text-center text-sm text-foreground outline-none transition focus:border-ring focus:ring-2 focus:ring-ring/10"
                         />
                       </td>
-                      <td className="py-3">
+                      <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
                           <button
                             type="button"
                             onClick={() => decrement(p.productId)}
-                            className="flex h-7 w-7 items-center justify-center rounded-md border border-input text-sm transition hover:bg-surface-hover disabled:opacity-40"
+                            className="flex h-7 w-7 items-center justify-center rounded-full border border-border text-sm text-muted transition-colors hover:border-heading hover:text-heading disabled:opacity-40"
                             disabled={newQty <= 0}
                           >
                             −
@@ -229,7 +228,7 @@ export default function InventoryPanel() {
                           <button
                             type="button"
                             onClick={() => increment(p.productId)}
-                            className="flex h-7 w-7 items-center justify-center rounded-md border border-input text-sm transition hover:bg-surface-hover"
+                            className="flex h-7 w-7 items-center justify-center rounded-full border border-border text-sm text-muted transition-colors hover:border-heading hover:text-heading"
                           >
                             +
                           </button>

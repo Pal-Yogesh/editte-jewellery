@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   pageCentered,
+  authWordmark,
+  authWordmarkSub,
   card,
   heading,
   muted,
@@ -89,7 +91,13 @@ export default function VendorForgotPasswordPage() {
 
   return (
     <main className={pageCentered}>
-      <section className={`w-full max-w-md ${card}`}>
+      <div className="w-full max-w-md">
+        <div className="mb-8 text-center">
+          <p className={`${authWordmark} text-heading`}>editte</p>
+          <p className={`${authWordmarkSub} text-muted`}>Vendor Portal</p>
+        </div>
+
+        <section className={card}>
         <h1 className={`mb-2 ${heading}`}>
           Reset Password
         </h1>
@@ -100,7 +108,7 @@ export default function VendorForgotPasswordPage() {
         </p>
 
         {step === "request" ? (
-          <form onSubmit={handleRequest} className="space-y-4">
+          <form onSubmit={handleRequest} className="space-y-5">
             <div>
               <label className={label}>
                 Email
@@ -120,7 +128,7 @@ export default function VendorForgotPasswordPage() {
             </button>
           </form>
         ) : (
-          <form onSubmit={handleReset} className="space-y-4">
+          <form onSubmit={handleReset} className="space-y-5">
             <div>
               <label className={label}>
                 Verification code
@@ -172,7 +180,8 @@ export default function VendorForgotPasswordPage() {
             Back to login
           </Link>
         </p>
-      </section>
+        </section>
+      </div>
     </main>
   );
 }

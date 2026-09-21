@@ -21,6 +21,13 @@ export type ProductRecord = {
   metal: string;
   colors: string[];
   size: string;
+  /** Weight in grams. Mandatory for every product. */
+  weightGrams: number;
+  /** Structured taxonomy — see lib/product/categories.ts. */
+  department: string; // "women" | "men" | "occasions"
+  categoryGroup: string; // e.g. "jewellery", "bags", "celebrations"
+  productType: string; // e.g. "Chains", "Rings"
+  /** Denormalised display path, e.g. "Men / Jewellery / Chains". */
   category: string;
   brandName: string;
   quantity: number;
@@ -62,6 +69,10 @@ export function normaliseProduct(
     metal: (data.metal as string) ?? "",
     colors: Array.isArray(data.colors) ? (data.colors as string[]) : [],
     size: (data.size as string) ?? "",
+    weightGrams: (data.weightGrams as number) ?? 0,
+    department: (data.department as string) ?? "",
+    categoryGroup: (data.categoryGroup as string) ?? "",
+    productType: (data.productType as string) ?? "",
     category: (data.category as string) ?? "",
     brandName: (data.brandName as string) ?? "",
     quantity: (data.quantity as number) ?? 0,

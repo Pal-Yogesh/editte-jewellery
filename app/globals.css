@@ -4,51 +4,58 @@
  * ============================================================
  *  editte — Web Design System
  *  Single source of truth for colours + typography.
- *  Brand palette: Salt, Cacao, Rose, Sage, Sand, Gold, Ink.
+ *  Mirrors the editte storefront theme (new-jewellery):
+ *  one typeface (Sorts Mill Goudy), Salt canvas, Cacao structure.
+ *  Brand palette: Salt, Cacao, Rose, Ruby, Sage, Sand, Gold, Ink.
  * ============================================================
  */
 
 :root {
-  /* Brand palette (raw) */
-  --salt: #f9f5f1;
-  --cacao: #361515;
-  --rose: #c87a79;
-  --sage: #b3ad6e;
-  --sand: #ede2c3;
-  --ink: #0c0e0e;
-  --gradient-gold: linear-gradient(135deg, #c9a24b 0%, #e8ce8f 50%, #b8862f 100%);
+  /* ── Brand palette (raw) ── */
+  --salt: #faf5f0; /* neutral off-white base */
+  --cacao: #361515; /* deep brown, headings & structure */
+  --rose: #c87a79; /* dusty rose accent, alerts */
+  --ruby: #8a1c24; /* deep red, destructive actions */
+  --sage: #b3ad6e; /* muted olive, hover + active states */
+  --sand: #ede2c3; /* warm cream, accent backgrounds */
+  --ink: #0c0e0e; /* near-black, body copy */
+  --gold: linear-gradient(135deg, #c9a24b 0%, #e8ce8f 50%, #b8862f 100%);
+  --gradient-gold: var(--gold);
 
-  /* Semantic tokens — light */
-  --background: var(--salt); /* Salt dominates as the canvas (~45%) */
-  --foreground: var(--ink); /* Body copy in Ink */
+  /* ── Semantic tokens ──
+     Text + borders are ink at low opacity, matching the storefront's
+     `text-ink/40`, `border-ink/5` idiom. */
+  --background: var(--salt); /* Salt dominates as the canvas */
+  --foreground: rgba(12, 14, 14, 0.85); /* Body copy in softened Ink */
   --heading: var(--cacao); /* Headings in Cacao */
   --surface: #ffffff; /* Cards / panels */
-  --surface-hover: var(--sand); /* Sand accent surface + secondary hover */
-  --muted: #6e5f58; /* Secondary text (warm brown-grey) */
-  --border: #e6dccc; /* Soft neutral border */
-  --field: #ffffff; /* Input background */
-  --input: #d9cfc0; /* Input border (light grey) */
-  --ring: var(--ink); /* Focus border = Ink */
+  --surface-hover: rgba(54, 21, 21, 0.04); /* Subtle cacao wash */
+  --muted: rgba(12, 14, 14, 0.45); /* Secondary text = ink/45 */
+  --border: rgba(12, 14, 14, 0.08); /* Hairline border = ink/8 */
+  --field: #fbf8f4; /* Input fill — a warm tint so fields read as enterable on white cards */
+  --input: rgba(12, 14, 14, 0.16); /* Input border */
+  --ring: var(--cacao); /* Focus = Cacao */
 
-  --primary: var(--rose); /* Primary action = Rose */
-  --primary-hover: var(--cacao); /* Hover = Cacao */
-  --primary-foreground: var(--salt);
+  --primary: var(--cacao); /* Primary action = Cacao */
+  --primary-hover: var(--sage); /* Hover lifts to Sage */
+  --primary-foreground: #ffffff;
 
-  --danger: #a83c3b; /* Destructive (deep rose-red) */
-  --danger-hover: #8c2e2d;
+  --danger: var(--ruby);
+  --danger-hover: #6e161c;
 
-  --success-solid: var(--sage); /* Positive/approve = Sage */
+  --success-solid: var(--sage);
   --success-solid-hover: #9a9455;
 
-  --success-bg: #edebd6;
-  --success-fg: #5c5729;
-  --error-bg: #f6e6e5;
-  --error-fg: #a83c3b; /* Error helper text in rose tone */
-  --warning-bg: var(--sand);
+  --success-bg: rgba(179, 173, 110, 0.14);
+  --success-fg: #6b6633;
+  --error-bg: rgba(200, 122, 121, 0.12);
+  --error-fg: #a04746;
+  --warning-bg: rgba(237, 226, 195, 0.6);
   --warning-fg: #8a6a1f;
 
-  --font-heading: "Goudy Old Style", Goudy, var(--font-goudy), "Times New Roman", serif;
-  --font-body: var(--font-open-sans), system-ui, -apple-system, sans-serif;
+  /* ── Typography — one typeface across the whole UI ── */
+  --font-heading: var(--font-goudy), "Goudy Old Style", Goudy, "Times New Roman", serif;
+  --font-body: var(--font-goudy), "Goudy Old Style", Goudy, "Times New Roman", serif;
 
   /* editte is a light-first design — lock the palette so the OS dark-mode
      setting doesn't repaint the canvas. */
@@ -85,21 +92,36 @@
   --color-salt: var(--salt);
   --color-cacao: var(--cacao);
   --color-rose: var(--rose);
+  --color-ruby: var(--ruby);
   --color-sage: var(--sage);
   --color-sand: var(--sand);
   --color-ink: var(--ink);
 
   --font-sans: var(--font-body);
-  --font-heading: "Goudy Old Style", Goudy, var(--font-goudy), "Times New Roman", serif;
+  --font-heading: var(--font-heading);
+  --font-logo: var(--font-heading);
+  --font-body: var(--font-body);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-/* All headings use the Goudy Old Style serif stack. */
+/* One typeface across the entire UI — matches the storefront. */
+* {
+  font-family: var(--font-body);
+}
+
+/* All headings use the Goudy stack, set a touch heavier. */
 h1,
 h2,
 h3,
@@ -107,6 +129,25 @@ h4,
 h5,
 h6 {
   font-family: var(--font-heading);
+  color: var(--heading);
+}
+
+.font-heading {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+.font-logo,
+.font-accent,
+.font-editorial {
+  font-family: var(--font-heading);
+}
+
+/* Helvetica Neue for numeric values — keeps figures legible in a serif UI. */
+.font-numeric {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.5px;
 }
 
 /* Form selection accents per the guide: Rose checkboxes, Sage radios. */
@@ -117,13 +158,103 @@ input[type="radio"] {
   accent-color: var(--sage);
 }
 
+/* Give the native dropdown list an explicit surface rather than inheriting
+   the field tint, which some browsers render inconsistently. */
+select option {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+/* Placeholders sit low-contrast, like the storefront's `placeholder:text-ink/30`. */
+::placeholder {
+  color: rgba(12, 14, 14, 0.3);
+}
+
 /* Metallic gold — for headings on dark backgrounds / hero accents. */
 .text-gold {
-  background: var(--gradient-gold);
+  background: var(--gold);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 .bg-gold {
-  background: var(--gradient-gold);
+  background: var(--gold);
+}
+
+/* ── Thin scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(54, 21, 21, 0.3);
+  border-radius: 3px;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ── Infinite marquee scroll ── */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* ── Legal / long-form prose ── */
+.prose-editte h2 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--cacao);
+  font-size: 1.25rem;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose-editte p {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--ink);
+  opacity: 0.75;
+  margin-bottom: 0.75rem;
+}
+
+.prose-editte .lead {
+  font-size: 1rem;
+  opacity: 0.85;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+.prose-editte ul {
+  margin: 0.5rem 0 1rem 1.25rem;
+  list-style-type: disc;
+}
+
+.prose-editte ul li {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--ink);
+  opacity: 0.75;
+  margin-bottom: 0.375rem;
+}
+
+.prose-editte strong {
+  opacity: 1;
+  color: var(--cacao);
 }

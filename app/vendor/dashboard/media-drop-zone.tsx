@@ -1,7 +1,10 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { input, label as labelClass, muted } from "@/app/theme";
+import { buttonPrimary, input, label as labelClass, muted } from "@/app/theme";
+
+/** Compact primary action for the quick-add strip. */
+const buttonQuietAdd = `${buttonPrimary} px-4 py-2`;
 
 // ─── Limits (must mirror the server-side constants) ───────────────────────────
 export const LIMITS = {
@@ -86,13 +89,15 @@ async function validateVideo(file: File): Promise<string | null> {
 // ─── ImageDropZone ─────────────────────────────────────────────────────────────
 
 type ImageDropZoneProps = {
+  /** Shown under the zone when the draft was submitted without an image. */
+  error?: string;
   previews: string[];
   count: number;
   onAdd: (files: File[]) => void;
   onRemove: (index: number) => void;
 };
 
-export function ImageDropZone({ previews, count, onAdd, onRemove }: ImageDropZoneProps) {
+export function ImageDropZone({ previews, count, onAdd, onRemove, error }: ImageDropZoneProps) {
   const [dragging, setDragging] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [validating, setValidating] = useState(false);
@@ -131,7 +136,8 @@ export function ImageDropZone({ previews, count, onAdd, onRemove }: ImageDropZon
   return (
     <div>
       <label className={labelClass}>
-        Images ({count}/{max} · min 800×800 px · 20 KB – 5 MB)
+        Images <span className="text-rose">*</span> ({count}/{max} · min 800×800 px ·
+        20 KB – 5 MB)
       </label>
 
       {/* Thumbnail row */}
@@ -143,7 +149,7 @@ export function ImageDropZone({ previews, count, onAdd, onRemove }: ImageDropZon
               <img
                 src={url}
                 alt=""
-                className="h-16 w-16 rounded-md border border-border object-cover"
+                className="h-16 w-16 rounded-lg border border-border object-cover"
               />
               <button
                 type="button"
@@ -164,6 +170,8 @@ export function ImageDropZone({ previews, count, onAdd, onRemove }: ImageDropZon
           className={`flex min-h-20 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-4 py-4 text-center transition ${
             dragging
               ? "border-primary bg-primary/5"
+              : error
+              ? "border-error-fg hover:bg-surface-hover"
               : "border-input hover:border-primary/50 hover:bg-surface-hover"
           }`}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
@@ -182,7 +190,7 @@ export function ImageDropZone({ previews, count, onAdd, onRemove }: ImageDropZon
             <p className={`${muted} animate-pulse`}>Checking images…</p>
           ) : (
             <>
-              <p className="text-sm text-foreground">Drop images here or click to browse</p>
+              <p className="font-heading text-base text-heading">Drop images here or click to browse</p>
               <p className={`mt-0.5 text-xs ${muted}`}>
                 PNG · JPEG · WebP · min 800×800 px · 20 KB – 5 MB · {slots} slot{slots > 1 ? "s" : ""} remaining
               </p>
@@ -192,6 +200,8 @@ export function ImageDropZone({ previews, count, onAdd, onRemove }: ImageDropZon
       ) : (
         <p className={`text-xs ${muted}`}>Maximum {max} images reached.</p>
       )}
+
+      {error ? <p className="mt-1 text-xs text-error-fg">{error}</p> : null}
 
       {errors.map((e, i) => (
         <p key={i} className="mt-1 text-xs text-error-fg">{e}</p>
@@ -238,12 +248,12 @@ export function VideoDropZone({ videoName, onSet }: VideoDropZoneProps) {
       </label>
 
       {videoName ? (
-        <div className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm">
+        <div className="flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm">
           <span className="flex-1 truncate text-foreground">📹 {videoName}</span>
           <button
             type="button"
             onClick={() => { onSet(null); setError(null); }}
-            className="text-xs text-danger hover:underline"
+            className="text-[10px] uppercase tracking-[0.15em] text-danger transition-colors hover:opacity-70"
           >
             Remove
           </button>
@@ -270,7 +280,7 @@ export function VideoDropZone({ videoName, onSet }: VideoDropZoneProps) {
             <p className={`${muted} animate-pulse`}>Checking video…</p>
           ) : (
             <>
-              <p className="text-sm text-foreground">Drop video here or click to browse</p>
+              <p className="font-heading text-base text-heading">Drop video here or click to browse</p>
               <p className={`mt-0.5 text-xs ${muted}`}>MP4 · WebM · MOV · min 720p · 500 KB – 50 MB</p>
             </>
           )}
@@ -301,7 +311,7 @@ export function QuickAddStrip({ defaultBrand, onAdd }: QuickAddProps) {
   };
 
   return (
-    <div className="flex flex-wrap items-end gap-2 rounded-xl border border-border bg-surface-hover px-4 py-3">
+    <div className="flex flex-wrap items-end gap-3 rounded-xl border border-border bg-surface-hover px-5 py-4">
       <div className="flex-1 min-w-40">
         <label className={`${labelClass} text-xs`}>Quick-add title</label>
         <input
@@ -338,7 +348,7 @@ export function QuickAddStrip({ defaultBrand, onAdd }: QuickAddProps) {
         type="button"
         onClick={submit}
         disabled={!title.trim()}
-        className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary-hover disabled:opacity-50"
+        className={buttonQuietAdd}
       >
         + Add
       </button>

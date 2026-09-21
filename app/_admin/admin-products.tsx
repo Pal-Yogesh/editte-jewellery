@@ -2,12 +2,17 @@
 
 import { useCallback, useEffect, useState } from "react";
 import {
+  bannerError,
   buttonApprove,
   buttonChipActive,
   buttonChipInactive,
+  buttonQuiet,
   buttonReject,
+  chipBase,
+  linkMuted,
   panel,
   statusBadge,
+  subheading,
 } from "@/app/theme";
 
 type ProductMedia = {
@@ -27,6 +32,7 @@ type Product = {
   metal: string;
   colors: string[];
   size: string;
+  weightGrams: number;
   category: string;
   brandName: string;
   quantity: number;
@@ -104,12 +110,12 @@ export default function AdminProducts() {
     <section className={panel}>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <h2 className="text-lg font-semibold text-heading">Product Approvals</h2>
+          <h2 className={subheading}>Product Approvals</h2>
           <button
             type="button"
             onClick={() => load(filter)}
             disabled={loading}
-            className="inline-flex items-center gap-1 rounded-md border border-input px-2.5 py-1 text-xs font-medium text-muted transition hover:bg-surface-hover disabled:opacity-60"
+            className={`gap-1.5 ${buttonQuiet}`}
           >
             <span className={loading ? "animate-spin" : ""}>↻</span>
             Refresh
@@ -121,7 +127,7 @@ export default function AdminProducts() {
               key={s}
               type="button"
               onClick={() => setFilter(s)}
-              className={`rounded-md px-3 py-1.5 text-xs font-medium capitalize transition ${
+              className={`${chipBase} ${
                 filter === s ? buttonChipActive : buttonChipInactive
               }`}
             >
@@ -132,7 +138,7 @@ export default function AdminProducts() {
       </div>
 
       {error ? (
-        <p className="mb-4 rounded-md bg-error-bg px-3 py-2 text-sm text-error-fg">
+        <p className={`mb-4 ${bannerError}`}>
           {error}
         </p>
       ) : null}
@@ -151,7 +157,7 @@ export default function AdminProducts() {
             return (
               <li
                 key={p.productId}
-                className="rounded-xl border border-border p-4"
+                className="rounded-xl border border-border p-5 transition-colors hover:border-heading/20"
               >
                 <div className="flex items-center gap-4">
                   {thumb ? (
@@ -159,13 +165,13 @@ export default function AdminProducts() {
                     <img
                       src={thumb.url}
                       alt=""
-                      className="h-14 w-14 rounded-md border border-border object-cover"
+                      className="h-14 w-14 rounded-lg border border-border object-cover"
                     />
                   ) : (
-                    <div className="h-14 w-14 rounded-md border border-dashed border-input" />
+                    <div className="h-14 w-14 rounded-lg border border-dashed border-input" />
                   )}
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-foreground">
+                    <p className="truncate font-heading text-base text-heading">
                       {p.title || "(untitled)"}
                     </p>
                     <p className="text-xs text-muted">
@@ -193,7 +199,7 @@ export default function AdminProducts() {
                   <button
                     type="button"
                     onClick={() => setExpanded(isOpen ? null : p.productId)}
-                    className="text-xs font-medium text-muted underline"
+                    className={`text-[10px] uppercase tracking-[0.15em] ${linkMuted}`}
                   >
                     {isOpen ? "Hide details" : "View details"}
                   </button>
@@ -222,7 +228,7 @@ export default function AdminProducts() {
                 </div>
 
                 {isOpen ? (
-                  <div className="mt-3 space-y-2 rounded-lg bg-surface-hover p-4 text-sm">
+                  <div className="mt-4 space-y-2 rounded-lg bg-surface-hover p-4 text-sm">
                     {p.description ? (
                       <p className="text-muted">{p.description}</p>
                     ) : null}
@@ -230,10 +236,14 @@ export default function AdminProducts() {
                     <Detail label="Metal" value={p.metal} />
                     <Detail label="Colors" value={p.colors.join(", ")} />
                     <Detail label="Size" value={p.size} />
+                    <Detail
+                      label="Weight"
+                      value={p.weightGrams ? `${p.weightGrams} g` : ""}
+                    />
                     <Detail label="SKU" value={p.sku} />
                     {p.media.length ? (
                       <div>
-                        <p className="font-medium text-foreground">Media</p>
+                        <p className="text-xs uppercase tracking-[0.15em] text-heading">Media</p>
                         <ul className="mt-1 flex flex-wrap gap-3">
                           {p.media.map((m) => (
                             <li key={m.id}>
@@ -241,7 +251,7 @@ export default function AdminProducts() {
                                 href={m.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-foreground underline"
+                                className={linkMuted}
                               >
                                 {m.kind}
                               </a>
@@ -265,7 +275,9 @@ function Detail({ label, value }: { label: string; value: string }) {
   if (!value) return null;
   return (
     <div>
-      <span className="font-medium text-foreground">{label}:</span>{" "}
+      <span className="text-xs uppercase tracking-[0.15em] text-heading">
+        {label}:
+      </span>{" "}
       <span className="text-muted">{value}</span>
     </div>
   );

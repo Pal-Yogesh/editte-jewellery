@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   pageCentered,
+  authWordmark,
+  authWordmarkSub,
   card,
   heading,
   muted,
@@ -92,7 +94,13 @@ export default function VendorSignupPage() {
 
   return (
     <main className={pageCentered}>
-      <section className={`w-full max-w-md ${card}`}>
+      <div className="w-full max-w-md">
+        <div className="mb-8 text-center">
+          <p className={`${authWordmark} text-heading`}>editte</p>
+          <p className={`${authWordmarkSub} text-muted`}>Vendor Portal</p>
+        </div>
+
+        <section className={card}>
         <h1 className={`mb-2 ${heading}`}>
           Vendor Sign Up
         </h1>
@@ -103,7 +111,7 @@ export default function VendorSignupPage() {
         </p>
 
         {step === "form" ? (
-          <form onSubmit={handleSignup} className="space-y-4">
+          <form onSubmit={handleSignup} className="space-y-5">
             <div>
               <label className={label}>
                 Brand name
@@ -150,7 +158,7 @@ export default function VendorSignupPage() {
             </button>
           </form>
         ) : (
-          <form onSubmit={handleVerify} className="space-y-4">
+          <form onSubmit={handleVerify} className="space-y-5">
             <div>
               <label className={label}>
                 Verification code
@@ -199,7 +207,8 @@ export default function VendorSignupPage() {
             Log in
           </Link>
         </p>
-      </section>
+        </section>
+      </div>
     </main>
   );
 }

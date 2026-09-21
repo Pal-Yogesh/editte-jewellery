@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   pageCentered,
+  authWordmark,
+  authWordmarkSub,
   card,
   heading,
   muted,
@@ -93,7 +95,13 @@ export default function VendorLoginPage() {
 
   return (
     <main className={pageCentered}>
-      <section className={`w-full max-w-md ${card}`}>
+      <div className="w-full max-w-md">
+        <div className="mb-8 text-center">
+          <p className={`${authWordmark} text-heading`}>editte</p>
+          <p className={`${authWordmarkSub} text-muted`}>Vendor Portal</p>
+        </div>
+
+        <section className={card}>
         <h1 className={`mb-2 ${heading}`}>
           Vendor Login
         </h1>
@@ -104,7 +112,7 @@ export default function VendorLoginPage() {
         </p>
 
         {step === "credentials" ? (
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-5">
             <div>
               <label className={label}>
                 Email
@@ -138,7 +146,7 @@ export default function VendorLoginPage() {
             </button>
           </form>
         ) : (
-          <form onSubmit={handleVerify} className="space-y-4">
+          <form onSubmit={handleVerify} className="space-y-5">
             <div>
               <label className={label}>
                 Verification code
@@ -195,7 +203,8 @@ export default function VendorLoginPage() {
             Create account
           </Link>
         </div>
-      </section>
+        </section>
+      </div>
     </main>
   );
 }

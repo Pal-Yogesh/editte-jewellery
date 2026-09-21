@@ -1,18 +1,15 @@
 import type { Metadata } from "next";
-import { Open_Sans, Sorts_Mill_Goudy } from "next/font/google";
+import { Sorts_Mill_Goudy } from "next/font/google";
 import "./globals.css";
 
-const openSans = Open_Sans({
-  variable: "--font-open-sans",
-  subsets: ["latin"],
-});
-
-// Web-available Goudy Old Style match; the CSS stack prefers the real
-// "Goudy Old Style" when the visitor has it installed.
+// Sorts Mill Goudy — the single typeface used across the entire editte UI,
+// matching the storefront. Body, headings, buttons and figures all share it.
 const goudy = Sorts_Mill_Goudy({
   variable: "--font-goudy",
+  weight: ["400"],
+  style: ["normal", "italic"],
   subsets: ["latin"],
-  weight: "400",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -26,10 +23,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${openSans.variable} ${goudy.variable} antialiased`}>
-        {children}
-      </body>
+    <html lang="en" className={`${goudy.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }

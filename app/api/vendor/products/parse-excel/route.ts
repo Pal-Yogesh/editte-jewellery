@@ -2,6 +2,12 @@ import { NextResponse } from "next/server";
 import ExcelJS from "exceljs";
 import { getSessionVendor } from "@/lib/vendor/session";
 import { EXCEL_COLUMNS } from "@/lib/product/excel-schema";
+import {
+  departmentLabels,
+  resolveDepartment,
+  resolveGroup,
+  resolveType,
+} from "@/lib/product/categories";
 
 export type ParsedRow = {
   rowNumber: number;
@@ -12,7 +18,10 @@ export type ParsedRow = {
   metal: string;
   colors: string[];
   size: string;
-  category: string;
+  weightGrams: number;
+  department: string;
+  categoryGroup: string;
+  productType: string;
   brandName: string;
   quantity: number;
   minQuantity: number;
@@ -140,7 +149,10 @@ export async function POST(request: Request) {
     const metal           = cellText(get("metal"));
     const colorsRaw       = cellText(get("colors"));
     const size            = cellText(get("size"));
-    const category        = cellText(get("category"));
+    const weight          = cellNumber(get("weightGrams"));
+    const departmentRaw   = cellText(get("department"));
+    const groupRaw        = cellText(get("categoryGroup"));
+    const typeRaw         = cellText(get("productType"));
     const brandName       = cellText(get("brandName")) || vendor.profile.brandName;
     const quantity        = cellNumber(get("quantity"));
     const minQuantity     = cellNumber(get("minQuantity"));
@@ -155,6 +167,34 @@ export async function POST(request: Request) {
     if (price === null || price <= 0) rowErrors.push("Missing or invalid Price");
     if (!sku) rowErrors.push("Missing SKU");
     if (sku && seenSkus.has(sku.toLowerCase())) rowErrors.push(`Duplicate SKU "${sku}" in this batch`);
+    if (weight === null || weight <= 0) rowErrors.push("Missing or invalid Weight (g)");
+
+    // Resolve the category path. Each level must exist *within* the level above
+    // it, so a row like Men / Bags is reported rather than silently accepted.
+    const department = resolveDepartment(departmentRaw);
+    if (!department) {
+      rowErrors.push(
+        departmentRaw
+          ? `Unknown Category "${departmentRaw}" (expected: ${departmentLabels()})`
+          : "Missing Category"
+      );
+    }
+    const group = department ? resolveGroup(department, groupRaw) : undefined;
+    if (department && !group) {
+      rowErrors.push(
+        groupRaw
+          ? `"${groupRaw}" is not a sub-category of ${department.label}`
+          : "Missing Sub-category"
+      );
+    }
+    const productType = group ? resolveType(group, typeRaw) : undefined;
+    if (group && !productType) {
+      rowErrors.push(
+        typeRaw
+          ? `"${typeRaw}" is not a product type under ${group.label}`
+          : "Missing Product Type"
+      );
+    }
 
     if (rowErrors.length) {
       errors.push({ row: rowNumber, message: rowErrors.join(" · ") });
@@ -177,7 +217,10 @@ export async function POST(request: Request) {
       metal,
       colors,
       size,
-      category,
+      weightGrams: weight!,
+      department: department!.id,
+      categoryGroup: group!.id,
+      productType: productType!,
       brandName,
       quantity: quantity ?? 0,
       minQuantity: minQuantity ?? 0,
