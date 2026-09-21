@@ -215,9 +215,17 @@ export function ImageDropZone({ previews, count, onAdd, onRemove, error }: Image
 type VideoDropZoneProps = {
   videoName: string | null;
   onSet: (file: File | null) => void;
+  /** Existing uploaded video label (edit flow). */
+  existingVideoLabel?: string | null;
+  onRemoveExisting?: () => void;
 };
 
-export function VideoDropZone({ videoName, onSet }: VideoDropZoneProps) {
+export function VideoDropZone({
+  videoName,
+  onSet,
+  existingVideoLabel,
+  onRemoveExisting,
+}: VideoDropZoneProps) {
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [validating, setValidating] = useState(false);
@@ -253,6 +261,17 @@ export function VideoDropZone({ videoName, onSet }: VideoDropZoneProps) {
           <button
             type="button"
             onClick={() => { onSet(null); setError(null); }}
+            className="text-[10px] uppercase tracking-[0.15em] text-danger transition-colors hover:opacity-70"
+          >
+            Remove
+          </button>
+        </div>
+      ) : existingVideoLabel ? (
+        <div className="flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm">
+          <span className="flex-1 truncate text-foreground">📹 {existingVideoLabel}</span>
+          <button
+            type="button"
+            onClick={() => onRemoveExisting?.()}
             className="text-[10px] uppercase tracking-[0.15em] text-danger transition-colors hover:opacity-70"
           >
             Remove
@@ -311,9 +330,13 @@ export function QuickAddStrip({ defaultBrand, onAdd }: QuickAddProps) {
   };
 
   return (
-    <div className="flex flex-wrap items-end gap-3 rounded-xl border border-border bg-surface-hover px-5 py-4">
-      <div className="flex-1 min-w-40">
-        <label className={`${labelClass} text-xs`}>Quick-add title</label>
+    <div className="rounded-xl border border-border bg-field px-5 py-4">
+      <p className="mb-3 text-xs uppercase tracking-[0.12em] text-cacao/70">
+        Quick add
+      </p>
+      <div className="flex flex-wrap items-end gap-3">
+      <div className="min-w-40 flex-1">
+        <label className={labelClass}>Title</label>
         <input
           className={input}
           value={title}
@@ -323,7 +346,7 @@ export function QuickAddStrip({ defaultBrand, onAdd }: QuickAddProps) {
         />
       </div>
       <div className="w-28">
-        <label className={`${labelClass} text-xs`}>SKU</label>
+        <label className={labelClass}>SKU</label>
         <input
           className={input}
           value={sku}
@@ -333,7 +356,7 @@ export function QuickAddStrip({ defaultBrand, onAdd }: QuickAddProps) {
         />
       </div>
       <div className="w-28">
-        <label className={`${labelClass} text-xs`}>Price ₹</label>
+        <label className={labelClass}>Price (₹)</label>
         <input
           type="number"
           min="0"
@@ -350,9 +373,13 @@ export function QuickAddStrip({ defaultBrand, onAdd }: QuickAddProps) {
         disabled={!title.trim()}
         className={buttonQuietAdd}
       >
-        + Add
+        Add to queue
       </button>
-      <p className={`w-full ${muted} text-xs`}>Press Enter or click + Add. Fill details by expanding the card.</p>
+      </div>
+      <p className={`mt-3 ${muted} text-xs`}>
+        Enter a title and press Return — then expand the card to add category,
+        photos, and the rest.
+      </p>
     </div>
   );
 }

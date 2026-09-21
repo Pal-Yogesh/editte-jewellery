@@ -29,6 +29,18 @@ export type ProductRecord = {
   productType: string; // e.g. "Chains", "Rings"
   /** Denormalised display path, e.g. "Men / Jewellery / Chains". */
   category: string;
+  /**
+   * Curated rails the vendor asked to be featured on ("new-in", "sale",
+   * "designers"). A request only — the storefront never reads this.
+   */
+  requestedPlacements: string[];
+  /** The requests an admin granted. This is what the storefront rails query. */
+  placements: string[];
+  /**
+   * Lets an admin pull an approved listing off the site without rejecting it
+   * (e.g. it is fine, but the rail is full). Defaults to true on approval.
+   */
+  visibleOnSite: boolean;
   brandName: string;
   quantity: number;
   minQuantity: number;
@@ -74,6 +86,12 @@ export function normaliseProduct(
     categoryGroup: (data.categoryGroup as string) ?? "",
     productType: (data.productType as string) ?? "",
     category: (data.category as string) ?? "",
+    requestedPlacements: Array.isArray(data.requestedPlacements)
+      ? (data.requestedPlacements as string[])
+      : [],
+    placements: Array.isArray(data.placements) ? (data.placements as string[]) : [],
+    // Products created before curation existed have no flag and stay visible.
+    visibleOnSite: data.visibleOnSite !== false,
     brandName: (data.brandName as string) ?? "",
     quantity: (data.quantity as number) ?? 0,
     minQuantity: (data.minQuantity as number) ?? 0,

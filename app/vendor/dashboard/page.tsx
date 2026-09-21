@@ -284,9 +284,9 @@ export default function VendorDashboardPage() {
     vendor.status === "incomplete" || vendor.status === "rejected";
 
   const navItems: readonly ShellNavItem[] = [
-    { id: "account", label: "Account & Details" },
-    { id: "products", label: "Products", badge: uploadQueueCount },
-    { id: "inventory", label: "Inventory" },
+    { id: "account", label: "Account & Details", icon: "⚙" },
+    { id: "products", label: "Products", icon: "◻", badge: uploadQueueCount },
+    { id: "inventory", label: "Inventory", icon: "⊙" },
   ];
 
   return (
@@ -299,10 +299,10 @@ export default function VendorDashboardPage() {
       }
       meta={
         <>
-          <p className="truncate font-heading text-sm text-white">
+          <p className="truncate font-heading text-sm text-white/90">
             {vendor.profile.brandName || "Vendor"}
           </p>
-          <p className="truncate text-xs text-white/40">{vendor.email}</p>
+          <p className="mt-0.5 truncate text-xs text-white/40">{vendor.email}</p>
         </>
       }
       headerAction={
@@ -320,9 +320,10 @@ export default function VendorDashboardPage() {
         <button
           type="button"
           onClick={handleLogout}
-          className={`${sidebarButton} text-left`}
+          className={sidebarButton}
         >
-          {busy ? "…" : "Sign out"}
+          <span className="w-5 text-center text-base">→</span>
+          {busy ? "Signing out…" : "Sign out"}
         </button>
       }
     >

@@ -17,6 +17,7 @@ import {
   getDepartment,
   getGroup,
   isValidCategory,
+  normalisePlacements,
 } from "@/lib/product/categories";
 
 const IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];
@@ -92,6 +93,9 @@ export async function POST(request: Request) {
   const quantity = Number(form.get("quantity")) || 0;
   const minQuantity = Number(form.get("minQuantity")) || 0;
   const sku = (form.get("sku") as string | null)?.trim() ?? "";
+  // Curated-rail requests ("new-in", "sale", "designers"). Unknown ids are
+  // dropped — these are optional asks, and the admin grants them separately.
+  const requestedPlacements = normalisePlacements(parseList(form.get("placements")));
 
   if (!title) {
     return NextResponse.json({ message: "Product title is required." }, { status: 400 });
@@ -233,6 +237,10 @@ export async function POST(request: Request) {
     quantity,
     minQuantity,
     sku,
+    requestedPlacements,
+    /** Granted by an admin, never by the vendor. */
+    placements: [],
+    visibleOnSite: true,
     status: "pending",
     rejectionReason: null,
     createdAt: now,

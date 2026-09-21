@@ -108,14 +108,14 @@ export const linkStrong =
 /* The dark Cacao shell itself lives in app/components/dashboard-shell.tsx;
    these are the pieces rendered inside it. */
 export const sidebarMeta =
-  "mt-1 truncate text-[10px] uppercase tracking-[0.18em] text-white/40";
+  "mt-3 text-center text-[10px] uppercase tracking-[0.18em] text-white/40";
 const sidebarItemBase =
-  "w-full rounded-lg px-4 py-2.5 text-left text-sm tracking-wide transition-colors duration-200";
-export const sidebarItemActive = `${sidebarItemBase} bg-white/10 text-white`;
-export const sidebarItemIdle = `${sidebarItemBase} text-white/50 hover:bg-white/5 hover:text-white`;
-/** Ghost button sitting on the dark sidebar. */
+  "flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm tracking-wide transition-all duration-200 border-l-2";
+export const sidebarItemActive = `${sidebarItemBase} border-sage bg-sage/25 text-sage`;
+export const sidebarItemIdle = `${sidebarItemBase} border-transparent text-white/50 hover:bg-white/5 hover:text-white`;
+/** Ghost button sitting on the dark sidebar (footer actions). */
 export const sidebarButton =
-  "w-full px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] text-white/50 transition-colors duration-300 hover:text-white disabled:opacity-40";
+  "flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm text-white/40 transition-colors duration-200 hover:text-white disabled:opacity-40";
 
 // ── Tables ──────────────────────────────────────────────────────────
 export const tableHeadCell =

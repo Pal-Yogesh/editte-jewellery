@@ -4,8 +4,10 @@ import { getSessionVendor } from "@/lib/vendor/session";
 import { EXCEL_COLUMNS } from "@/lib/product/excel-schema";
 import {
   departmentLabels,
+  placementLabels,
   resolveDepartment,
   resolveGroup,
+  resolvePlacement,
   resolveType,
 } from "@/lib/product/categories";
 
@@ -22,6 +24,7 @@ export type ParsedRow = {
   department: string;
   categoryGroup: string;
   productType: string;
+  placements: string[];
   brandName: string;
   quantity: number;
   minQuantity: number;
@@ -153,6 +156,7 @@ export async function POST(request: Request) {
     const departmentRaw   = cellText(get("department"));
     const groupRaw        = cellText(get("categoryGroup"));
     const typeRaw         = cellText(get("productType"));
+    const placementsRaw   = cellText(get("placements"));
     const brandName       = cellText(get("brandName")) || vendor.profile.brandName;
     const quantity        = cellNumber(get("quantity"));
     const minQuantity     = cellNumber(get("minQuantity"));
@@ -196,6 +200,18 @@ export async function POST(request: Request) {
       );
     }
 
+    // Collections are optional, but a typo should be reported rather than
+    // silently dropping the vendor's request for a rail.
+    const placements: string[] = [];
+    for (const raw of placementsRaw.split(",").map((t) => t.trim()).filter(Boolean)) {
+      const placement = resolvePlacement(raw);
+      if (!placement) {
+        rowErrors.push(`Unknown Collection "${raw}" (expected: ${placementLabels()})`);
+      } else if (!placements.includes(placement.id)) {
+        placements.push(placement.id);
+      }
+    }
+
     if (rowErrors.length) {
       errors.push({ row: rowNumber, message: rowErrors.join(" · ") });
       return;
@@ -221,6 +237,7 @@ export async function POST(request: Request) {
       department: department!.id,
       categoryGroup: group!.id,
       productType: productType!,
+      placements,
       brandName,
       quantity: quantity ?? 0,
       minQuantity: minQuantity ?? 0,

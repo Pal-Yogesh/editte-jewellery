@@ -156,7 +156,9 @@ export default function DevAutofill({ onDone }: DevAutofillProps) {
   };
 
   return (
-    <div className="mb-6 rounded-xl border border-dashed border-input bg-surface p-5">
+    <>
+    
+    {/* <div className="mb-6 rounded-xl border border-dashed border-input bg-surface p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-xs uppercase tracking-[0.15em] text-heading">Dev tools</p>
@@ -169,6 +171,7 @@ export default function DevAutofill({ onDone }: DevAutofillProps) {
         </button>
       </div>
       {message ? <p className="mt-2 text-xs text-muted">{message}</p> : null}
-    </div>
+    </div> */}
+    </>
   );
 }

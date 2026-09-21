@@ -22,8 +22,8 @@ import AdminProducts from "@/app/_admin/admin-products";
 import DashboardShell, { type ShellNavItem } from "@/app/components/dashboard-shell";
 
 const NAV: readonly ShellNavItem[] = [
-  { id: "vendors", label: "Vendors" },
-  { id: "products", label: "Products" },
+  { id: "vendors", label: "Vendors", icon: "◎" },
+  { id: "products", label: "Products", icon: "◻" },
 ];
 
 type AdminSessionResponse = {
@@ -230,8 +230,9 @@ export default function AdminDashboard({ adminKey }: { adminKey: string }) {
           type="button"
           onClick={handleLogout}
           disabled={isLoggingOut}
-          className={`${sidebarButton} text-left`}
+          className={sidebarButton}
         >
+          <span className="w-5 text-center text-base">→</span>
           {isLoggingOut ? "Signing out…" : "Sign out"}
         </button>
       }

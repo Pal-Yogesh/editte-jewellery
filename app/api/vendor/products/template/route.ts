@@ -6,6 +6,7 @@ import {
   DEPARTMENTS,
   allGroupLabels,
   allTypeLabels,
+  placementLabels,
 } from "@/lib/product/categories";
 
 const HEADER_FILL: ExcelJS.Fill = {
@@ -62,6 +63,7 @@ export async function GET() {
   const deptIdx       = EXCEL_COLUMNS.findIndex((c) => c.key === "department");
   const groupIdx      = EXCEL_COLUMNS.findIndex((c) => c.key === "categoryGroup");
   const typeIdx       = EXCEL_COLUMNS.findIndex((c) => c.key === "productType");
+  const placementIdx  = EXCEL_COLUMNS.findIndex((c) => c.key === "placements");
 
   // Tint required-field columns + number formatting (discount is a plain number, e.g. 15 — not a percentage)
   const requiredIndices = EXCEL_COLUMNS
@@ -98,6 +100,23 @@ export async function GET() {
     { idx: groupIdx, ref: `Lists!$B$1:$B$${groupLabels.length}`, prompt: "Pick a sub-category that belongs to the category" },
     { idx: typeIdx,  ref: `Lists!$C$1:$C$${typeLabels.length}`,  prompt: "Pick a product type that belongs to the sub-category" },
   ];
+
+  // Collections take several values in one cell ("New In, Sale"), so a list
+  // validation would reject them. Prompt with the options instead of enforcing.
+  for (let row = 2; row <= 200; row++) {
+    ws.getRow(row).getCell(placementIdx + 1).dataValidation = {
+      // A length check that nothing can fail — it exists only to carry the
+      // prompt, since ExcelJS has no "no rule, prompt only" validation type.
+      type: "textLength",
+      operator: "greaterThanOrEqual",
+      formulae: [0],
+      allowBlank: true,
+      showErrorMessage: false,
+      showInputMessage: true,
+      promptTitle: "Collections (optional)",
+      prompt: `Comma-separated. Options: ${placementLabels()}. An admin decides which requests go live.`,
+    };
+  }
 
   for (let row = 2; row <= 200; row++) {
     for (const { idx, ref, prompt } of dropdowns) {

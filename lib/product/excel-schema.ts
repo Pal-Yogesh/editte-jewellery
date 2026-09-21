@@ -23,6 +23,7 @@ export const EXCEL_COLUMNS: ExcelColumn[] = [
   { key: "department",      header: "Category *",           width: 14, required: true,  note: "Women, Men or Occasions" },
   { key: "categoryGroup",   header: "Sub-category *",       width: 16, required: true,  note: "Women: Jewellery, Bags, Accessories · Men: Jewellery · Occasions: Celebrations" },
   { key: "productType",     header: "Product Type *",       width: 18, required: true,  note: "e.g. Chains, Rings, Neckpieces — must belong to the sub-category" },
+  { key: "placements",      header: "Collections",          width: 22, required: false, note: "Optional, comma-separated rail names, e.g. New Arrivals, Last Chance — admin decides which go live" },
   { key: "brandName",       header: "Brand Name",           width: 20, required: false, note: "Leave blank to use your default brand" },
   { key: "quantity",        header: "Quantity",             width: 10, required: false },
   { key: "minQuantity",     header: "Min Qty Alert",        width: 12, required: false, note: "Alert when stock drops to this level, 0 = no alert" },

@@ -4,12 +4,14 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { sidebarItemActive, sidebarItemIdle, sidebarMeta } from "@/app/theme";
 
-/** The editte wordmark, inverted to white for the Cacao sidebar. */
-const LOGO = "/logo/full-name-logo-removebg-preview.png";
+/** Letter mark — matches the customer dashboard sidebar in new-jewellery. */
+const LOGO = "/logo/start-letter-logo-transparent.png";
 
 export type ShellNavItem = {
   id: string;
   label: string;
+  /** Shown beside the label, same as the storefront dashboard nav. */
+  icon?: string;
   /** Optional count pill (e.g. pending upload queue). */
   badge?: number;
 };
@@ -31,32 +33,17 @@ type DashboardShellProps = {
 
 function Badge({ count }: { count: number }) {
   return (
-    <span className="rounded-full bg-rose px-2 py-0.5 text-[10px] tracking-[0.1em] text-white">
+    <span className="ml-auto rounded-full bg-rose px-2 py-0.5 text-[10px] tracking-[0.1em] text-white">
       {count}
     </span>
-  );
-}
-
-function Wordmark({ className }: { className: string }) {
-  return (
-    <Image
-      src={LOGO}
-      alt="editte"
-      width={500}
-      height={500}
-      priority
-      className={`w-auto object-contain brightness-0 invert ${className}`}
-    />
   );
 }
 
 /**
  * App shell for the admin + vendor dashboards.
  *
- * Desktop (lg+): a fixed, full-height Cacao sidebar on the left; the content
- * column is offset by its width so the sidebar never scrolls away.
- * Below lg: the same navigation collapses into a sticky Cacao top bar with a
- * horizontally scrollable row of tabs, so nothing becomes unreachable.
+ * Sidebar styling mirrors new-jewellery/components/dashboard/DashboardSidebar:
+ * Cacao gradient, sage active state, icon + label rows.
  */
 export default function DashboardShell({
   subtitle,
@@ -71,17 +58,32 @@ export default function DashboardShell({
   return (
     <div className="min-h-screen bg-background">
       {/* ── Fixed sidebar (desktop) ── */}
-      <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 flex-col bg-cacao text-white lg:flex">
-        <div className="border-b border-white/10 px-6 py-6">
-          <div className="flex items-start justify-between gap-2">
-            <Wordmark className="h-11" />
-            {headerAction}
+      <aside className="fixed left-0 top-0 z-40 hidden h-full w-64 flex-col bg-gradient-to-b from-cacao to-cacao/90 text-white lg:flex">
+        <div className="relative border-b border-white/10">
+          <div className="flex items-center justify-center py-5">
+            <Image
+              src={LOGO}
+              alt="editte"
+              width={1000}
+              height={1000}
+              priority
+              className="h-12 w-12 object-cover brightness-0 invert"
+            />
           </div>
+          {headerAction ? (
+            <div className="absolute right-4 top-4">{headerAction}</div>
+          ) : null}
           <p className={sidebarMeta}>{subtitle}</p>
-          {meta ? <div className="mt-3 space-y-0.5">{meta}</div> : null}
+          {meta ? (
+            <div className="border-t border-white/10 px-6 py-4 text-center">
+              {meta}
+            </div>
+          ) : (
+            <div className="pb-4" />
+          )}
         </div>
 
-        <nav className="hide-scrollbar flex-1 space-y-1 overflow-y-auto px-4 py-6">
+        <nav className="hide-scrollbar flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-6">
           {items.map((item) => (
             <button
               key={item.id}
@@ -89,24 +91,31 @@ export default function DashboardShell({
               onClick={() => onSelect(item.id)}
               className={active === item.id ? sidebarItemActive : sidebarItemIdle}
             >
-              <span className="flex items-center justify-between gap-2">
-                <span>{item.label}</span>
-                {item.badge ? <Badge count={item.badge} /> : null}
-              </span>
+              {item.icon ? (
+                <span className="w-5 text-center text-base">{item.icon}</span>
+              ) : null}
+              <span className="flex-1">{item.label}</span>
+              {item.badge ? <Badge count={item.badge} /> : null}
             </button>
           ))}
         </nav>
 
         {footer ? (
-          <div className="border-t border-white/10 px-4 py-4">{footer}</div>
+          <div className="border-t border-white/10 px-4 pb-8 pt-4">{footer}</div>
         ) : null}
       </aside>
 
       {/* ── Sticky top bar (mobile / tablet) ── */}
-      <div className="sticky top-0 z-40 bg-cacao text-white lg:hidden">
+      <div className="sticky top-0 z-40 bg-gradient-to-b from-cacao to-cacao/95 text-white lg:hidden">
         <div className="flex items-center justify-between gap-3 px-4 py-3">
           <div className="flex min-w-0 items-center gap-3">
-            <Wordmark className="h-8 shrink-0" />
+            <Image
+              src={LOGO}
+              alt="editte"
+              width={1000}
+              height={1000}
+              className="h-9 w-9 shrink-0 object-cover brightness-0 invert"
+            />
             <p className="truncate text-[10px] uppercase tracking-[0.18em] text-white/40">
               {subtitle}
             </p>
@@ -123,24 +132,25 @@ export default function DashboardShell({
               key={item.id}
               type="button"
               onClick={() => onSelect(item.id)}
-              className={`shrink-0 rounded-lg px-4 py-2 text-xs tracking-wide transition-colors duration-200 ${
+              className={`flex shrink-0 items-center gap-2 rounded-lg border-l-2 px-4 py-2 text-xs tracking-wide transition-all duration-200 ${
                 active === item.id
-                  ? "bg-white/10 text-white"
-                  : "text-white/50 hover:text-white"
+                  ? "border-sage bg-sage/25 text-sage"
+                  : "border-transparent text-white/50 hover:bg-white/5 hover:text-white"
               }`}
             >
-              <span className="flex items-center gap-2">
-                <span>{item.label}</span>
-                {item.badge ? <Badge count={item.badge} /> : null}
-              </span>
+              {item.icon ? (
+                <span className="text-sm">{item.icon}</span>
+              ) : null}
+              <span>{item.label}</span>
+              {item.badge ? <Badge count={item.badge} /> : null}
             </button>
           ))}
         </nav>
       </div>
 
       {/* ── Content column, offset past the fixed sidebar ── */}
-      <main className="px-4 py-8 sm:px-6 lg:ml-64">
-        <div className="mx-auto max-w-6xl">{children}</div>
+      <main className="px-5 py-8 md:px-10 lg:ml-64">
+        <div className="mx-auto w-full max-w-5xl">{children}</div>
       </main>
     </div>
   );
