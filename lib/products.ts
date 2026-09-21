@@ -1,6 +1,11 @@
 import "server-only";
 import { adminDb } from "@/lib/firebase/admin";
 import { signPath } from "@/lib/storage";
+import {
+  categorySlug,
+  type CategoryProduct,
+  type CategoryRoute,
+} from "@/lib/categoryProducts";
 
 // ─── List view type (for grids) ────────────────────────────────────────────
 
@@ -71,10 +76,15 @@ export interface ProductDetail {
   finalPrice: number;
   discountPercent: number;
   category: string;
+  categorySlug: string;
+  department: string;
+  categoryGroup: string;
+  productType: string;
   brandName: string;
   metal: string;
   colors: string[];
   size: string;
+  weightGrams: number;
   sku: string;
   quantity: number;
   media: ProductMedia[];
@@ -120,10 +130,15 @@ export async function getProductById(productId: string): Promise<ProductDetail |
     finalPrice: (data.finalPrice as number) ?? data.price ?? 0,
     discountPercent: (data.discountPercent as number) ?? 0,
     category: (data.category as string) ?? "",
+    categorySlug: toCategorySlug(data),
+    department: (data.department as string) ?? "",
+    categoryGroup: (data.categoryGroup as string) ?? "",
+    productType: (data.productType as string) ?? "",
     brandName: (data.brandName as string) ?? "",
     metal: (data.metal as string) ?? "",
     colors: Array.isArray(data.colors) ? (data.colors as string[]) : [],
     size: (data.size as string) ?? "",
+    weightGrams: (data.weightGrams as number) ?? 0,
     sku: (data.sku as string) ?? "",
     quantity: (data.quantity as number) ?? 0,
     media,
@@ -151,4 +166,86 @@ export async function getVendorInfo(vendorId: string): Promise<VendorInfo | null
     city: (pickup.city as string) ?? "",
     state: (pickup.state as string) ?? "",
   };
+}
+
+// ─── Category listing ──────────────────────────────────────────────────────
+
+type ProductDoc = FirebaseFirestore.DocumentData;
+
+/** Canonical storefront slug for a product doc, e.g. "women-rings". */
+function toCategorySlug(data: ProductDoc): string {
+  const department = (data.department as string) ?? "";
+  const group = (data.categoryGroup as string) ?? "";
+  const type = (data.productType as string) ?? "";
+  if (!department || !group || !type) return "";
+  return categorySlug(department, group, type);
+}
+
+/** The vendor stores one size string; the storefront filters on a list. */
+function splitSizes(value: unknown): string[] {
+  if (typeof value !== "string") return [];
+  return value
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+/**
+ * Fetches approved products for a category route. The route carries equality
+ * filters for as much of the taxonomy as the URL pins down — a department page
+ * filters on `department` alone, a product-type page on all three fields.
+ *
+ * Results are ordered newest-first in memory rather than with `orderBy`, which
+ * would require a composite index per filter combination.
+ */
+export async function getProductsByCategory(
+  route: CategoryRoute
+): Promise<CategoryProduct[]> {
+  let query: FirebaseFirestore.Query = adminDb
+    .collection("products")
+    .where("status", "==", "approved");
+
+  if (route.department) query = query.where("department", "==", route.department);
+  if (route.categoryGroup)
+    query = query.where("categoryGroup", "==", route.categoryGroup);
+  if (route.productType)
+    query = query.where("productType", "==", route.productType);
+
+  const snap = await query.get();
+
+  return Promise.all(
+    snap.docs
+      .sort((a, b) => {
+        const aTime = (a.data().createdAt as string) ?? "";
+        const bTime = (b.data().createdAt as string) ?? "";
+        return bTime.localeCompare(aTime);
+      })
+      .map(async (doc) => {
+        const data = doc.data();
+        const media: { path?: string; kind?: string }[] = Array.isArray(data.media)
+          ? data.media
+          : [];
+        const firstImage = media.find((m) => (m.kind ?? "image") === "image");
+
+        const price = (data.price as number) ?? 0;
+        const finalPrice = (data.finalPrice as number) ?? price;
+        const discountPercent = (data.discountPercent as number) ?? 0;
+
+        return {
+          id: doc.id,
+          name: (data.title as string) ?? "",
+          designer: (data.brandName as string) ?? "",
+          price: finalPrice,
+          originalPrice: discountPercent > 0 ? price : undefined,
+          image: await signPath(firstImage?.path ?? ""),
+          productType: (data.productType as string) ?? "",
+          category: toCategorySlug(data),
+          categoryPath: (data.category as string) ?? "",
+          colours: Array.isArray(data.colors) ? (data.colors as string[]) : [],
+          material: (data.metal as string) ?? "",
+          sizes: splitSizes(data.size),
+          inStock: ((data.quantity as number) ?? 0) > 0,
+        };
+      })
+  );
 }

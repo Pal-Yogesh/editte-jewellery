@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ALL_PRODUCTS_SLUG } from "@/lib/categoryProducts";
+import { ALL_PRODUCTS_SLUG, categoryHref } from "@/lib/categoryProducts";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -19,6 +19,8 @@ type Category =
 interface NavItem {
   label: string;
   badge?: string;
+  /** Category page this item opens. Items without one are not yet linked. */
+  href?: string;
 }
 
 interface NavSection {
@@ -40,7 +42,7 @@ const NAV_DATA: Record<Category, NavSection[]> = {
       number: "01",
       title: "LATEST",
       items: [
-        { label: "New Arrivals", badge: "NEW" },
+        { label: "New Arrivals", badge: "NEW", href: ALL_PRODUCTS_HREF },
         { label: "Best Sellers" },
         { label: "Just Restocked" },
         { label: "Trending Now" },
@@ -52,26 +54,24 @@ const NAV_DATA: Record<Category, NavSection[]> = {
       number: "01",
       title: "JEWELLERY",
       items: [
-        { label: "Neckpieces" },
-        { label: "Earrings" },
-        { label: "Rings" },
-        { label: "Bangles" },
-        { label: "Anklets" },
-        { label: "Nose Pins" },
-        { label: "Maang Tikka" },
-        { label: "Brooches" },
-      ],
+        "Neckpieces",
+        "Earrings",
+        "Rings",
+        "Bangles",
+        "Anklets",
+        "Nose Pins",
+        "Maang Tikka",
+        "Brooches",
+      ].map((label) => ({ label, href: categoryHref("women", "jewellery", label) })),
+      viewAllHref: categoryHref("women", "jewellery"),
     },
     {
       number: "02",
       title: "BAGS",
-      items: [
-        { label: "Clutches" },
-        { label: "Tote Bags" },
-        { label: "Sling Bags" },
-        { label: "Handbags" },
-        { label: "Potli Bags" },
-      ],
+      items: ["Clutches", "Tote Bags", "Sling Bags", "Handbags", "Potli Bags"].map(
+        (label) => ({ label, href: categoryHref("women", "bags", label) })
+      ),
+      viewAllHref: categoryHref("women", "bags"),
     },
     // {
     //   number: "03",
@@ -87,12 +87,11 @@ const NAV_DATA: Record<Category, NavSection[]> = {
     {
       number: "03",
       title: "ACCESSORIES",
-      items: [
-        { label: "Hair Accessories" },
-        { label: "Sunglasses" },
-        { label: "Watches" },
-        { label: "Belts" },
-      ],
+      items: ["Hair Accessories", "Sunglasses", "Watches", "Belts"].map((label) => ({
+        label,
+        href: categoryHref("women", "accessories", label),
+      })),
+      viewAllHref: categoryHref("women", "accessories"),
     },
   ],
   "MEN": [
@@ -100,22 +99,24 @@ const NAV_DATA: Record<Category, NavSection[]> = {
       number: "01",
       title: "NEW IN",
       items: [
-        { label: "New Arrivals", badge: "NEW" },
+        { label: "New Arrivals", badge: "NEW", href: categoryHref("men") },
         { label: "Best Sellers" },
       ],
+      viewAllHref: categoryHref("men"),
     },
     {
       number: "02",
       title: "JEWELLERY",
       items: [
-        { label: "Chains" },
-        { label: "Rings" },
-        { label: "Bracelets" },
-        { label: "Cufflinks" },
-        { label: "Tie Pins" },
-        { label: "Button Covers" },
-        { label: "Lapel Pins" },
-      ],
+        "Chains",
+        "Rings",
+        "Bracelets",
+        "Cufflinks",
+        "Tie Pins",
+        "Button Covers",
+        "Lapel Pins",
+      ].map((label) => ({ label, href: categoryHref("men", "jewellery", label) })),
+      viewAllHref: categoryHref("men", "jewellery"),
     },
   ],
   DESIGNERS: [
@@ -132,12 +133,16 @@ const NAV_DATA: Record<Category, NavSection[]> = {
       number: "01",
       title: "CELEBRATIONS",
       items: [
-        { label: "Bridal" },
-        { label: "Showstopper" },
-        { label: "Everyday" },
-        { label: "Vacation" },
-        { label: "Festive Finds" },
-      ],
+        "Bridal",
+        "Showstopper",
+        "Everyday",
+        "Vacation",
+        "Festive Finds",
+      ].map((label) => ({
+        label,
+        href: categoryHref("occasions", "celebrations", label),
+      })),
+      viewAllHref: categoryHref("occasions", "celebrations"),
     },
   ],
   SALE: [
@@ -378,13 +383,20 @@ function SectionContent({
                 variants={rowVariants}
                 className="flex items-baseline gap-1.5 py-0.5 -mt-1 group"
               >
-                <a
-                  href="#"
-                  className="text-[1.5rem] text-ink hover:text-sage transition-colors duration-200 leading-relaxed relative group"
-                >
-                  {item.label}
-                  <span className="absolute -bottom-px left-0 h-px w-0 bg-sage group-hover:w-full transition-[width] duration-300" />
-                </a>
+                {item.href ? (
+                  <Link
+                    href={item.href}
+                    onClick={onNavigate}
+                    className="text-[1.5rem] text-ink hover:text-sage transition-colors duration-200 leading-relaxed relative group"
+                  >
+                    {item.label}
+                    <span className="absolute -bottom-px left-0 h-px w-0 bg-sage group-hover:w-full transition-[width] duration-300" />
+                  </Link>
+                ) : (
+                  <span className="text-[1.5rem] text-ink/40 leading-relaxed">
+                    {item.label}
+                  </span>
+                )}
                 {item.badge && (
                   <span className="text-[7px] font-bold tracking-[0.18em] text-sage uppercase leading-none">
                     {item.badge}

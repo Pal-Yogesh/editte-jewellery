@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { ALL_PRODUCTS_SLUG, COLOUR_SWATCHES } from "@/lib/categoryProducts";
+import { ALL_PRODUCTS_SLUG, colourSwatch } from "@/lib/categoryProducts";
 
 interface Props {
   productTypes: string[];
@@ -194,7 +194,7 @@ export default function CategoryFilters({
                   className={`w-4 h-4 rounded-full border transition-all ${
                     active ? "border-cacao ring-2 ring-cacao/25 ring-offset-1" : "border-ink/20"
                   }`}
-                  style={{ backgroundColor: COLOUR_SWATCHES[colour] ?? "#D9D4CC" }}
+                  style={{ backgroundColor: colourSwatch(colour) }}
                 />
                 <span className={`text-sm transition-colors ${active ? "text-cacao" : "text-ink/60 group-hover:text-cacao"}`}>
                   {colour}

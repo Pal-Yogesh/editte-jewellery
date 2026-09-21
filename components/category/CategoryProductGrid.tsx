@@ -103,11 +103,24 @@ function ProductCard({ product, isLoggedIn }: { product: CategoryProduct; isLogg
     <div className="group cursor-pointer">
       {/* Image with heart top-right + add-to-cart sliding up from the bottom, both revealed on hover */}
       <div className="aspect-[3/4] overflow-hidden bg-sand/20 relative">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
+        <Link href={`/product/${product.id}`} className="block w-full h-full">
+          {product.image ? (
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-ink/20 text-xs tracking-[0.2em] uppercase">
+              No image
+            </div>
+          )}
+        </Link>
+        {!product.inStock && (
+          <span className="absolute top-3 left-3 z-10 bg-cacao/80 text-white text-[9px] tracking-[0.18em] uppercase px-2.5 py-1 rounded-full">
+            Sold out
+          </span>
+        )}
         {/* Wishlist heart */}
         <div className={`absolute top-3 right-3 z-10 md:-translate-y-1 md:group-hover:translate-y-0 md:focus-within:translate-y-0 ${REVEAL}`}>
           {isLoggedIn ? (
@@ -136,7 +149,7 @@ function ProductCard({ product, isLoggedIn }: { product: CategoryProduct; isLogg
           {isLoggedIn ? (
             <form action={cartAction}>
               {hiddenFields}
-              <button type="submit" disabled={cartPending || inCart} title={inCart ? "In cart" : "Add to cart"}
+              <button type="submit" disabled={cartPending || inCart || !product.inStock} title={inCart ? "In cart" : "Add to cart"}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] uppercase tracking-[0.12em] shadow-sm transition-colors duration-300
                   ${inCart ? "bg-sage text-white cursor-default" : "bg-cacao text-white hover:bg-sage"} disabled:opacity-90`}>
                 {inCart ? (
@@ -162,9 +175,12 @@ function ProductCard({ product, isLoggedIn }: { product: CategoryProduct; isLogg
         <p className="text-[10px] tracking-[0.2em] uppercase text-ink/40 mb-1">
           {product.designer}
         </p>
-        <p className="font-heading text-cacao text-[0.95rem] leading-snug">
+        <Link
+          href={`/product/${product.id}`}
+          className="font-heading text-cacao text-[0.95rem] leading-snug hover:text-sage transition-colors"
+        >
           {product.name}
-        </p>
+        </Link>
         <div className="flex items-center gap-2 mt-1.5">
           <span className="text-[0.95rem] text-cacao font-numeric">
             ₹ {product.price.toLocaleString("en-IN")}
@@ -199,7 +215,7 @@ export default function CategoryProductGrid({ products, filters, isLoggedIn }: P
       if (p.price < filters.minPrice || p.price > filters.maxPrice) return false;
       if (filters.productTypes.length > 0 && !filters.productTypes.includes(p.productType)) return false;
       if (filters.designers.length > 0 && !filters.designers.includes(p.designer)) return false;
-      if (filters.colours.length > 0 && !filters.colours.includes(p.colour)) return false;
+      if (filters.colours.length > 0 && !p.colours.some((c) => filters.colours.includes(c))) return false;
       if (filters.materials.length > 0 && !filters.materials.includes(p.material)) return false;
       // A product matches if it stocks any of the selected sizes.
       if (filters.sizes.length > 0 && !p.sizes.some((s) => filters.sizes.includes(s))) return false;

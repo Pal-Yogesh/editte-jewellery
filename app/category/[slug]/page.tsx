@@ -1,15 +1,15 @@
 import { notFound } from "next/navigation";
 import {
   ALL_PRODUCTS_SLUG,
-  CATEGORY_MAP,
-  getProductsByCategory,
-  getProductTypes,
-  getDesigners,
   getColours,
+  getDesigners,
   getMaterials,
-  getSizes,
   getPriceRange,
+  getProductTypes,
+  getSizes,
+  resolveCategory,
 } from "@/lib/categoryProducts";
+import { getProductsByCategory } from "@/lib/products";
 import { getSession } from "@/lib/session";
 import CategoryPageClient from "./CategoryPageClient";
 import ZaraNavbar from "@/components/ZaraNavbar";
@@ -18,19 +18,15 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import Image from "next/image";
 
-export function generateStaticParams() {
-  return Object.keys(CATEGORY_MAP).map((slug) => ({ slug }));
-}
-
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const name = CATEGORY_MAP[slug];
-  if (!name) return { title: "Category — editte" };
-  return { title: `${name} — editte` };
+  const route = resolveCategory(slug);
+  if (!route) return { title: "Category — editte" };
+  return { title: `${route.label} — editte` };
 }
 
 export default async function CategoryPage({
@@ -39,19 +35,22 @@ export default async function CategoryPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const categoryName = CATEGORY_MAP[slug];
-  if (!categoryName) notFound();
+  const route = resolveCategory(slug);
+  if (!route) notFound();
 
-  const isAllProducts = slug === ALL_PRODUCTS_SLUG;
+  const isAllProducts = route.level === "all";
 
-  const products = getProductsByCategory(slug);
+  const [products, session] = await Promise.all([
+    getProductsByCategory(route),
+    getSession(),
+  ]);
+
   const productTypes = getProductTypes(products);
   const designers = getDesigners(products);
   const colours = getColours(products);
   const materials = getMaterials(products);
   const sizes = getSizes(products);
   const priceRange = getPriceRange(products);
-  const session = await getSession();
   const isLoggedIn = !!session?.uid;
 
   return (
@@ -66,7 +65,7 @@ export default async function CategoryPage({
               className="hover:text-cacao -mt-1.25 transition-colors cursor-pointer"
             >
               <Image
-                src="/logo/full-name-logo-removebg-preview.png" 
+                src="/logo/full-name-logo-removebg-preview.png"
                 alt="logo"
                 width={1000}
                 height={1000}
@@ -75,7 +74,7 @@ export default async function CategoryPage({
             </Link>
             <span>/</span>
             {isAllProducts ? (
-              <span className="text-cacao">{categoryName}</span>
+              <span className="text-cacao">{route.label}</span>
             ) : (
               <>
                 <Link
@@ -84,8 +83,19 @@ export default async function CategoryPage({
                 >
                   All Products
                 </Link>
+                {route.trail.map((crumb) => (
+                  <span key={crumb.href} className="flex items-center gap-2">
+                    <span>/</span>
+                    <Link
+                      href={crumb.href}
+                      className="text-cacao text-sm hover:opacity-60 transition-opacity"
+                    >
+                      {crumb.label}
+                    </Link>
+                  </span>
+                ))}
                 <span>/</span>
-                <span className="text-cacao text-sm">{categoryName}</span>
+                <span className="text-cacao text-sm">{route.label}</span>
               </>
             )}
           </div>
@@ -96,7 +106,7 @@ export default async function CategoryPage({
                 className="font-heading text-cacao"
                 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)" }}
               >
-                {categoryName}
+                {route.label}
               </h1>
               <p className="text-ink/40 text-sm mt-1">
                 {products.length} product{products.length !== 1 ? "s" : ""}
