@@ -1,6 +1,5 @@
 import Link from "next/link";
-import ZaraNavbar from "@/components/ZaraNavbar";
-import NavbarActions from "@/components/NavbarActions";
+import SiteNavbar from "@/components/SiteNavbar";
 import Footer from "@/components/Footer";
 
 export const metadata = {
@@ -11,7 +10,7 @@ export const metadata = {
 export default function PrivacyPolicyPage() {
   return (
     <>
-      <ZaraNavbar actions={<NavbarActions />} />
+      <SiteNavbar />
       <div className="min-h-screen bg-salt">
         {/* Title banner */}
         <div className=" text-cacao pt-28 pb-12 px-6 text-center">

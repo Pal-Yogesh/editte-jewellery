@@ -1,5 +1,4 @@
-import ZaraNavbar from "@/components/ZaraNavbar";
-import NavbarActions from "@/components/NavbarActions";
+import SiteNavbar from "@/components/SiteNavbar";
 import Hero from "@/components/Hero";
 import CategoryIcons from "@/components/CategoryIcons";
 import CategoryCards from "@/components/CategoryCards";
@@ -21,7 +20,7 @@ export default function Home() {
   return (
     <>
       <div className="relative">
-        <ZaraNavbar actions={<NavbarActions />} />
+        <SiteNavbar />
         <Hero />
         <SubNavBar />
       </div>

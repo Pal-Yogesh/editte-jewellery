@@ -4,8 +4,7 @@ import Image from "next/image";
 import { getProductById, getVendorInfo } from "@/lib/products";
 import { getSession } from "@/lib/session";
 import { ALL_PRODUCTS_SLUG, resolveCategory } from "@/lib/categoryProducts";
-import ZaraNavbar from "@/components/ZaraNavbar";
-import NavbarActions from "@/components/NavbarActions";
+import SiteNavbar from "@/components/SiteNavbar";
 import Footer from "@/components/Footer";
 import ProductDetailClient from "./ProductDetailClient";
 
@@ -36,7 +35,7 @@ export default async function ProductDetailPage({ params }: Props) {
 
   return (
     <>
-      <ZaraNavbar actions={<NavbarActions />} />
+      <SiteNavbar />
       <div className="min-h-screen bg-salt">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-16 pt-24 pb-4">
           {/* Breadcrumb */}

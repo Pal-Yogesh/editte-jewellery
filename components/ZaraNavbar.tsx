@@ -4,7 +4,12 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ALL_PRODUCTS_SLUG, categoryHref } from "@/lib/categoryProducts";
+import {
+  ALL_PRODUCTS_SLUG,
+  categoryHref,
+  getPlacementDef,
+  placementHref,
+} from "@/lib/categoryProducts";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -34,6 +39,23 @@ interface NavSection {
 /** The full catalogue — every "View All" falls back to this. */
 const ALL_PRODUCTS_HREF = `/category/${ALL_PRODUCTS_SLUG}`;
 
+/** The designer directory. Unlike the other rails it lists vendors, not products. */
+const DESIGNERS_HREF = "/designer";
+
+/**
+ * The rails of a curated collection, as nav items. Generated from the shared
+ * taxonomy so the menu can never drift from what a vendor can request or an
+ * admin can grant.
+ */
+function railItems(placementId: string, badgeFirst = false): NavItem[] {
+  const rails = getPlacementDef(placementId)?.rails ?? [];
+  return rails.map((rail, i) => ({
+    label: rail.label,
+    href: placementHref(rail.slug),
+    ...(badgeFirst && i === 0 ? { badge: "NEW" } : {}),
+  }));
+}
+
 // ─── Content Data ─────────────────────────────────────────────────────────────
 
 const NAV_DATA: Record<Category, NavSection[]> = {
@@ -41,12 +63,8 @@ const NAV_DATA: Record<Category, NavSection[]> = {
     {
       number: "01",
       title: "LATEST",
-      items: [
-        { label: "New Arrivals", badge: "NEW", href: ALL_PRODUCTS_HREF },
-        { label: "Best Sellers" },
-        { label: "Just Restocked" },
-        { label: "Trending Now" },
-      ],
+      items: railItems("new-in", true),
+      viewAllHref: placementHref("new-in"),
     },
   ],
   WOMEN: [
@@ -95,17 +113,17 @@ const NAV_DATA: Record<Category, NavSection[]> = {
     },
   ],
   "MEN": [
+    // {
+    //   number: "01",
+    //   title: "NEW IN",
+    //   items: [
+    //     { label: "New Arrivals", badge: "NEW", href: categoryHref("men") },
+    //     { label: "Best Sellers" },
+    //   ],
+    //   viewAllHref: categoryHref("men"),
+    // },
     {
       number: "01",
-      title: "NEW IN",
-      items: [
-        { label: "New Arrivals", badge: "NEW", href: categoryHref("men") },
-        { label: "Best Sellers" },
-      ],
-      viewAllHref: categoryHref("men"),
-    },
-    {
-      number: "02",
       title: "JEWELLERY",
       items: [
         "Chains",
@@ -123,9 +141,9 @@ const NAV_DATA: Record<Category, NavSection[]> = {
     {
       number: "01",
       title: "DESIGNERS",
-      items: [
-        { label: "Coming Soon" },
-      ],
+      // Filled at render time from the registered vendors — see `designers`.
+      items: [],
+      viewAllHref: DESIGNERS_HREF,
     },
   ],
   OCCASIONS: [
@@ -149,16 +167,29 @@ const NAV_DATA: Record<Category, NavSection[]> = {
     {
       number: "01",
       title: "OFFERS",
-      items: [
-        { label: "All Sale Items" },
-        { label: "Jewellery on Sale" },
-        { label: "Bags on Sale" },
-        { label: "Accessories on Sale" },
-        { label: "Last Chance" },
-      ],
+      items: railItems("sale"),
+      viewAllHref: placementHref("sale"),
     },
   ],
 };
+
+/**
+ * The DESIGNERS flyout is the vendor directory rather than a fixed list, so its
+ * one section is built per render. An empty directory still renders the section
+ * with a "View All" row, which lands on the (empty-state) designers page.
+ */
+function designerSections(
+  designers: { label: string; href: string }[]
+): NavSection[] {
+  return [
+    {
+      number: "01",
+      title: "DESIGNERS",
+      items: designers,
+      viewAllHref: DESIGNERS_HREF,
+    },
+  ];
+}
 
 const CATEGORIES: Category[] = [
   "NEW IN",
@@ -379,27 +410,39 @@ function SectionContent({
           <div key={sec.number} className={si > 0 ? "mt-10" : ""}>
             {sec.items.map((item) => (
               <motion.div
-                key={item.label}
+                /* Labels are not unique — two vendors can register the same
+                   brand name, and the DESIGNERS list is built from them. The
+                   href is, since designer slugs are de-duplicated. */
+                key={item.href ?? item.label}
                 variants={rowVariants}
-                className="flex items-baseline gap-1.5 py-0.5 -mt-1 group"
+                /* Fixed row height — the group labels beside this column are
+                   positioned off ROW_H, so rows must not size themselves. */
+                className="flex items-center"
+                style={{ height: ROW_H }}
               >
                 {item.href ? (
+                  /* The whole row is the target, not just the glyphs. */
                   <Link
                     href={item.href}
                     onClick={onNavigate}
-                    className="text-[1.5rem] text-ink hover:text-sage transition-colors duration-200 leading-relaxed relative group"
+                    className="group inline-flex items-baseline gap-1.5 text-[1.5rem] text-ink hover:text-sage transition-colors duration-200 relative"
                   >
                     {item.label}
-                    <span className="absolute -bottom-px left-0 h-px w-0 bg-sage group-hover:w-full transition-[width] duration-300" />
+                    {item.badge && (
+                      <span className="text-[7px] font-bold tracking-[0.18em] text-sage uppercase leading-none">
+                        {item.badge}
+                      </span>
+                    )}
+                    <span className="absolute -bottom-1 left-0 h-px w-0 bg-sage group-hover:w-full transition-[width] duration-300" />
                   </Link>
                 ) : (
-                  <span className="text-[1.5rem] text-ink/40 leading-relaxed">
+                  <span className="inline-flex items-baseline gap-1.5 text-[1.5rem] text-ink/40">
                     {item.label}
-                  </span>
-                )}
-                {item.badge && (
-                  <span className="text-[7px] font-bold tracking-[0.18em] text-sage uppercase leading-none">
-                    {item.badge}
+                    {item.badge && (
+                      <span className="text-[7px] font-bold tracking-[0.18em] text-sage uppercase leading-none">
+                        {item.badge}
+                      </span>
+                    )}
                   </span>
                 )}
               </motion.div>
@@ -468,7 +511,14 @@ function ImagePanel({ category }: { category: Category }) {
 
 // ─── ZaraNavbar ───────────────────────────────────────────────────────────────
 
-export default function ZaraNavbar({ actions }: { actions?: React.ReactNode }) {
+export default function ZaraNavbar({
+  actions,
+  designers = [],
+}: {
+  actions?: React.ReactNode;
+  /** Registered vendors, rendered as the DESIGNERS flyout. */
+  designers?: { label: string; href: string }[];
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<Category>("NEW IN");
 
@@ -562,7 +612,11 @@ export default function ZaraNavbar({ actions }: { actions?: React.ReactNode }) {
                 <AnimatePresence mode="wait">
                   <SectionContent
                     key={activeCategory}
-                    sections={NAV_DATA[activeCategory]}
+                    sections={
+                      activeCategory === "DESIGNERS"
+                        ? designerSections(designers)
+                        : NAV_DATA[activeCategory]
+                    }
                     onNavigate={() => setIsOpen(false)}
                   />
                 </AnimatePresence>

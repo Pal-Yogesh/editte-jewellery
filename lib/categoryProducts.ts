@@ -12,6 +12,14 @@
  * every storefront category URL resolves to an equality filter on those three
  * fields. The products themselves come from Firestore — see
  * `getProductsByCategory` in `lib/products.ts`.
+ *
+ * NEW IN and SALE are not part of that tree. They are *placements*: a vendor
+ * requests one when uploading and an admin grants it, so the rail shows a
+ * handful of curated pieces rather than everything that asked. A product keeps
+ * its real category page either way.
+ *
+ * DESIGNERS is different again — it lists the registered vendors themselves,
+ * each linking to their own page. See `lib/designers.ts`.
  */
 
 // ─── Taxonomy ─────────────────────────────────────────────────────────────────
@@ -91,6 +99,86 @@ export const DEPARTMENTS: readonly Department[] = [
   },
 ] as const;
 
+// ─── Placements ───────────────────────────────────────────────────────────────
+// Mirrors `PLACEMENTS` in editte-jewellery/lib/product/categories.ts — the ids
+// must stay in step, they are what the admin writes onto each product. Two
+// levels deep, exactly as the navbar shows them:
+//
+//     NEW IN  →  LATEST  →  New Arrivals, Best Sellers, …
+//     SALE    →  OFFERS  →  All Sale Items, Last Chance, …
+//
+// Designers is not one of these: see `lib/designers.ts`.
+
+export type PlacementRail = {
+  /** Composite id stored on the product, e.g. "sale:last-chance". */
+  id: string;
+  label: string;
+  /** URL slug, e.g. "sale-last-chance". */
+  slug: string;
+};
+
+export type PlacementDef = {
+  id: string;
+  label: string;
+  groupLabel: string;
+  /** Sub-heading on the rail's own page. */
+  blurb: string;
+  rails: readonly PlacementRail[];
+};
+
+function buildRails(placementId: string, labels: string[]): PlacementRail[] {
+  return labels.map((label) => {
+    const suffix = slugify(label);
+    return { id: `${placementId}:${suffix}`, label, slug: `${placementId}-${suffix}` };
+  });
+}
+
+export const PLACEMENTS: readonly PlacementDef[] = [
+  {
+    id: "new-in",
+    label: "New In",
+    groupLabel: "Latest",
+    blurb: "The latest arrivals, hand-picked from our makers.",
+    rails: buildRails("new-in", [
+      "New Arrivals",
+      "Best Sellers",
+      "Just Restocked",
+      "Trending Now",
+    ]),
+  },
+  {
+    id: "sale",
+    label: "Sale",
+    groupLabel: "Offers",
+    blurb: "A small, curated edit — while stocks last.",
+    rails: buildRails("sale", [
+      "All Sale Items",
+      "Jewellery on Sale",
+      "Bags on Sale",
+      "Accessories on Sale",
+      "Last Chance",
+    ]),
+  },
+] as const;
+
+export function getPlacementDef(id: string): PlacementDef | undefined {
+  return PLACEMENTS.find((p) => p.id === id);
+}
+
+/** `/category/sale`, or `/category/sale-last-chance` for one rail. */
+export function placementHref(slug: string): string {
+  return `/category/${slug}`;
+}
+
+/**
+ * True when a product's stored placement id belongs to `placement`. A bare
+ * "sale" (written before rails existed) counts towards the Sale collection but
+ * not towards any single rail.
+ */
+export function placementMatches(stored: string, placement: string): boolean {
+  return stored === placement || stored.startsWith(`${placement}:`);
+}
+
 // ─── Slugs ────────────────────────────────────────────────────────────────────
 
 /** Slug used by the "View All Products" links across the nav and category pages. */
@@ -136,7 +224,7 @@ const LEGACY_SLUGS: Record<string, string> = {
   "mens-chain": "men-chains",
 };
 
-export type CategoryLevel = "all" | "department" | "group" | "type";
+export type CategoryLevel = "all" | "department" | "group" | "type" | "placement";
 
 export interface CategoryRoute {
   /** Canonical slug — legacy aliases resolve to this. */
@@ -148,6 +236,13 @@ export interface CategoryRoute {
   department?: string;
   categoryGroup?: string;
   productType?: string;
+  /**
+   * Set on a curated rail. Matched against the placements an admin granted —
+   * "sale" covers the whole collection, "sale:last-chance" just that rail.
+   */
+  placement?: string;
+  /** Optional sub-heading, used by the curated rails. */
+  blurb?: string;
   /** Breadcrumb trail above the heading, outermost first. */
   trail: { label: string; href: string }[];
 }
@@ -163,6 +258,32 @@ const ROUTES: RouteIndex = (() => {
       trail: [],
     },
   };
+
+  for (const placement of PLACEMENTS) {
+    const placementCrumb = {
+      label: placement.label,
+      href: `/category/${placement.id}`,
+    };
+
+    index[placement.id] = {
+      slug: placement.id,
+      level: "placement",
+      label: placement.label,
+      placement: placement.id,
+      blurb: placement.blurb,
+      trail: [],
+    };
+
+    for (const rail of placement.rails) {
+      index[rail.slug] = {
+        slug: rail.slug,
+        level: "placement",
+        label: rail.label,
+        placement: rail.id,
+        trail: [placementCrumb],
+      };
+    }
+  }
 
   for (const department of DEPARTMENTS) {
     const departmentSlug = categorySlug(department.id);

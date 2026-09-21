@@ -3,6 +3,7 @@ import { adminDb } from "@/lib/firebase/admin";
 import { signPath } from "@/lib/storage";
 import {
   categorySlug,
+  placementMatches,
   type CategoryProduct,
   type CategoryRoute,
 } from "@/lib/categoryProducts";
@@ -32,6 +33,7 @@ export async function getApprovedProducts(): Promise<ApprovedProduct[]> {
 
   const products = await Promise.all(
     snap.docs
+      .filter((doc) => doc.data().visibleOnSite !== false)
       .sort((a, b) => {
         const aTime = (a.data().createdAt as string) ?? "";
         const bTime = (b.data().createdAt as string) ?? "";
@@ -108,6 +110,8 @@ export async function getProductById(productId: string): Promise<ProductDetail |
 
   const data = doc.data()!;
   if (data.status !== "approved") return null;
+  // An admin can pull a listing off the site without rejecting it.
+  if (data.visibleOnSite === false) return null;
 
   const rawMedia: { id?: string; path?: string; kind?: string }[] = Array.isArray(data.media)
     ? data.media
@@ -195,8 +199,14 @@ function splitSizes(value: unknown): string[] {
  * filters for as much of the taxonomy as the URL pins down — a department page
  * filters on `department` alone, a product-type page on all three fields.
  *
- * Results are ordered newest-first in memory rather than with `orderBy`, which
- * would require a composite index per filter combination.
+ * A curated rail (New In, Designers, Sale) instead matches the placements an
+ * admin granted, so it shows the two or three pieces that were picked rather
+ * than everything that asked for the rail.
+ *
+ * Placement and visibility are matched in memory: `array-contains` alongside an
+ * equality filter needs its own composite index, and products predating these
+ * fields would be excluded by a `where` on them. Ordering is in memory for the
+ * same reason.
  */
 export async function getProductsByCategory(
   route: CategoryRoute
@@ -215,37 +225,51 @@ export async function getProductsByCategory(
 
   return Promise.all(
     snap.docs
+      .filter((doc) => {
+        const data = doc.data();
+        if (data.visibleOnSite === false) return false;
+        if (!route.placement) return true;
+        const granted: string[] = Array.isArray(data.placements)
+          ? data.placements
+          : [];
+        return granted.some((id) => placementMatches(id, route.placement!));
+      })
       .sort((a, b) => {
         const aTime = (a.data().createdAt as string) ?? "";
         const bTime = (b.data().createdAt as string) ?? "";
         return bTime.localeCompare(aTime);
       })
-      .map(async (doc) => {
-        const data = doc.data();
-        const media: { path?: string; kind?: string }[] = Array.isArray(data.media)
-          ? data.media
-          : [];
-        const firstImage = media.find((m) => (m.kind ?? "image") === "image");
-
-        const price = (data.price as number) ?? 0;
-        const finalPrice = (data.finalPrice as number) ?? price;
-        const discountPercent = (data.discountPercent as number) ?? 0;
-
-        return {
-          id: doc.id,
-          name: (data.title as string) ?? "",
-          designer: (data.brandName as string) ?? "",
-          price: finalPrice,
-          originalPrice: discountPercent > 0 ? price : undefined,
-          image: await signPath(firstImage?.path ?? ""),
-          productType: (data.productType as string) ?? "",
-          category: toCategorySlug(data),
-          categoryPath: (data.category as string) ?? "",
-          colours: Array.isArray(data.colors) ? (data.colors as string[]) : [],
-          material: (data.metal as string) ?? "",
-          sizes: splitSizes(data.size),
-          inStock: ((data.quantity as number) ?? 0) > 0,
-        };
-      })
+      .map(categoryProductFromDoc)
   );
+}
+
+/** Maps a product document to the shape the storefront grids render. */
+export async function categoryProductFromDoc(
+  doc: FirebaseFirestore.QueryDocumentSnapshot
+): Promise<CategoryProduct> {
+  const data = doc.data();
+  const media: { path?: string; kind?: string }[] = Array.isArray(data.media)
+    ? data.media
+    : [];
+  const firstImage = media.find((m) => (m.kind ?? "image") === "image");
+
+  const price = (data.price as number) ?? 0;
+  const finalPrice = (data.finalPrice as number) ?? price;
+  const discountPercent = (data.discountPercent as number) ?? 0;
+
+  return {
+    id: doc.id,
+    name: (data.title as string) ?? "",
+    designer: (data.brandName as string) ?? "",
+    price: finalPrice,
+    originalPrice: discountPercent > 0 ? price : undefined,
+    image: await signPath(firstImage?.path ?? ""),
+    productType: (data.productType as string) ?? "",
+    category: toCategorySlug(data),
+    categoryPath: (data.category as string) ?? "",
+    colours: Array.isArray(data.colors) ? (data.colors as string[]) : [],
+    material: (data.metal as string) ?? "",
+    sizes: splitSizes(data.size),
+    inStock: ((data.quantity as number) ?? 0) > 0,
+  };
 }

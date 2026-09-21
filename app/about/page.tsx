@@ -1,6 +1,5 @@
 import Link from "next/link";
-import ZaraNavbar from "@/components/ZaraNavbar";
-import NavbarActions from "@/components/NavbarActions";
+import SiteNavbar from "@/components/SiteNavbar";
 import Footer from "@/components/Footer";
 import { ALL_PRODUCTS_SLUG } from "@/lib/categoryProducts";
 
@@ -37,7 +36,7 @@ function StatementCard({
 export default function AboutPage() {
   return (
     <>
-      <ZaraNavbar actions={<NavbarActions />} />
+      <SiteNavbar />
       <div className="min-h-screen bg-salt">
         {/* ── Hero ── */}
         <section className="relative w-full h-[62svh] min-h-[420px] overflow-hidden bg-cacao">

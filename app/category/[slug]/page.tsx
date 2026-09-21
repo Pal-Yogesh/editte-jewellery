@@ -12,8 +12,7 @@ import {
 import { getProductsByCategory } from "@/lib/products";
 import { getSession } from "@/lib/session";
 import CategoryPageClient from "./CategoryPageClient";
-import ZaraNavbar from "@/components/ZaraNavbar";
-import NavbarActions from "@/components/NavbarActions";
+import SiteNavbar from "@/components/SiteNavbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import Image from "next/image";
@@ -55,7 +54,7 @@ export default async function CategoryPage({
 
   return (
     <>
-      <ZaraNavbar actions={<NavbarActions />} />
+      <SiteNavbar />
       <div className="min-h-screen bg-salt">
         {/* Breadcrumb */}
         <div className="max-w-7xl mx-auto px-6 pt-24 pb-4">
@@ -108,6 +107,9 @@ export default async function CategoryPage({
               >
                 {route.label}
               </h1>
+              {route.blurb ? (
+                <p className="text-ink/50 text-sm mt-1 max-w-md">{route.blurb}</p>
+              ) : null}
               <p className="text-ink/40 text-sm mt-1">
                 {products.length} product{products.length !== 1 ? "s" : ""}
               </p>
