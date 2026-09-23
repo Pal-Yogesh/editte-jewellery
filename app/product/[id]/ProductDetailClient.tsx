@@ -285,6 +285,7 @@ export default function ProductDetailClient({
         <ShippingEstimator
           vendorPincode={vendorPincode}
           productMrp={product.finalPrice}
+          weightGrams={product.weightGrams}
         />
       </div>
     </div>

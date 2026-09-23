@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
 import { getSession } from "@/lib/session";
 import { adminDb } from "@/lib/firebase/admin";
+import { calcPayableTotal } from "@/lib/pricing";
 import type { CartItem } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
@@ -28,7 +29,8 @@ export async function POST(req: NextRequest) {
 
   const items = snap.docs.map((d) => d.data() as CartItem);
   const subtotal = items.reduce((acc, i) => acc + i.price * i.quantity, 0);
-  const amountPaise = subtotal * 100; // Razorpay works in paise
+  // Charge products + GST only; shipping is estimated on cart, not collected here
+  const amountPaise = calcPayableTotal(subtotal) * 100;
 
   const order = await razorpay.orders.create({
     amount: amountPaise,

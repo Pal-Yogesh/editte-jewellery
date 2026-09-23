@@ -4,6 +4,7 @@ import { getSession } from "@/lib/session";
 import { adminDb } from "@/lib/firebase/admin";
 import { resend, FROM } from "@/lib/resend";
 import { createOrder } from "@/lib/shiprocket/order";
+import { calcGst, calcPayableTotal, cartShipmentWeightKg, DEFAULT_PACKAGE_CM } from "@/lib/pricing";
 import type { CartItem, OrderItem } from "@/lib/types";
 import type { CreateOrderPayload } from "@/lib/shiprocket/types";
 
@@ -60,16 +61,46 @@ export async function POST(req: NextRequest) {
 
   const deliveryAddress = addressSnap.empty ? null : addressSnap.docs[0].data();
 
-  const orderItems: OrderItem[] = cartItems.map((i) => ({
-    productId: i.productId,
-    name: i.name,
-    image: i.image,
-    price: i.price,
-    quantity: i.quantity,
-    category: i.category,
-  }));
+  // Enrich line items with vendorId + decrement stock
+  const productSnaps = await Promise.all(
+    cartItems.map((i) => adminDb.collection("products").doc(i.productId).get())
+  );
+
+  const orderItems: OrderItem[] = cartItems.map((i, idx) => {
+    const pdata = productSnaps[idx]?.data();
+    return {
+      productId: i.productId,
+      name: i.name,
+      image: i.image,
+      price: i.price,
+      quantity: i.quantity,
+      category: i.category,
+      vendorId: (pdata?.vendorId as string) ?? "",
+      sku: (pdata?.sku as string) ?? "",
+    };
+  });
+
+  const stockBatch = adminDb.batch();
+  let stockUpdates = 0;
+  cartItems.forEach((item, idx) => {
+    const ref = productSnaps[idx]?.ref;
+    if (!ref || !productSnaps[idx]?.exists) return;
+    const currentQty = (productSnaps[idx].data()?.quantity as number) ?? 0;
+    const nextQty = Math.max(0, currentQty - item.quantity);
+    stockBatch.update(ref, {
+      quantity: nextQty,
+      soldCount: ((productSnaps[idx].data()?.soldCount as number) ?? 0) + item.quantity,
+      updatedAt: new Date().toISOString(),
+    });
+    stockUpdates += 1;
+  });
+  if (stockUpdates > 0) {
+    await stockBatch.commit();
+  }
 
   const subtotal = orderItems.reduce((acc, i) => acc + i.price * i.quantity, 0);
+  const gst = calcGst(subtotal);
+  const total = calcPayableTotal(subtotal);
   const invoiceNumber = generateInvoiceNumber();
   const createdAt = Date.now();
 
@@ -81,7 +112,8 @@ export async function POST(req: NextRequest) {
     razorpaySignature: razorpay_signature,
     items: orderItems,
     subtotal,
-    total: subtotal,
+    gst,
+    total,
     currency: "INR",
     status: "paid",
     userEmail,
@@ -145,6 +177,17 @@ export async function POST(req: NextRequest) {
         const firstName = nameParts[0] ?? "";
         const lastName = nameParts.slice(1).join(" ") || "";
 
+        // Sum product weights (grams) × qty; Shiprocket min 0.5 kg
+        const weightDocs = await Promise.all(
+          orderItems.map((item) => adminDb.collection("products").doc(item.productId).get())
+        );
+        const shipmentWeightKg = cartShipmentWeightKg(
+          orderItems.map((item, i) => ({
+            weightGrams: (weightDocs[i]?.data()?.weightGrams as number) ?? 0,
+            quantity: item.quantity,
+          }))
+        );
+
         const payload: CreateOrderPayload = {
           order_id: invoiceNumber,
           order_date: new Date(createdAt).toISOString().split("T")[0],
@@ -168,10 +211,10 @@ export async function POST(req: NextRequest) {
           })),
           payment_method: "Prepaid",
           sub_total: subtotal,
-          length: 15,
-          breadth: 12,
-          height: 8,
-          weight: 0.3,
+          length: DEFAULT_PACKAGE_CM.length,
+          breadth: DEFAULT_PACKAGE_CM.breadth,
+          height: DEFAULT_PACKAGE_CM.height,
+          weight: shipmentWeightKg,
         };
 
         const shipResult = await createOrder(payload);
@@ -245,7 +288,9 @@ export async function POST(req: NextRequest) {
         </table>
 
         <div style="text-align:right;padding-top:8px;border-top:2px solid #361515;margin-bottom:32px;">
-          <span style="font-size:16px;font-weight:700;">Total Paid: ${formatCurrency(subtotal)}</span>
+          <p style="font-size:13px;color:#555;margin:0 0 4px;">Subtotal: ${formatCurrency(subtotal)}</p>
+          <p style="font-size:13px;color:#555;margin:0 0 8px;">GST (3%): ${formatCurrency(gst)}</p>
+          <span style="font-size:16px;font-weight:700;">Total Paid: ${formatCurrency(total)}</span>
         </div>
 
         <table style="width:100%;border-collapse:collapse;font-size:13px;color:#555;margin-bottom:32px;">
@@ -285,7 +330,7 @@ export async function POST(req: NextRequest) {
     .collection("items")
     .add({
       title: `Order ${invoiceNumber} confirmed`,
-      message: `Payment of ${formatCurrency(subtotal)} received. Check My Orders for details.`,
+      message: `Payment of ${formatCurrency(total)} received. Check My Orders for details.`,
       type: "order",
       read: false,
       link: `/dashboard/orders`,

@@ -244,10 +244,10 @@ export default function CategoryFilters({
       <FilterSection title="Designer" open={openSections.designer} onToggle={() => toggle("designer")}>
         <div className="flex flex-col gap-2.5">
           {/* Labelled generically — the real designer name stays the filter value. */}
-          {designers.map((d, i) => (
+          {designers.map((d) => (
             <label key={d} className="flex items-center gap-3 cursor-pointer group">
               <input type="checkbox" checked={selectedDesigners.includes(d)} onChange={() => setSelectedDesigners((p) => toggleItem(p, d))} className="accent-sage w-4 h-4 rounded" />
-              <span className="text-sm text-ink/60 group-hover:text-cacao transition-colors">Designer {i + 1}</span>
+              <span className="text-sm text-ink/60 group-hover:text-cacao transition-colors">{d}</span>
             </label>
           ))}
         </div>

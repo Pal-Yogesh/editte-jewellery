@@ -9,18 +9,10 @@ import "swiper/css/navigation";
 import "./sponsored.css";
 import type { SponsoredSlide } from "@/lib/types";
 
-const FALLBACK_SLIDES: SponsoredSlide[] = [
-  { id: "s1", title: "Bridal",        image: "/images-2/Thebridal.jpg", order: 0, status: "published" },
-  { id: "s2", title: "Showstopper",   image: "/images-2/Workday.jpg",   order: 1, status: "published" },
-  { id: "s3", title: "Everyday",      image: "/images-2/Daily.jpg",     order: 2, status: "published" },
-  { id: "s4", title: "Vacation",      image: "/images-2/Vacation.jpg",  order: 3, status: "published" },
-  { id: "s5", title: "Festive Finds",  image: "/banner3/Festive-Finds.png", order: 4, status: "published" },
-  { id: "s6", title: "Men's Essential", image: "/images-2/Men.jpg",       order: 5, status: "published" },
-  // { id: "s7", title: "Gift",          image: "/images-2/gift.jpg",      order: 6, status: "published" },
-];
-
 export default function SponsoredProduct({ slides: propSlides }: { slides?: SponsoredSlide[] }) {
-  const slides = propSlides?.length ? propSlides : FALLBACK_SLIDES;
+  const slides = propSlides ?? [];
+  if (slides.length === 0) return null;
+
   const [bgSwiper, setBgSwiper] = useState<SwiperType | null>(null);
   const [titlesSwiper, setTitlesSwiper] = useState<SwiperType | null>(null);
 

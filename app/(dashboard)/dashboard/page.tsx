@@ -1,6 +1,5 @@
 import { getCurrentUser, verifySession } from "@/lib/dal";
 import { adminDb } from "@/lib/firebase/admin";
-import { PRODUCTS } from "@/lib/types";
 import Link from "next/link";
 
 async function getCounts(uid: string) {

@@ -23,8 +23,8 @@ export default async function SponsoredWrapper() {
     .filter((s) => s.status === "published")
     .sort((a, b) => a.order - b.order);
 
-  // undefined = Sponsored uses its own fallback slides
-  const slides = published.length > 0 ? published : undefined;
+  // No CMS slides → hide section (no hardcoded catalogue slides)
+  if (published.length === 0) return null;
 
-  return <SponsoredProduct slides={slides} />;
+  return <SponsoredProduct slides={published} />;
 }

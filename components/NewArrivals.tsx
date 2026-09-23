@@ -1,47 +1,51 @@
-import { unstable_cache } from "next/cache";
-import { adminDb } from "@/lib/firebase/admin";
 import { getSession } from "@/lib/session";
+import { getApprovedProducts, getProductsByCategory } from "@/lib/products";
+import { resolveCategory } from "@/lib/categoryProducts";
 import NewArrivalsScroller from "./NewArrivalsScroller";
-import type { NewArrivalsContent, NewArrivalItem } from "@/lib/types";
+import type { NewArrivalItem } from "@/lib/types";
 
-const FALLBACK_ARRIVALS: NewArrivalItem[] = [
-  { id: "a1", name: "Ring", price: 3000, image: "/images/products/NECK%20PIECES.png", category: "Neckpieces", order: 0, status: "published" },
-  { id: "a2", name: "Ring", price: 3000, image: "/images/products/RING.png", category: "Rings", order: 1, status: "published" },
-  { id: "a3", name: "Ring", price: 3000, image: "/images/products/BANGLES.png", category: "Bangles", order: 2, status: "published" },
-  { id: "a4", name: "Ring", price: 3000, image: "/images/products/EARRINGS.png", category: "Earrings", order: 3, status: "published" },
-  { id: "a5", name: "Ring", price: 3000, image: "/images/products/NECK%20PIECES.png", category: "Neckpieces", order: 4, status: "published" },
-  { id: "a6", name: "Ring", price: 3000, image: "/images/products/RING.png", category: "Rings", order: 5, status: "published" },
-  { id: "a7", name: "Ring", price: 3000, image: "/images/products/EARRINGS.png", category: "Earrings", order: 6, status: "published" },
-  { id: "a8", name: "Ring", price: 3000, image: "/images/products/BANGLES.png", category: "Bangles", order: 7, status: "published" },
-];
+const MAX_ITEMS = 12;
 
-const getNewArrivalsContent = unstable_cache(
-  async () => {
-    try {
-      const snap = await adminDb.collection("siteContent").doc("newArrivals").get();
-      if (!snap.exists) return null;
-      return snap.data() as NewArrivalsContent;
-    } catch {
-      return null;
-    }
-  },
-  ["content:newArrivals"],
-  { tags: ["content:newArrivals"], revalidate: 3600 }
-);
-
+/**
+ * Homepage New Arrivals: live Firestore products only.
+ * Prefers admin-granted "new-in" placements; otherwise newest approved listings.
+ */
 export default async function NewArrivals() {
-  const [session, content] = await Promise.all([
-    getSession(),
-    getNewArrivalsContent(),
-  ]);
-
+  const session = await getSession();
   const isLoggedIn = !!session?.uid;
 
-  const published = (content?.items ?? [])
-    .filter((i) => i.status === "published")
-    .sort((a, b) => a.order - b.order);
+  const newInRoute = resolveCategory("new-in");
+  let items: NewArrivalItem[] = [];
 
-  const items = published.length > 0 ? published : FALLBACK_ARRIVALS;
+  if (newInRoute) {
+    const placed = await getProductsByCategory(newInRoute);
+    items = placed.slice(0, MAX_ITEMS).map((p, i) => ({
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      image: p.image,
+      category: p.productType || p.categoryPath || p.category,
+      order: i,
+      status: "published" as const,
+    }));
+  }
+
+  if (items.length === 0) {
+    const approved = await getApprovedProducts();
+    items = approved.slice(0, MAX_ITEMS).map((p, i) => ({
+      id: p.id,
+      name: p.title,
+      price: p.finalPrice || p.price,
+      image: p.image,
+      category: p.category || p.brandName || "Jewellery",
+      order: i,
+      status: "published" as const,
+    }));
+  }
+
+  if (items.length === 0) {
+    return null;
+  }
 
   return (
     <section className="bg-salt py-14 px-20 relative overflow-hidden">

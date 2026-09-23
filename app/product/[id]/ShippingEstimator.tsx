@@ -7,9 +7,10 @@ import type { ShippingRateResult } from "@/app/actions/shipping";
 interface Props {
   vendorPincode: string;
   productMrp: number;
+  weightGrams: number;
 }
 
-export default function ShippingEstimator({ vendorPincode, productMrp }: Props) {
+export default function ShippingEstimator({ vendorPincode, productMrp, weightGrams }: Props) {
   const [state, action, pending] = useActionState<ShippingRateResult | undefined, FormData>(
     getShippingRateAction,
     undefined
@@ -32,6 +33,7 @@ export default function ShippingEstimator({ vendorPincode, productMrp }: Props) 
       <form action={action} className="flex gap-2">
         <input type="hidden" name="from_pincode" value={vendorPincode} />
         <input type="hidden" name="product_mrp" value={productMrp} />
+        <input type="hidden" name="weight_grams" value={weightGrams} />
         <input
           type="text"
           name="to_pincode"

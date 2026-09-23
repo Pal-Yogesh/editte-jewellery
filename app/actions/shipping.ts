@@ -1,5 +1,6 @@
 "use server";
 import { checkServiceability } from "@/lib/shiprocket/rate";
+import { DEFAULT_PACKAGE_CM, gramsToShipmentKg } from "@/lib/pricing";
 import type { ActionState } from "./auth";
 
 export interface ShippingRate {
@@ -11,13 +12,13 @@ export interface ShippingRate {
 export type ShippingRateResult = ActionState & {
   rates?: ShippingRate[];
   cheapest?: ShippingRate;
-}
+};
 
 /**
  * Calculates shipping rates between a vendor's pickup pincode and
  * the customer's delivery pincode using Shiprocket serviceability API.
  *
- * Uses default jewellery package dimensions (small, lightweight items).
+ * Weight comes from the product (grams → kg), with a 0.5 kg minimum.
  */
 export async function getShippingRateAction(
   _prev: ShippingRateResult | undefined,
@@ -26,6 +27,7 @@ export async function getShippingRateAction(
   const fromPincode = (formData.get("from_pincode") as string)?.trim();
   const toPincode = (formData.get("to_pincode") as string)?.trim();
   const productMrp = Number(formData.get("product_mrp")) || 0;
+  const weightGrams = Number(formData.get("weight_grams")) || 0;
 
   if (!fromPincode || !/^\d{6}$/.test(fromPincode)) {
     return { message: "Invalid seller pincode." };
@@ -43,11 +45,11 @@ export async function getShippingRateAction(
     const response = await checkServiceability({
       pickup_postcode: fromPincode,
       delivery_postcode: toPincode,
-      weight: 0.3,
+      weight: gramsToShipmentKg(weightGrams),
       cod: 0,
-      length: 15,
-      breadth: 12,
-      height: 8,
+      length: DEFAULT_PACKAGE_CM.length,
+      breadth: DEFAULT_PACKAGE_CM.breadth,
+      height: DEFAULT_PACKAGE_CM.height,
       declared_value: productMrp,
     });
 

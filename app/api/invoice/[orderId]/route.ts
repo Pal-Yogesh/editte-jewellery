@@ -131,11 +131,27 @@ export async function GET(
     </tbody>
     <tfoot>
       <tr>
-        <td colspan="2" style="padding:10px 14px;font-size:12px;color:#888;text-align:right;background:#f9f5f1;">
-          Shipping: <strong style="color:#b3ad6e;">Free</strong>
+        <td colspan="4" style="padding:10px 14px;font-size:12px;color:#888;text-align:right;background:#f9f5f1;">
+          Subtotal
         </td>
-        <td colspan="3" style="padding:10px 14px;font-size:12px;color:#888;text-align:right;background:#f9f5f1;">
-          Subtotal: <strong>${formatCurrency(order.subtotal)}</strong>
+        <td style="padding:10px 14px;font-size:12px;color:#888;text-align:right;background:#f9f5f1;">
+          <strong>${formatCurrency(order.subtotal)}</strong>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" style="padding:10px 14px;font-size:12px;color:#888;text-align:right;background:#f9f5f1;">
+          GST (3%)
+        </td>
+        <td style="padding:10px 14px;font-size:12px;color:#888;text-align:right;background:#f9f5f1;">
+          <strong>${formatCurrency(order.gst ?? Math.round(order.subtotal * 0.03))}</strong>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" style="padding:10px 14px;font-size:12px;color:#888;text-align:right;background:#f9f5f1;">
+          Shipping
+        </td>
+        <td style="padding:10px 14px;font-size:12px;color:#888;text-align:right;background:#f9f5f1;">
+          Arranged separately
         </td>
       </tr>
       <tr class="total-row">

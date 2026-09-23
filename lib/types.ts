@@ -71,18 +71,6 @@ export interface SupportTicket {
   adminNote?: string;
 }
 
-// Static product catalog sourced from /public images
-export const PRODUCTS: Product[] = [
-  { id: "p1", name: "Gold Bangles", category: "Bangles", price: 4500, originalPrice: 5200, image: "/basic-products/bangles.png", inStock: true },
-  { id: "p2", name: "Diamond Earrings", category: "Earrings", price: 8900, originalPrice: 10000, image: "/basic-products/earrings.png", inStock: true },
-  { id: "p3", name: "Men's Chain", category: "Chains", price: 6200, image: "/basic-products/men-chain.png", inStock: true },
-  { id: "p4", name: "Neck Piece", category: "Neckpieces", price: 7800, originalPrice: 9000, image: "/basic-products/neck-piece.png", inStock: true },
-  { id: "p5", name: "Solitaire Ring", category: "Rings", price: 12500, image: "/basic-products/ring.png", inStock: true },
-  { id: "p6", name: "Daily Wear Set", category: "Sets", price: 5500, image: "/images-2/Daily.jpg", inStock: true },
-  { id: "p7", name: "Bridal Jewellery", category: "Bridal", price: 28000, originalPrice: 32000, image: "/images-2/Thebridal.jpg", inStock: true },
-  { id: "p8", name: "Vacation Collection", category: "Sets", price: 4200, image: "/images-2/Vacation.jpg", inStock: true },
-];
-
 export interface OrderItem {
   productId: string;
   name: string;
@@ -90,6 +78,9 @@ export interface OrderItem {
   price: number;
   quantity: number;
   category: string;
+  /** Vendor who owns this line item — set at checkout for sales reporting. */
+  vendorId?: string;
+  sku?: string;
 }
 
 export interface Order {
@@ -100,6 +91,9 @@ export interface Order {
   razorpaySignature: string;
   items: OrderItem[];
   subtotal: number;
+  /** GST amount included in total (3% of subtotal). */
+  gst?: number;
+  /** Amount paid via Razorpay = subtotal + gst. Shipping is not charged. */
   total: number;
   currency: string;
   status: "paid" | "failed" | "pending";

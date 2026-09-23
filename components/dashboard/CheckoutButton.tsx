@@ -32,7 +32,8 @@ interface RazorpayInstance {
 }
 
 interface Props {
-  subtotal: number;
+  /** Display-only payable amount (products + GST). Server recalculates for Razorpay. */
+  amount: number;
   userName: string;
   userEmail: string;
 }
@@ -51,7 +52,7 @@ function loadRazorpayScript(): Promise<boolean> {
   });
 }
 
-export default function CheckoutButton({ subtotal, userName, userEmail }: Props) {
+export default function CheckoutButton({ amount, userName, userEmail }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -129,7 +130,7 @@ export default function CheckoutButton({ subtotal, userName, userEmail }: Props)
             Processing…
           </>
         ) : (
-          "Proceed to Checkout"
+          `Pay ₹${amount.toLocaleString("en-IN")}`
         )}
       </button>
       {error && (

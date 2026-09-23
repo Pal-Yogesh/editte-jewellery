@@ -203,37 +203,22 @@ function splitSizes(value: unknown): string[] {
  * admin granted, so it shows the two or three pieces that were picked rather
  * than everything that asked for the rail.
  *
- * Placement and visibility are matched in memory: `array-contains` alongside an
- * equality filter needs its own composite index, and products predating these
- * fields would be excluded by a `where` on them. Ordering is in memory for the
- * same reason.
+ * Taxonomy and visibility are matched in memory (not as Firestore `where`s) so
+ * older listings that only stored a free-text `category` (e.g. "Bangles") still
+ * appear on `/category/bangles`, and products predating `visibleOnSite` /
+ * `placements` are not dropped by missing-field queries.
  */
 export async function getProductsByCategory(
   route: CategoryRoute
 ): Promise<CategoryProduct[]> {
-  let query: FirebaseFirestore.Query = adminDb
+  const snap = await adminDb
     .collection("products")
-    .where("status", "==", "approved");
-
-  if (route.department) query = query.where("department", "==", route.department);
-  if (route.categoryGroup)
-    query = query.where("categoryGroup", "==", route.categoryGroup);
-  if (route.productType)
-    query = query.where("productType", "==", route.productType);
-
-  const snap = await query.get();
+    .where("status", "==", "approved")
+    .get();
 
   return Promise.all(
     snap.docs
-      .filter((doc) => {
-        const data = doc.data();
-        if (data.visibleOnSite === false) return false;
-        if (!route.placement) return true;
-        const granted: string[] = Array.isArray(data.placements)
-          ? data.placements
-          : [];
-        return granted.some((id) => placementMatches(id, route.placement!));
-      })
+      .filter((doc) => matchesCategoryRoute(doc.data(), route))
       .sort((a, b) => {
         const aTime = (a.data().createdAt as string) ?? "";
         const bTime = (b.data().createdAt as string) ?? "";
@@ -241,6 +226,46 @@ export async function getProductsByCategory(
       })
       .map(categoryProductFromDoc)
   );
+}
+
+/** True when a product document belongs on this category / placement route. */
+function matchesCategoryRoute(
+  data: FirebaseFirestore.DocumentData,
+  route: CategoryRoute
+): boolean {
+  if (data.visibleOnSite === false) return false;
+
+  if (route.placement) {
+    const granted: string[] = Array.isArray(data.placements) ? data.placements : [];
+    return granted.some((id) => placementMatches(id, route.placement!));
+  }
+
+  // "All products" — every visible approved listing.
+  if (route.level === "all") return true;
+
+  const department = (data.department as string) ?? "";
+  const categoryGroup = (data.categoryGroup as string) ?? "";
+  const productType = (data.productType as string) ?? "";
+  const legacyCategory = ((data.category as string) ?? "").toLowerCase();
+
+  if (route.department && department && department !== route.department) {
+    return false;
+  }
+  if (route.categoryGroup && categoryGroup && categoryGroup !== route.categoryGroup) {
+    return false;
+  }
+  if (route.productType) {
+    const typeMatch =
+      productType === route.productType ||
+      legacyCategory === route.productType.toLowerCase() ||
+      legacyCategory.includes(route.productType.toLowerCase());
+    if (!typeMatch) return false;
+  } else if (route.department && !department) {
+    // Department landing with no type — skip untagged legacy docs.
+    return false;
+  }
+
+  return true;
 }
 
 /** Maps a product document to the shape the storefront grids render. */

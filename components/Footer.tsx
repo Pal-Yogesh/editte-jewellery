@@ -10,7 +10,7 @@ const COLLECTIONS = [
 ];
 const QUICK_LINKS = [
   { label: "About Us", href: "/about" },
-  { label: "Our Designers", href: "#" },
+  { label: "Our Designers", href: "/designer" },
   { label: "Custom Orders", href: "#" },
   { label: "Gift Cards", href: "#" },
   { label: "Size Guide", href: "#" },

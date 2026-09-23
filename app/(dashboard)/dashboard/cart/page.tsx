@@ -2,12 +2,15 @@ import { verifySession } from "@/lib/dal";
 import { adminDb } from "@/lib/firebase/admin";
 import type { CartItem } from "@/lib/types";
 import { checkServiceability } from "@/lib/shiprocket/rate";
+import {
+  calcGst,
+  calcPayableTotal,
+  cartShipmentWeightKg,
+  DEFAULT_PACKAGE_CM,
+} from "@/lib/pricing";
 import CheckoutButton from "@/components/dashboard/CheckoutButton";
 import Link from "next/link";
 import CartClient from "./CartClient";
-
-// GST rate for jewellery (3% on gold/precious metals in India)
-const GST_RATE = 0.03;
 
 async function getCart(uid: string): Promise<CartItem[]> {
   const snap = await adminDb
@@ -58,62 +61,137 @@ async function getDefaultAddress(uid: string): Promise<{ pincode: string; city: 
   return null;
 }
 
-async function getVendorPincode(productId: string): Promise<string> {
-  const productDoc = await adminDb.collection("products").doc(productId).get();
-  if (!productDoc.exists) return "";
+async function getProductShippingMeta(
+  productIds: string[]
+): Promise<Map<string, { vendorId: string; weightGrams: number; pickupPincode: string }>> {
+  const meta = new Map<string, { vendorId: string; weightGrams: number; pickupPincode: string }>();
 
-  const vendorId = (productDoc.data()?.vendorId as string) ?? "";
-  if (!vendorId) return "";
+  await Promise.all(
+    productIds.map(async (id) => {
+      const productDoc = await adminDb.collection("products").doc(id).get();
+      if (!productDoc.exists) {
+        meta.set(id, { vendorId: "", weightGrams: 0, pickupPincode: "" });
+        return;
+      }
+      const data = productDoc.data()!;
+      const vendorId = (data.vendorId as string) ?? "";
+      const weightGrams = (data.weightGrams as number) ?? 0;
 
-  const vendorDoc = await adminDb.collection("vendors").doc(vendorId).get();
-  if (!vendorDoc.exists) return "";
+      let pickupPincode = "";
+      if (vendorId) {
+        const vendorDoc = await adminDb.collection("vendors").doc(vendorId).get();
+        pickupPincode = (vendorDoc.data()?.pickupAddress?.pincode as string) ?? "";
+      }
 
-  return (vendorDoc.data()?.pickupAddress?.pincode as string) ?? "";
+      meta.set(id, { vendorId, weightGrams, pickupPincode });
+    })
+  );
+
+  return meta;
 }
 
+type VendorShipRate = {
+  vendorId: string;
+  rate: number;
+  courierName: string;
+};
+
+/**
+ * One Shiprocket rate per vendor (own pickup pincode + that vendor's items only),
+ * then sum — correct for multi-vendor carts.
+ */
 async function calculateShipping(
   items: CartItem[],
   userPincode: string
-): Promise<{ shipping: number; courierName: string } | null> {
-  if (!userPincode) return null;
+): Promise<{ shipping: number; courierName: string; packageCount: number } | null> {
+  if (!userPincode || !/^\d{6}$/.test(userPincode)) return null;
 
-  // Get unique product IDs and fetch their vendor pincodes
   const productIds = [...new Set(items.map((i) => i.productId))];
-  const vendorPincodes = await Promise.all(productIds.map(getVendorPincode));
+  const meta = await getProductShippingMeta(productIds);
 
-  // Use the first valid vendor pincode as pickup
-  const fromPincode = vendorPincodes.find((p) => p && /^\d{6}$/.test(p)) ?? "";
-  if (!fromPincode) return null;
+  // Group cart lines by vendor
+  type VendorGroup = {
+    vendorId: string;
+    pickupPincode: string;
+    items: CartItem[];
+  };
+  const groups = new Map<string, VendorGroup>();
 
-  const totalMrp = items.reduce((acc, i) => acc + i.price * i.quantity, 0);
-
-  try {
-    const response = await checkServiceability({
-      pickup_postcode: fromPincode,
-      delivery_postcode: userPincode,
-      weight: 0.3,
-      cod: 0,
-      length: 15,
-      breadth: 12,
-      height: 8,
-      declared_value: totalMrp,
-    });
-
-    const couriers = response.data?.available_courier_companies;
-    if (!couriers || couriers.length === 0) return null;
-
-    // Pick the cheapest rate
-    const valid = couriers.filter((c) => c.rate != null && c.rate > 0);
-    if (valid.length === 0) return null;
-
-    valid.sort((a, b) => a.rate - b.rate);
-    return {
-      shipping: valid[0].rate,
-      courierName: valid[0].courier_name ?? "Standard",
-    };
-  } catch {
-    return null;
+  for (const item of items) {
+    const info = meta.get(item.productId);
+    if (!info?.vendorId || !info.pickupPincode || !/^\d{6}$/.test(info.pickupPincode)) {
+      continue;
+    }
+    const existing = groups.get(info.vendorId);
+    if (existing) {
+      existing.items.push(item);
+    } else {
+      groups.set(info.vendorId, {
+        vendorId: info.vendorId,
+        pickupPincode: info.pickupPincode,
+        items: [item],
+      });
+    }
   }
+
+  if (groups.size === 0) return null;
+
+  const rates: VendorShipRate[] = [];
+
+  await Promise.all(
+    [...groups.values()].map(async (group) => {
+      const declaredValue = group.items.reduce((acc, i) => acc + i.price * i.quantity, 0);
+      const weight = cartShipmentWeightKg(
+        group.items.map((i) => ({
+          weightGrams: meta.get(i.productId)?.weightGrams ?? 0,
+          quantity: i.quantity,
+        }))
+      );
+
+      try {
+        const response = await checkServiceability({
+          pickup_postcode: group.pickupPincode,
+          delivery_postcode: userPincode,
+          weight,
+          cod: 0,
+          length: DEFAULT_PACKAGE_CM.length,
+          breadth: DEFAULT_PACKAGE_CM.breadth,
+          height: DEFAULT_PACKAGE_CM.height,
+          declared_value: declaredValue,
+        });
+
+        const couriers = response.data?.available_courier_companies ?? [];
+        const valid = couriers
+          .filter((c) => c.rate != null && c.rate > 0)
+          .sort((a, b) => a.rate - b.rate);
+
+        if (valid[0]) {
+          rates.push({
+            vendorId: group.vendorId,
+            rate: valid[0].rate,
+            courierName: valid[0].courier_name ?? "Standard",
+          });
+        }
+      } catch (err) {
+        console.error("Vendor shipping rate failed:", group.vendorId, err);
+      }
+    })
+  );
+
+  // Need a successful rate for every vendor package
+  if (rates.length === 0 || rates.length < groups.size) return null;
+
+  const shipping = Math.round(rates.reduce((acc, r) => acc + r.rate, 0) * 100) / 100;
+  const courierName =
+    rates.length === 1
+      ? rates[0].courierName
+      : `${rates.length} packages`;
+
+  return {
+    shipping,
+    courierName,
+    packageCount: rates.length,
+  };
 }
 
 export default async function CartPage() {
@@ -129,9 +207,10 @@ export default async function CartPage() {
   const userEmail: string = session.email;
 
   const subtotal = items.reduce((acc, i) => acc + i.price * i.quantity, 0);
-  const gst = Math.round(subtotal * GST_RATE);
+  const gst = calcGst(subtotal);
+  const payableTotal = calcPayableTotal(subtotal);
 
-  // Calculate real shipping only if user has an address
+  // Shipping estimate only — not charged at checkout (handled manually / platform)
   const shippingResult = items.length > 0 && address?.pincode
     ? await calculateShipping(items, address.pincode)
     : null;
@@ -139,8 +218,8 @@ export default async function CartPage() {
   const hasAddress = !!address;
   const shipping = shippingResult?.shipping ?? 0;
   const courierName = shippingResult?.courierName ?? "";
+  const packageCount = shippingResult?.packageCount ?? 0;
   const shippingKnown = hasAddress && shippingResult !== null;
-  const total = subtotal + gst + (shippingKnown ? shipping : 0);
 
   return (
     <div className="flex flex-col gap-8">
@@ -185,7 +264,7 @@ export default async function CartPage() {
                 <div className="mb-4 pb-3 border-b border-ink/5 bg-amber-50/50 -mx-6 -mt-5 px-6 pt-5 rounded-t-xl">
                   <p className="text-xs text-amber-700 font-medium mb-1">No delivery address</p>
                   <p className="text-[10px] text-amber-600 mb-2">
-                    Add an address to see shipping charges and proceed to checkout.
+                    Add an address to see estimated shipping and proceed to checkout.
                   </p>
                   <Link
                     href="/dashboard/addresses"
@@ -209,46 +288,50 @@ export default async function CartPage() {
                   <span>₹{gst.toLocaleString("en-IN")}</span>
                 </div>
 
-                {/* Shipping */}
-                <div className="flex justify-between text-ink/60">
-                  <span>Shipping</span>
-                  {!hasAddress ? (
-                    <span className="text-ink/30 text-xs">—</span>
-                  ) : shippingKnown ? (
-                    shipping === 0 ? (
-                      <span className="text-sage font-medium">Free</span>
-                    ) : (
-                      <span>₹{shipping.toLocaleString("en-IN")}</span>
-                    )
-                  ) : (
-                    <span className="text-ink/30 text-xs italic">Unavailable</span>
-                  )}
-                </div>
-
-                {/* Courier info */}
-                {shippingKnown && shipping > 0 && courierName && (
-                  <p className="text-[10px] text-ink/30">
-                    via {courierName}
-                  </p>
-                )}
-
-                {/* Divider + Total */}
+                {/* Payable via Razorpay */}
                 <div className="border-t border-ink/10 pt-3 flex justify-between font-heading text-cacao text-base">
-                  <span>Total</span>
-                  <span>₹{total.toLocaleString("en-IN")}</span>
+                  <span>You pay</span>
+                  <span>₹{payableTotal.toLocaleString("en-IN")}</span>
                 </div>
 
-                {/* Note */}
+                {/* Shipping estimate — not charged */}
+                <div className="rounded-lg bg-ink/[0.03] px-3 py-3 mt-1">
+                  <div className="flex justify-between text-ink/60 text-sm">
+                    <span>Est. shipping</span>
+                    {!hasAddress ? (
+                      <span className="text-ink/30 text-xs">—</span>
+                    ) : shippingKnown ? (
+                      shipping === 0 ? (
+                        <span className="text-sage font-medium">Free</span>
+                      ) : (
+                        <span>₹{shipping.toLocaleString("en-IN")}</span>
+                      )
+                    ) : (
+                      <span className="text-ink/30 text-xs italic">Unavailable</span>
+                    )}
+                  </div>
+                  {shippingKnown && shipping > 0 && (
+                    <p className="text-[10px] text-ink/30 mt-1">
+                      {packageCount > 1
+                        ? `${packageCount} shipments (one per seller) · total estimate`
+                        : `via ${courierName}`}
+                    </p>
+                  )}
+                  <p className="text-[10px] text-ink/35 mt-1.5 leading-relaxed">
+                    Shipping is arranged separately and is not charged at checkout.
+                  </p>
+                </div>
+
                 {!shippingKnown && hasAddress && (
                   <p className="text-[10px] text-ink/30 leading-relaxed">
-                    Shipping could not be calculated for your pincode. It will be confirmed at payment.
+                    Shipping estimate unavailable for your pincode. Delivery will still be arranged after payment.
                   </p>
                 )}
               </div>
 
               <div className="mt-5">
                 {hasAddress ? (
-                  <CheckoutButton subtotal={total} userName={userName} userEmail={userEmail} />
+                  <CheckoutButton amount={payableTotal} userName={userName} userEmail={userEmail} />
                 ) : (
                   <button
                     disabled
