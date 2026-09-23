@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import DevAutofill from "./dev-autofill";
 import ProductsPanel from "./products-panel";
 import InventoryPanel from "./inventory-panel";
+import SalesPanel from "./sales-panel";
 import DashboardShell, { type ShellNavItem } from "@/app/components/dashboard-shell";
 import {
   banner as bannerClass,
@@ -94,7 +95,7 @@ export default function VendorDashboardPage() {
 
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const [loading, setLoading] = useState(true);
-  const [section, setSection] = useState<"account" | "products" | "inventory">("account");
+  const [section, setSection] = useState<"account" | "products" | "inventory" | "sales">("account");
   const [uploadQueueCount, setUploadQueueCount] = useState(0);
   const [tab, setTab] = useState<TabId>("profile");
   const [banner, setBanner] = useState<{ text: string; error: boolean } | null>(null);
@@ -287,6 +288,7 @@ export default function VendorDashboardPage() {
     { id: "account", label: "Account & Details", icon: "⚙" },
     { id: "products", label: "Products", icon: "◻", badge: uploadQueueCount },
     { id: "inventory", label: "Inventory", icon: "⊙" },
+    { id: "sales", label: "Sales", icon: "◈" },
   ];
 
   return (
@@ -295,7 +297,7 @@ export default function VendorDashboardPage() {
       items={navItems}
       active={section}
       onSelect={(id) =>
-        setSection(id as "account" | "products" | "inventory")
+        setSection(id as "account" | "products" | "inventory" | "sales")
       }
       meta={
         <>
@@ -338,7 +340,16 @@ export default function VendorDashboardPage() {
           <div className={section !== "inventory" ? "hidden" : ""}>
             <InventoryPanel />
           </div>
-          <div className={section === "products" || section === "inventory" ? "hidden" : ""}>
+          <div className={section !== "sales" ? "hidden" : ""}>
+            <SalesPanel />
+          </div>
+          <div
+            className={
+              section === "products" || section === "inventory" || section === "sales"
+                ? "hidden"
+                : ""
+            }
+          >
               <div className={`mb-6 ${statusStyles[vendor.status]}`}>
           <span className="uppercase tracking-[0.15em]">{vendor.status.replace("_", " ")}</span> — {statusText[vendor.status]}
         </div>

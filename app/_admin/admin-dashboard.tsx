@@ -19,11 +19,13 @@ import {
   textarea as textareaClass,
 } from "@/app/theme";
 import AdminProducts from "@/app/_admin/admin-products";
+import AdminSales from "@/app/_admin/admin-sales";
 import DashboardShell, { type ShellNavItem } from "@/app/components/dashboard-shell";
 
 const NAV: readonly ShellNavItem[] = [
   { id: "vendors", label: "Vendors", icon: "◎" },
   { id: "products", label: "Products", icon: "◻" },
+  { id: "sales", label: "Sales", icon: "◈" },
 ];
 
 type AdminSessionResponse = {
@@ -97,7 +99,7 @@ export default function AdminDashboard({ adminKey }: { adminKey: string }) {
   const [loading, setLoading] = useState(true);
   const [adminId, setAdminId] = useState<string | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [section, setSection] = useState<"vendors" | "products">("vendors");
+  const [section, setSection] = useState<"vendors" | "products" | "sales">("vendors");
 
   const [filter, setFilter] = useState<StatusFilter>("pending");
   const [vendors, setVendors] = useState<Vendor[]>([]);
@@ -223,7 +225,7 @@ export default function AdminDashboard({ adminKey }: { adminKey: string }) {
       subtitle="Admin Panel"
       items={NAV}
       active={section}
-      onSelect={(id) => setSection(id as "vendors" | "products")}
+      onSelect={(id) => setSection(id as "vendors" | "products" | "sales")}
       meta={<p className="truncate text-xs text-white/50">{adminId}</p>}
       footer={
         <button
@@ -237,7 +239,9 @@ export default function AdminDashboard({ adminKey }: { adminKey: string }) {
         </button>
       }
     >
-      {section === "products" ? (
+      {section === "sales" ? (
+            <AdminSales />
+          ) : section === "products" ? (
             <AdminProducts />
           ) : (
             <section className={panel}>
