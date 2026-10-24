@@ -55,6 +55,7 @@ export async function PUT(request: Request) {
 
   if (addressChanged && vendor.status === "approved") {
     const shipping = await registerVendorWarehouse(
+      vendor.vendorId,
       vendor.profile.brandName || "Vendor",
       pickupAddress
     );

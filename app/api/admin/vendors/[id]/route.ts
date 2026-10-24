@@ -51,10 +51,11 @@ export async function PATCH(request: Request, { params }: Params) {
   const now = new Date().toISOString();
 
   if (body.action === "approve") {
-    // Register the vendor's pickup address as an iThink warehouse so their
-    // orders can be shipped. Best-effort: approval succeeds even if iThink
-    // is down — shipping.registrationFailed flags it for retry.
+    // Register the vendor's pickup address with Shiprocket so their orders
+    // can be shipped. Best-effort: approval succeeds even if Shiprocket is
+    // down — shipping.registrationFailed flags it for retry.
     const shipping = await registerVendorWarehouse(
+      vendor.vendorId,
       vendor.profile.brandName || "Vendor",
       vendor.pickupAddress
     );

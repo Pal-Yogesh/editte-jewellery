@@ -9,12 +9,14 @@ import type { VendorPickupAddress, VendorShipping } from "@/lib/vendor/types";
  * record with `registrationFailed: true` so the admin can retry later.
  */
 export async function registerVendorWarehouse(
+  vendorId: string,
   brandName: string,
   pickupAddress: VendorPickupAddress,
 ): Promise<VendorShipping> {
-  // Generate a unique pickup location name for this vendor
-  const safeBrand = brandName.replace(/[^a-zA-Z0-9]/g, "_").slice(0, 30);
-  const locationName = `Vendor_${safeBrand}_${pickupAddress.pincode}`;
+  // Generate a unique pickup location name using vendorId so it never
+  // collides with another vendor (Shiprocket allows only one pickup
+  // location per name, and only one pickup location per pincode).
+  const locationName = `vendor_${vendorId}`.slice(0, 36);
 
   try {
     const response = await addPickupLocation({
