@@ -25,7 +25,7 @@ export async function DELETE() {
     name: getVendorCookieName(),
     value: "",
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.COOKIE_SECURE === "true",
     sameSite: "lax",
     path: "/",
     maxAge: 0,
