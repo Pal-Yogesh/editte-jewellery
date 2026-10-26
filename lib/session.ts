@@ -39,7 +39,7 @@ export async function createSession(payload: SessionPayload) {
   const jar = await cookies();
   jar.set(COOKIE, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.COOKIE_SECURE === "true",
     sameSite: "lax",
     expires: expiresAt,
     path: "/",
